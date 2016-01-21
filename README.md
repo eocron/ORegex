@@ -2,7 +2,7 @@
 Object oriented Regular Expressions implementation. The syntax is the same as .NET Regex.
 
 This implementation based on original Microsoft Regular Expression Engine and persist it's syntax and usage in C#.
-To declare predicate match in pattern you type {number_of_predicate} and feed ObjectRegex<T> instance you predicate as one of arguments in constructor.
+To declare predicate match in pattern you type {number_of_predicate} and feed ObjectRegex<T> instance your predicates as arguments in constructor.
 
 #Example
 
