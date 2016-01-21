@@ -50,6 +50,7 @@
     <Compile Include="ObjectGroupCollection.cs" />
     <Compile Include="ObjectMatch.cs" />
     <Compile Include="ObjectRegex.cs" />
+    <Compile Include="ORegexOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegexObjectMapper.cs" />
   </ItemGroup>

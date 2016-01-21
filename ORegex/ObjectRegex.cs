@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Schema;
 
 namespace ORegex
 {
@@ -18,13 +19,12 @@ namespace ORegex
     [DebuggerDisplay("{_pattern.ToString()}")]
     public sealed class ObjectRegex<TValue>
     {
-        private readonly Predicate<TValue>[] _predicates;
-        private readonly Regex _pattern;
-        private readonly RegexObjectMapper _mapper;
+        private readonly Predicate<TValue>[]    _predicates;
+        private readonly Regex                  _pattern;
+        private readonly RegexObjectMapper      _mapper;
+        private readonly ORegexOptions          _options;
 
-        public bool IgnoreRedundantPredicates = false;
-
-        public ObjectRegex(string str, params Predicate<TValue>[] predicates)
+        public ObjectRegex(string pattern, ORegexOptions options, params Predicate<TValue>[] predicates)
         {
             if (predicates == null || predicates.Length == 0)
             {
@@ -36,60 +36,13 @@ namespace ORegex
             }
             _predicates = predicates;
             _mapper = new RegexObjectMapper(_predicates.Length);
+            _options = options;
 
-            str = PrecompilePattern(str);
-            _pattern = new Regex(str, RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.ExplicitCapture);
-
+            pattern = PrecompilePattern(pattern);
+            _pattern = new Regex(pattern, RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.ExplicitCapture);
         }
 
-        private string PrecompilePattern(string str)
-        {
-            var matches =
-                Regex.Matches(str, @"\{(\d+)\}")
-                    .Cast<Match>()
-                    .Select(x => int.Parse(x.Groups[1].Value))
-                    .Distinct()
-                    .ToArray();
-
-            bool[] predicatesUsage = null;
-            if (!IgnoreRedundantPredicates)
-            {
-                predicatesUsage = new bool[_predicates.Length];
-            }
-            foreach (var match in matches)
-            {
-                if (!_mapper.IsExist(match))
-                {
-                    throw new ArgumentOutOfRangeException("str",
-                        "Index described in pattern should point to predicate - " + match);
-                }
-                if (!IgnoreRedundantPredicates)
-                {
-                    predicatesUsage[match] = true;
-                }
-                str = str.Replace("{" + match + "}", _mapper.GetStateString(match));
-            }
-            if (!IgnoreRedundantPredicates)
-            {
-                StringBuilder b = new StringBuilder();
-                for (int i = 0; i < predicatesUsage.Length; i++)
-                {
-                    if (!predicatesUsage[i])
-                    {
-                        if (b.Length > 0)
-                        {
-                            b.Append(",");
-                        }
-                        b.Append(i);
-                    }
-                }
-                if (b.Length > 0)
-                {
-                    throw new ArgumentException("predicates", "Redundant predicates: " + b.ToString());
-                }
-            }
-            return str;
-        }
+        public ObjectRegex(string pattern, params Predicate<TValue>[] predicates) : this(pattern, ORegexOptions.None, predicates){}
 
         public IEnumerable<ObjectMatch<TValue>> Matches(TValue[] values)
         {
@@ -135,6 +88,56 @@ namespace ORegex
         {
             var str = GetStateString(values);
             return _pattern.IsMatch(str, GetStartAt(startat));
+        }
+
+        private string PrecompilePattern(string str)
+        {
+            var ignoreRedundantPredicates = _options.HasFlag(ORegexOptions.IgnoreRedundantPredicates);
+            var matches =
+                Regex.Matches(str, @"\{(\d+)\}")
+                    .Cast<Match>()
+                    .Select(x => int.Parse(x.Groups[1].Value))
+                    .Distinct()
+                    .ToArray();
+
+            bool[] predicatesUsage = null;
+            if (!ignoreRedundantPredicates)
+            {
+                predicatesUsage = new bool[_predicates.Length];
+            }
+            foreach (var match in matches)
+            {
+                if (!_mapper.IsExist(match))
+                {
+                    throw new ArgumentOutOfRangeException("str",
+                        "Index described in pattern should point to predicate - " + match);
+                }
+                if (!ignoreRedundantPredicates)
+                {
+                    predicatesUsage[match] = true;
+                }
+                str = str.Replace("{" + match + "}", _mapper.GetStateString(match));
+            }
+            if (!ignoreRedundantPredicates)
+            {
+                StringBuilder b = new StringBuilder();
+                for (int i = 0; i < predicatesUsage.Length; i++)
+                {
+                    if (!predicatesUsage[i])
+                    {
+                        if (b.Length > 0)
+                        {
+                            b.Append(",");
+                        }
+                        b.Append(i);
+                    }
+                }
+                if (b.Length > 0)
+                {
+                    throw new ArgumentException("predicates", "Redundant predicates: " + b.ToString());
+                }
+            }
+            return str;
         }
 
         private ObjectMatch<TValue> CreateMatch(Match match, TValue[] values)

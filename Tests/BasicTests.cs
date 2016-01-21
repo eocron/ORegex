@@ -9,7 +9,7 @@ namespace Tests
     public class BasicTests
     {
         [TestMethod]
-        public void PrimeSequence()
+        public void PrimeSequenceTest()
         {
             var seq = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
             ObjectRegex<int> regex = new ObjectRegex<int>(
@@ -31,7 +31,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void PrimeSequenceContent()
+        public void PrimeSequenceContentTest()
         {
             var seq = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
             ObjectRegex<int> regex = new ObjectRegex<int>(
@@ -40,18 +40,29 @@ namespace Tests
                 );
 
             var matches = regex.Matches(seq).ToArray();
-            if (!Enumerable.SequenceEqual(matches[0].Value, new[] {2}))
+            if (!matches[0].Value.SequenceEqual(new[] {2}))
             {
                 Assert.Fail("Incorrect match");
             }
-            if (!Enumerable.SequenceEqual(matches[1].Value, new[] {3, 4, 5, 6, 7}))
+            if (!matches[1].Value.SequenceEqual(new[] {3, 4, 5, 6, 7}))
             {
                 Assert.Fail("Incorrect match");
             }
-            if (!Enumerable.SequenceEqual(matches[2].Value, new[] {11, 12, 13}))
+            if (!matches[2].Value.SequenceEqual(new[] {11, 12, 13}))
             {
                 Assert.Fail("Incorrect match");
             }
+        }
+
+        [TestMethod]
+        public void IgnoreRedundantPredicatesTest()
+        {
+            ObjectRegex<int> regex = new ObjectRegex<int>(
+                "{0}(.{0})*",
+                ORegexOptions.IgnoreRedundantPredicates,
+                IsPrime,    //0
+                IsEven      //1
+                );
         }
 
         public static bool IsEven(int number)
