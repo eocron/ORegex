@@ -1,5 +1,9 @@
 grammar RegexGrammar;
 
+options
+{
+	output=AST;
+}
 ///PARSER RULES///
 unOper      : term UNOper?
             ;
