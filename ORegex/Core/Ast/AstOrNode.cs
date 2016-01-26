@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace ORegex.Core.Ast
 {
-    public sealed class AstOrNode : AstNodeBase
+    [DebuggerDisplay("Or:{Children.Length}")]
+    public sealed class AstOrNode : AstNonTerminalNodeBase
     {
-        public readonly AstNodeBase[] Arguments;
-
-        public AstOrNode(IEnumerable<AstNodeBase> arguments)
+        public AstOrNode(IEnumerable<AstNodeBase> arguments) : base(arguments)
         {
-            Arguments = arguments.ToArray();
         }
     }
 }

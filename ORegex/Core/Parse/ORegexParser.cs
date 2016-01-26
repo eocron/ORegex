@@ -3,20 +3,20 @@ using Antlr4.Runtime.Tree;
 using ORegex.Core.Ast;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
 namespace ORegex.Core.Parse
 {
-    public sealed class ORegexParser
+    public sealed class ORegexParser<TValue>
     {
-
         public ORegexParser()
         {
 
         }
 
-        public AstNodeBase Parse(string input)
+        public AstNodeBase Parse(string input, Dictionary<string, Func<TValue, bool>> predicateTable)
         {
             var lexer = new RegexGrammarLexer(new AntlrInputStream(input));
             var tokenStream = new CommonTokenStream(lexer);
@@ -24,12 +24,14 @@ namespace ORegex.Core.Parse
 
             var context = parser.expr();
 
-            return Evaluate(context);
-        }
+            var result = ORegexAstFactory<TValue>.Create(context, parser);
 
-        private AstNodeBase Evaluate(IParseTree node)
-        {
-            throw new NotImplementedException();
+            var visitior = new AstAtomConditionVisitior<TValue>(predicateTable);
+            visitior.Evaluate(result);
+#if DEBUG
+            AstNodeBase.Print(result);
+#endif
+            return result;
         }
     }
 }

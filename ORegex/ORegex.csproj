@@ -52,11 +52,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Ast\AstAnyAtomNode.cs" />
     <Compile Include="Core\Ast\AstAtomNode.cs" />
+    <Compile Include="Core\Ast\AstRootNode.cs" />
+    <Compile Include="Core\Ast\AstVarAtomNode.cs" />
+    <Compile Include="Core\Ast\AstConcatNode.cs" />
+    <Compile Include="Core\Ast\AstNonTerminalNodeBase.cs" />
     <Compile Include="Core\Ast\AstOrNode.cs" />
     <Compile Include="Core\Ast\AstGroupNode.cs" />
     <Compile Include="Core\Ast\AstNodeBase.cs" />
     <Compile Include="Core\Ast\AstRepeatNode.cs" />
+    <Compile Include="Core\Nsm\NStateMachine.cs" />
+    <Compile Include="Core\Parse\AstAtomConditionVisitior.cs" />
+    <Compile Include="Core\Parse\AstVisitorBase.cs" />
+    <Compile Include="Core\Parse\ORegexAstFactory.cs" />
+    <Compile Include="Core\Parse\ORegexCompiler.cs" />
     <Compile Include="Core\Parse\RegexGrammar.g4.lexer.cs">
       <DependentUpon>RegexGrammar.g4</DependentUpon>
     </Compile>

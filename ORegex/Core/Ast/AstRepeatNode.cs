@@ -1,18 +1,20 @@
-﻿namespace ORegex.Core.Ast
+﻿using System.Diagnostics;
+namespace ORegex.Core.Ast
 {
-    public sealed class AstRepeatNode : AstNodeBase
+    [DebuggerDisplay("Repeat:{MinCount}-{MaxCount}")]
+    public sealed class AstRepeatNode : AstNonTerminalNodeBase
     {
         public readonly int MinCount;
 
         public readonly int MaxCount;
 
-        public readonly AstNodeBase Argument;
+        public readonly bool IsGreedy;
 
-        public AstRepeatNode(AstNodeBase arg, int minCount, int maxCount)
+        public AstRepeatNode(AstNodeBase arg, int minCount, int maxCount, bool isGreedy) : base(new[] { arg })
         {
-            Argument = arg;
             MinCount = minCount;
             MaxCount = maxCount;
+            IsGreedy = isGreedy;
         }
     }
 }

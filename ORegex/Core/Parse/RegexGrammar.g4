@@ -8,7 +8,10 @@ options
 unOper      : term UNOper?
             ;
 
-binOper     : unOper ('|' unOper)*
+concat      : unOper+
+            ;
+
+binOper     : concat ('|' concat)*
             ;
 
 expr        : binOper+
@@ -18,12 +21,14 @@ term        : atom
             | group
             ;
 
-group       : OBR3 expr+ CBR3
+group       : OBR3 binOper+ CBR3
             ;
 
-atom        : NAME
+atom        : natom
             | ANY
-            | OBR2 NAME+ CBR2
+            | OBR2 natom+ CBR2
+            ;
+natom       : NAME
             ;
 
 ///LEXER RULES///

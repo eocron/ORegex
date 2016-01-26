@@ -1,14 +1,19 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace ORegex.Core.Ast
 {
+    [DebuggerDisplay("Atom:{Name}")]
     public sealed class AstAtomNode<TValue> : AstNodeBase
     {
-        public readonly Func<TValue, bool> Condition;
+        public readonly string Name;
 
-        public AstAtomNode(Func<TValue, bool> condition)
+        public Func<TValue, bool> Condition;
+
+        public AstAtomNode(string name)
         {
-            Condition = condition;
+            Name = name;
+            Condition = null;
         } 
     }
 }
