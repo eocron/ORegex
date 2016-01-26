@@ -29,7 +29,7 @@ namespace ORegex.Core.Parse
 
         private AstNodeBase Evaluate(IParseTree node)
         {
-           
+            throw new NotImplementedException();
         }
     }
 }

@@ -57,6 +57,13 @@
     <Compile Include="Core\Ast\AstGroupNode.cs" />
     <Compile Include="Core\Ast\AstNodeBase.cs" />
     <Compile Include="Core\Ast\AstRepeatNode.cs" />
+    <Compile Include="Core\Parse\RegexGrammar.g4.lexer.cs">
+      <DependentUpon>RegexGrammar.g4</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Parse\RegexGrammar.g4.parser.cs">
+      <DependentUpon>RegexGrammar.g4</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Parse\ORegexParser.cs" />
     <Compile Include="ObjectGroup.cs" />
     <Compile Include="ObjectGroupCollection.cs" />
     <Compile Include="ObjectMatch.cs" />
@@ -71,8 +78,6 @@
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>ORegex.Core.Parse</CustomToolNamespace>
     </Antlr4>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
