@@ -62,9 +62,9 @@
     <Compile Include="Core\Ast\AstGroupNode.cs" />
     <Compile Include="Core\Ast\AstNodeBase.cs" />
     <Compile Include="Core\Ast\AstRepeatNode.cs" />
-    <Compile Include="Core\Nsm\NondetStateMachine.cs" />
-    <Compile Include="Core\Nsm\NsmEdge.cs" />
-    <Compile Include="Core\Nsm\NsmNode.cs" />
+    <Compile Include="Core\Nsm\Edge.cs" />
+    <Compile Include="Core\Nsm\FsmGraph.cs" />
+    <Compile Include="Core\Nsm\FsmGraphLibrary.cs" />
     <Compile Include="Core\Parse\AstAtomConditionVisitior.cs" />
     <Compile Include="Core\Parse\AstVisitorBase.cs" />
     <Compile Include="Core\Parse\ORegexAstFactory.cs" />
