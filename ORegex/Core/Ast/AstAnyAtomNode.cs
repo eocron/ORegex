@@ -7,7 +7,7 @@ using System.Text;
 namespace ORegex.Core.Ast
 {
     [DebuggerDisplay("ANY")]
-    public sealed class AstAnyAtomNode : AstNodeBase
+    public sealed class AstAnyAtomNode
     {
 
     }

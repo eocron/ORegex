@@ -16,7 +16,7 @@ namespace ORegex.Core.Parse
             _parser = new ORegexParser<TValue>();
         }
 
-        public NStateMachine Build(string input, Dictionary<string, Func<TValue, bool>> predicateTable)
+        public NondetStateMachine<TValue> Build(string input, Dictionary<string, Func<TValue, bool>> predicateTable)
         {
             var ast = _parser.Parse(input, predicateTable);
             return null;
