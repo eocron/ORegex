@@ -75,6 +75,12 @@
       <DependentUpon>RegexGrammar.g4</DependentUpon>
     </Compile>
     <Compile Include="Core\Parse\ORegexParser.cs" />
+    <Compile Include="FSM\ConsoleWriter.cs" />
+    <Compile Include="FSM\DFSM.cs" />
+    <Compile Include="FSM\Minimize.cs" />
+    <Compile Include="FSM\NDFSM.cs" />
+    <Compile Include="FSM\Program.cs" />
+    <Compile Include="FSM\Transition.cs" />
     <Compile Include="ObjectCapture.cs" />
     <Compile Include="ObjectGroup.cs" />
     <Compile Include="ObjectGroupCollection.cs" />
