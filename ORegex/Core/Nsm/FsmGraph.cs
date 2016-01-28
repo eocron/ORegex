@@ -9,7 +9,7 @@ namespace ORegex.Core.Nsm
     {
         public readonly List<Edge<T>> Edges = new List<Edge<T>>();
 
-        public readonly HashSet<int> FinalStates = new List<int>();
+        public readonly HashSet<int> FinalStates = new HashSet<int>();
 
         public int StartState = 0;
 

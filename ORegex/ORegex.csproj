@@ -64,7 +64,6 @@
     <Compile Include="Core\Ast\AstRepeatNode.cs" />
     <Compile Include="Core\Nsm\Edge.cs" />
     <Compile Include="Core\Nsm\FsmGraph.cs" />
-    <Compile Include="Core\Nsm\FsmGraphLibrary.cs" />
     <Compile Include="Core\Parse\AstAtomConditionVisitior.cs" />
     <Compile Include="Core\Parse\AstVisitorBase.cs" />
     <Compile Include="Core\Parse\ORegexAstFactory.cs" />
@@ -76,6 +75,7 @@
       <DependentUpon>RegexGrammar.g4</DependentUpon>
     </Compile>
     <Compile Include="Core\Parse\ORegexParser.cs" />
+    <Compile Include="ObjectCapture.cs" />
     <Compile Include="ObjectGroup.cs" />
     <Compile Include="ObjectGroupCollection.cs" />
     <Compile Include="ObjectMatch.cs" />
