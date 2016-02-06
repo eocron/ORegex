@@ -20,6 +20,7 @@ namespace ORegex.FSM
 
         public bool TryEvaluate(TValue value, out State<TValue> nextState)
         {
+            nextState = null;
             var transition = Transitions.FirstOrDefault(x => x.Item1(value));
             if(transition != null)
             {

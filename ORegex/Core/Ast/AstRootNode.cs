@@ -1,14 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 
 namespace ORegex.Core.Ast
 {
     [DebuggerDisplay("REGEX")]
-    public sealed class AstRootNode : AstNonTerminalNodeBase
+    public sealed class AstRootNode : AstCollectionNodeBase
     {
-        public AstRootNode(IEnumerable<AstNodeBase> values) : base(values) { }
+        public bool MatchBegin;
+
+        public bool MatchEnd;
+
+        public AstRootNode(IEnumerable<AstNodeBase> values, bool matchBegin, bool matchEnd) : base(values)
+        {
+            MatchBegin = matchBegin;
+            MatchEnd = matchEnd;
+        }
     }
 }

@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ORegex", "ORegex\ORegex.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{7B0BED03-946A-4D0C-AC86-DE295FA971E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debug", "Debug\Debug.csproj", "{29319633-5E1F-45D3-B3E8-4D1CA590A2F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUtility", "TestUtility\TestUtility.csproj", "{7CD7DE5A-6C2E-4FDF-B139-A665DE8ADEEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{7B0BED03-946A-4D0C-AC86-DE295FA971E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B0BED03-946A-4D0C-AC86-DE295FA971E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B0BED03-946A-4D0C-AC86-DE295FA971E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{29319633-5E1F-45D3-B3E8-4D1CA590A2F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{29319633-5E1F-45D3-B3E8-4D1CA590A2F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{29319633-5E1F-45D3-B3E8-4D1CA590A2F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{29319633-5E1F-45D3-B3E8-4D1CA590A2F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CD7DE5A-6C2E-4FDF-B139-A665DE8ADEEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CD7DE5A-6C2E-4FDF-B139-A665DE8ADEEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CD7DE5A-6C2E-4FDF-B139-A665DE8ADEEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CD7DE5A-6C2E-4FDF-B139-A665DE8ADEEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

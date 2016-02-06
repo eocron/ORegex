@@ -1,26 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using ORegex.Core.Ast.GroupQuantifiers;
 
 namespace ORegex.Core.Ast
 {
-    [DebuggerDisplay("Group:<{Name}>{Children[0]}")]
+    [DebuggerDisplay("Group")]
     public sealed class AstGroupNode : AstConcatNode
     {
-        public int Id { get; set; }
+        public QuantifierBase Quantifier;
 
-        public string Name { get; set; }
-
-        public readonly bool IsCaptured;
-
-        public AstGroupNode(IEnumerable<AstNodeBase> values, bool isCaptured = false)
+        public AstGroupNode(IEnumerable<AstNodeBase> values, QuantifierBase quantifier = null)
             : base(values)
         {
-            IsCaptured = isCaptured;
-        }
-        public AstGroupNode(string name, IEnumerable<AstNodeBase> values) : this(values, true)
-        {
-            Name = name;
+            Quantifier = quantifier;
         }
     }
 }

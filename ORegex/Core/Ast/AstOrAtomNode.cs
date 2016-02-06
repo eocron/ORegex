@@ -7,10 +7,11 @@ using System.Text;
 namespace ORegex.Core.Ast
 {
     [DebuggerDisplay("VarAtom:{Children.Length} n: {IsNegate}")]
-    public sealed class AstVarAtomNode : AstNonTerminalNodeBase
+    public sealed class AstOrAtomNode<TValue> : AstCollectionNodeBase
     {
         public readonly bool IsNegate;
-        public AstVarAtomNode(IEnumerable<AstNodeBase> children, bool isNegate) : base(children)
+
+        public AstOrAtomNode(IEnumerable<AstAtomNode<TValue>> children, bool isNegate) : base(children)
         {
             IsNegate = isNegate;
         }

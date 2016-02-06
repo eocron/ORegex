@@ -2,7 +2,7 @@
 namespace ORegex.Core.Ast
 {
     [DebuggerDisplay("Repeat:{MinCount}-{MaxCount}")]
-    public sealed class AstRepeatNode : AstNonTerminalNodeBase
+    public sealed class AstRepeatNode : AstCollectionNodeBase
     {
         public readonly int MinCount;
 

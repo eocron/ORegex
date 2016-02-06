@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace ORegex.Core.Ast
@@ -10,10 +11,15 @@ namespace ORegex.Core.Ast
 
         public Func<TValue, bool> Condition;
 
-        public AstAtomNode(string name)
+        public AstAtomNode(string name, Func<TValue, bool> condition)
         {
-            Name = name;
-            Condition = null;
-        } 
+            Name = name.ThrowIfEmpty();
+            Condition = condition.ThrowIfNull();
+        }
+
+        public override IEnumerable<AstNodeBase> GetChildren()
+        {
+            yield break;
+        }
     }
 }

@@ -37,6 +37,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -53,12 +55,22 @@
   <ItemGroup>
     <Compile Include="BasicTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SingleFileSuitBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ORegex\ORegex.csproj">
       <Project>{8fdbea09-300d-4e58-91fd-214049c533b9}</Project>
       <Name>ORegex</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="TestData\Parser\002.test">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\Parser\001.test">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

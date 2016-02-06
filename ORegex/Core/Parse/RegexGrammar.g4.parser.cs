@@ -1,6 +1,6 @@
 ﻿namespace ORegex.Core.Parse
 {
-    partial class RegexGrammarParser
+    public partial class RegexGrammarParser
     {
     }
 }

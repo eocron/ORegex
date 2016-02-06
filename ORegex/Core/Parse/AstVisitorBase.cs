@@ -10,7 +10,7 @@ namespace ORegex.Core.Parse
     {
         public void Evaluate(AstNodeBase node)
         {
-            var astNonTerminal = node as AstNonTerminalNodeBase;
+            var astNonTerminal = node as AstCollectionNodeBase;
             if (astNonTerminal != null)
             {
                 foreach (var t in astNonTerminal.Cast<AstNodeBase>())

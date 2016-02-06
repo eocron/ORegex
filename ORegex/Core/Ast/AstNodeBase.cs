@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 namespace ORegex.Core.Ast
 {
-    public abstract class AstNodeBase
+    public abstract class AstNodeBase: IEnumerable<AstNodeBase>
     {
+        public abstract IEnumerable<AstNodeBase> GetChildren();
+
         public static void Print(AstNodeBase node, int depth = 0)
         {
             var attr = node.GetType().GetCustomAttributes(true).OfType<DebuggerDisplayAttribute>().FirstOrDefault();
@@ -18,15 +22,22 @@ namespace ORegex.Core.Ast
             {
                 Console.WriteLine(node);
             }
-            var astNonTerminal = node as AstNonTerminalNodeBase;
-            if (astNonTerminal != null)
+
+            foreach(var child in node.GetChildren())
             {
-                for (int i = 0; i < astNonTerminal.Children.Length; i++)
-                {
-                    var child = astNonTerminal.Children[i];
-                    Print(child, depth + 1);
-                }
+                Print(child, depth + 1);
             }
+        }
+
+
+        public IEnumerator<AstNodeBase> GetEnumerator()
+        {
+            return GetChildren().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

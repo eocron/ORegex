@@ -1,160 +1,183 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using ORegex.Core.Ast;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Antlr4.Runtime.Tree;
+using ORegex.Core.Ast;
+using ORegex.Core.Ast.GroupQuantifiers;
 
 namespace ORegex.Core.Parse
 {
     public sealed class ORegexAstFactory<TValue>
     {
-        public static AstNodeBase Create(IParseTree node, RegexGrammarParser parser)
+        public static AstNodeBase Create(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
-            if(IsRoot(node, parser))
+            if(IsRoot(node, args))
             {
-                return CreateRoot(node, parser);
+                return CreateRoot(node, args);
             }
-            else if(IsConcat(node, parser))
+            else if(IsConcat(node, args))
             {
-                return CreateConcat(node, parser);
+                return CreateConcat(node, args);
             }
-            else if (IsAtom(node, parser))
+            else if (IsAtom(node, args))
             {
-                return CreateAtom(node, parser);
+                return CreateAtom(node, args);
             }
-            else if (IsGroup(node, parser))
+            else if (IsGroup(node, args))
             {
-                return CreateGroup(node, parser);
+                return CreateGroup(node, args);
             }
-            else if (IsUnOper(node, parser))
+            else if (IsUnOper(node, args))
             {
-                return CreateUnOper(node, parser);
+                return CreateUnOper(node, args);
             }
-            else if (IsBinOper(node, parser))
+            else if (IsBinOper(node, args))
             {
-                return CreateBinOper(node, parser);
+                return CreateBinOper(node, args);
             }
             else
             {
-                return Create(node.GetChild(0), parser);//fictive node, skip him
+                return Create(node.GetChild(0), args);//fictive node, skip him
             }
         }
 
-        private static bool IsRoot(IParseTree node, RegexGrammarParser parser)
+        private static bool IsRoot(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
-            return node.ChildCount == 1 && IsName(node, parser, "expr");
+            return args.IsName(node, "expr");
         }
 
-        private static bool IsConcat(IParseTree node, RegexGrammarParser parser)
+        private static bool IsConcat(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
-            return node.ChildCount > 1 && IsName(node, parser, "concat");
+            return node.ChildCount > 1 && args.IsName(node, "concat");
         }
 
-        private static bool IsAtom(IParseTree node, RegexGrammarParser parser)
+        private static bool IsAtom(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
-            return (node.ChildCount == 1 || node.ChildCount >=3) && IsName(node, parser, "atom");
+            return args.IsName(node, "natom") || args.IsName(node, "atom");
         }
 
-        private static bool IsNAtom(IParseTree node, RegexGrammarParser parser)
+        private static bool IsOrAtom(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
-            return node.ChildCount == 1 && IsName(node, parser, "natom");
+            return node.ChildCount >= 3 && args.IsName(node, "atom");
         }
 
-        private static bool IsGroup(IParseTree node, RegexGrammarParser parser)
+        private static bool IsGroup(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
-            return node.ChildCount >= 3 && IsName(node, parser, "group");
+            return node.ChildCount == 3 && args.IsName(node, "group");
         }
 
-        private static bool IsBinOper(IParseTree node, RegexGrammarParser parser)
+        private static bool IsBinOper(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
-            return node.ChildCount >= 3 && IsName(node, parser, "binOper");
+            return node.ChildCount >= 3 && args.IsName(node, "binOper");
         }
 
-        private static bool IsUnOper(IParseTree node, RegexGrammarParser parser)
+        private static bool IsUnOper(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
-            return node.ChildCount == 2 && IsName(node, parser, "unOper");
+            return node.ChildCount == 2 && args.IsName(node, "unOper");
         }
 
-        private static bool IsName(IParseTree node, RegexGrammarParser parser, string name)
-        {
-            return name == GetName(node, parser);
-        }
-
-        private static string GetName(IParseTree node, RegexGrammarParser parser)
-        {
-            var rule = (RuleContext)node;
-            var name = parser.RuleNames[rule.RuleIndex];
-            return name;
-        }
-
-        private static AstNodeBase CreateRoot(IParseTree node, RegexGrammarParser parser)
+        private static AstNodeBase CreateRoot(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             List<AstNodeBase> children = new List<AstNodeBase>();
+            bool matchBegin = false;
+            bool matchEnd = false;
+
+            if (node.GetChild(0).GetText() == "^")
+            {
+                matchBegin = true;
+            }
+
+            if (node.GetChild(node.ChildCount - 1).GetText() == "$")
+            {
+                matchEnd = true;
+            }
+
             for (int i = 0; i < node.ChildCount; i++)
             {
+                if (matchBegin && i == 0 || matchEnd && i == node.ChildCount - 1)
+                {
+                    continue;
+                }
+
                 var child = node.GetChild(i);
 
-                children.Add(Create(child, parser));
+                children.Add(Create(child, args));
             }
-            return new AstRootNode(children);
+            return new AstRootNode(children, matchBegin, matchEnd);
         }
 
-        private static AstNodeBase CreateAtom(IParseTree node, RegexGrammarParser parser)
+        private static AstNodeBase CreateAtom(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             if (node.ChildCount == 1)
             {
-                var name = node.GetChild(0).ToString();
+                var name = node.GetChild(0).GetText();
                 if (name == ".")
                 {
-                    return new AstAnyAtomNode();
+                    return new AstAtomNode<TValue>(name, args.GetPredicate(name));
                 }
                 else
                 {
-                    return CreateNAtom(node.GetChild(0), parser);
+                    return CreateNAtom(node.GetChild(0), args);
                 }
             }
             else
             {
-                var isNegate = node.GetChild(0).GetText().Length == 2;
-                List<AstNodeBase> children = new List<AstNodeBase>();
-                for(int i = 1; i < node.ChildCount-1;i++)
+                var children = new List<AstAtomNode<TValue>>();
+                for (int i = 1; i < node.ChildCount - 1; i++)
                 {
-                    var child = CreateNAtom(node.GetChild(i), parser);
+                    var child = CreateNAtom(node.GetChild(i), args);
                     children.Add(child);
                 }
-                return new AstVarAtomNode(children, isNegate);
+
+                var isNegate = node.GetChild(0).GetText().Length == 2;
+                if (isNegate)
+                {
+                    Func<TValue, bool> p;
+                    string n;
+                    args.GetInvertedPredicate(children.Select(x => x.Name), out p, out n);
+                    return new AstAtomNode<TValue>(n, p);
+                }
+                else
+                {
+                    return new AstOrNode(children);
+                }
             }
         }
 
-        private static AstAtomNode<TValue> CreateNAtom(IParseTree node, RegexGrammarParser parser)
+        private static AstAtomNode<TValue> CreateNAtom(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             var name = node.GetChild(0).ToString();
-            return new AstAtomNode<TValue>(name.Substring(1, name.Length - 2));
+            var atomName = name.Substring(1, name.Length - 2);
+            var atomPredicate = args.GetPredicate(atomName);
+            return new AstAtomNode<TValue>(atomName, atomPredicate);
         }
 
-        private static AstGroupNode CreateGroup(IParseTree node, RegexGrammarParser parser)
+        private static AstGroupNode CreateGroup(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             var predicate = node.GetChild(0).GetText();
             List<AstNodeBase> children = new List<AstNodeBase>();
             for (int i = 1; i < node.ChildCount - 1; i++)
             {
-                var child = Create(node.GetChild(i), parser);
+                var child = Create(node.GetChild(i), args);
                 children.Add(child);
             }
 
-            if(predicate.StartsWith("(?<"))
+            QuantifierBase quantifier = null;
+            if(predicate.StartsWith("(?<") && predicate.Length > 4)
             {
                 var name = predicate.Substring(3, predicate.Length - 4);
-                return new AstGroupNode(name, children);
+                quantifier = new CaptureQuantifier(predicate, name);
             }
-            return new AstGroupNode(children);
+            else if(predicate.StartsWith("(?"))
+            {
+                quantifier = new LookAheadQuantifier(predicate);
+            }
+            return new AstGroupNode(children, quantifier);
         }
 
-        private static AstRepeatNode CreateUnOper(IParseTree node, RegexGrammarParser parser)
+        private static AstRepeatNode CreateUnOper(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
-            var arg = Create(node.GetChild(0), parser);
+            var arg = Create(node.GetChild(0), args);
             var oper = node.GetChild(1).ToString();
             int min = 0, max = 0;
             bool isGreedy = false;
@@ -172,7 +195,7 @@ namespace ORegex.Core.Parse
             return new AstRepeatNode(arg, min, max, isGreedy);
         }
 
-        private static AstOrNode CreateBinOper(IParseTree node, RegexGrammarParser parser)
+        private static AstOrNode CreateBinOper(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             List<AstNodeBase> children = new List<AstNodeBase>();
             for (int i = 0; i < node.ChildCount; i++)
@@ -180,20 +203,20 @@ namespace ORegex.Core.Parse
                 var child = node.GetChild(i);
                 if (child.GetText() != "|")
                 {
-                    children.Add(Create(child, parser));
+                    children.Add(Create(child, args));
                 }
             }
             return new AstOrNode(children);
         }
 
-        private static AstConcatNode CreateConcat(IParseTree node, RegexGrammarParser parser)
+        private static AstConcatNode CreateConcat(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             List<AstNodeBase> children = new List<AstNodeBase>();
             for (int i = 0; i < node.ChildCount; i++)
             {
                 var child = node.GetChild(i);
 
-                children.Add(Create(child, parser));
+                children.Add(Create(child, args));
             }
             return new AstConcatNode(children); 
         }

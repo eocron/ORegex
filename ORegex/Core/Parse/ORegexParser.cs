@@ -1,21 +1,12 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using ORegex.Core.Ast;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+using Antlr4.Runtime;
+using ORegex.Core.Ast;
 
 namespace ORegex.Core.Parse
 {
     public sealed class ORegexParser<TValue>
     {
-        public ORegexParser()
-        {
-
-        }
-
         public AstNodeBase Parse(string input, Dictionary<string, Func<TValue, bool>> predicateTable)
         {
             var lexer = new RegexGrammarLexer(new AntlrInputStream(input));
@@ -24,10 +15,8 @@ namespace ORegex.Core.Parse
 
             var context = parser.expr();
 
-            var result = ORegexAstFactory<TValue>.Create(context, parser);
-
-            var visitior = new AstAtomConditionVisitior<TValue>(predicateTable);
-            visitior.Evaluate(result);
+            var args = new ORegexAstFactoryArgs<TValue>(predicateTable, parser);
+            var result = ORegexAstFactory<TValue>.Create(context, args);
 #if DEBUG
             AstNodeBase.Print(result);
 #endif

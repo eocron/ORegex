@@ -15,17 +15,17 @@ unOper      : term UNOper?
 concat      : unOper+
             ;
 
-binOper     : concat ('|' concat)*
+binOper     : concat (BINOper concat)*
             ;
 
-expr        : BeginOper? binOper+ EndOper?
+expr        : BeginOper? binOper EndOper?
             ;
 
 term        : atom
             | group
             ;
 
-group       : OBR3 binOper+ CBR3
+group       : OBR3 binOper CBR3
             ;
 
 atom        : natom
@@ -43,11 +43,11 @@ natom       : NAME
 ////////////////////////////LEXER RULES/////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-ANY         : '.'
+ANY         : '.'                                                               //always true predicate
             ;
 
-NAME        : OBR1 ID CBR1
-            | OBR1 INT CBR1
+NAME        : OBR1 ID CBR1                                                      //named predicate
+            | OBR1 INT CBR1                                                     //id predicate
             ;
 
 ID          : ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*
@@ -76,18 +76,21 @@ CBR2        : ']';
 
 OBR3        : '(' BR3Oper?;
 CBR3        : ')';
-BR3Oper     : '?' CName
-            | '?='
-            | '?!'
-            | '?<='
-            | '?<!'
+BR3Oper     : '?' CName                                                         //capture group quantifier
+            | '?='                                                              //forward positive lookahead
+            | '?!'                                                              //forward negative lookahead
+            | '?<='                                                             //backward positive lookahead
+            | '?<!'                                                             //backward negative lookahead
             ;
 
-CName       : OBR4 ID CBR4
-            | '\'' ID '\''
+CName       : OBR4 ID CBR4                                                      //capture group name bracket syntax
+            | Q1 ID Q1                                                          //capture group name quote syntax
             ;
 OBR4        : '<';
 CBR4        : '>';
+
+Q1          : '\''
+            ;
 
 UNOper      : '*'                                                               //zero or infinity repetition
             | '+'                                                               //one or infinity repetition
@@ -97,8 +100,11 @@ UNOper      : '*'                                                               
             | '??'                                                              //zero or one greedy
             ;
 
-BeginOper   : '^'
+BINOper     : '|'                                                               //or operator
             ;
 
-EndOper     : '$'
+BeginOper   : '^'                                                               //start of sequence quantifier
+            ;
+
+EndOper     : '$'                                                               //end of sequence quantifier
             ;
