@@ -55,7 +55,6 @@
     <Compile Include="Core\Ast\AstAtomNode.cs" />
     <Compile Include="Core\Ast\AstConcatNode.cs" />
     <Compile Include="Core\Ast\AstRootNode.cs" />
-    <Compile Include="Core\Ast\AstOrAtomNode.cs" />
     <Compile Include="Core\Ast\AstCollectionNodeBase.cs" />
     <Compile Include="Core\Ast\AstOrNode.cs" />
     <Compile Include="Core\Ast\AstGroupNode.cs" />
@@ -65,10 +64,11 @@
     <Compile Include="Core\Ast\GroupQuantifiers\LookAheadQuantifier.cs" />
     <Compile Include="Core\Ast\GroupQuantifiers\QuantifierBase.cs" />
     <Compile Include="Core\Extensions.cs" />
-    <Compile Include="Core\Parse\AstVisitorBase.cs" />
+    <Compile Include="Core\ORegexException.cs" />
     <Compile Include="Core\Parse\ORegexAstFactory.cs" />
     <Compile Include="Core\Parse\ORegexAstFactoryArgs.cs" />
     <Compile Include="Core\Parse\ORegexCompiler.cs" />
+    <Compile Include="Core\Parse\ORegexErrorListener.cs" />
     <Compile Include="Core\Parse\RegexGrammar.g4.lexer.cs">
       <DependentUpon>RegexGrammar.g4</DependentUpon>
     </Compile>
@@ -76,8 +76,9 @@
       <DependentUpon>RegexGrammar.g4</DependentUpon>
     </Compile>
     <Compile Include="Core\Parse\ORegexParser.cs" />
+    <Compile Include="Core\StateMachine\StateMachineBuilder.cs" />
     <Compile Include="FSM\ObjectLevenshteinDistance.cs" />
-    <Compile Include="FSM\State.cs" />
+    <Compile Include="Core\StateMachine\State.cs" />
     <Compile Include="ObjectCapture.cs" />
     <Compile Include="ObjectGroup.cs" />
     <Compile Include="ObjectGroupCollection.cs" />

@@ -10,5 +10,10 @@ namespace ORegex.Core.Ast
         public AstOrNode(IEnumerable<AstNodeBase> arguments) : base(arguments)
         {
         }
+
+        public override string ToString()
+        {
+            return string.Format("Or[{0}]",Children.Length);
+        }
     }
 }

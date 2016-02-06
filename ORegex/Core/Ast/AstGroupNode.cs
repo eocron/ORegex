@@ -5,7 +5,6 @@ using ORegex.Core.Ast.GroupQuantifiers;
 
 namespace ORegex.Core.Ast
 {
-    [DebuggerDisplay("Group")]
     public sealed class AstGroupNode : AstConcatNode
     {
         public QuantifierBase Quantifier;
@@ -14,6 +13,18 @@ namespace ORegex.Core.Ast
             : base(values)
         {
             Quantifier = quantifier;
+        }
+
+        public override string ToString()
+        {
+            if (Quantifier == null)
+            {
+                return string.Format("Group[{0}]", Children.Length);
+            }
+            else
+            {
+                return string.Format("Group[{0}][{1}]", Children.Length, Quantifier.GetType().Name);
+            }
         }
     }
 }

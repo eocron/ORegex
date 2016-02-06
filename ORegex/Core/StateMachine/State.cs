@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace ORegex.FSM
+namespace ORegex.Core.StateMachine
 {
     public sealed class State<TValue>
     {
@@ -16,6 +15,11 @@ namespace ORegex.FSM
         public void AddTransition(Func<TValue, bool> transition, State<TValue> state)
         {
             Transitions.Add(Tuple.Create(transition, state));
+        }
+
+        public void AddEpsilonTransition(State<TValue> state)
+        {
+            AddTransition(null, state);
         }
 
         public bool TryEvaluate(TValue value, out State<TValue> nextState)

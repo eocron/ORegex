@@ -3,17 +3,29 @@ using System.Diagnostics;
 
 namespace ORegex.Core.Ast
 {
-    [DebuggerDisplay("REGEX")]
-    public sealed class AstRootNode : AstCollectionNodeBase
+    public sealed class AstRootNode : AstNodeBase
     {
         public bool MatchBegin;
 
         public bool MatchEnd;
 
-        public AstRootNode(IEnumerable<AstNodeBase> values, bool matchBegin, bool matchEnd) : base(values)
+        public AstNodeBase Regex;
+
+        public AstRootNode(AstNodeBase innerExpression, bool matchBegin, bool matchEnd)
         {
             MatchBegin = matchBegin;
             MatchEnd = matchEnd;
+            Regex = innerExpression;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("REGEX[b:{0}][e:{1}]",MatchBegin,MatchEnd);
+        }
+
+        public override IEnumerable<AstNodeBase> GetChildren()
+        {
+            yield return Regex;
         }
     }
 }

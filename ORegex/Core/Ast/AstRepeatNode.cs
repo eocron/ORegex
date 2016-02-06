@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
 namespace ORegex.Core.Ast
 {
-    [DebuggerDisplay("Repeat:{MinCount}-{MaxCount}")]
-    public sealed class AstRepeatNode : AstCollectionNodeBase
+    public sealed class AstRepeatNode : AstNodeBase
     {
         public readonly int MinCount;
 
@@ -10,11 +9,31 @@ namespace ORegex.Core.Ast
 
         public readonly bool IsGreedy;
 
-        public AstRepeatNode(AstNodeBase arg, int minCount, int maxCount, bool isGreedy) : base(new[] { arg })
+        public AstNodeBase Argument;
+
+        public AstRepeatNode(AstNodeBase arg, int minCount, int maxCount, bool isGreedy)
         {
             MinCount = minCount;
             MaxCount = maxCount;
             IsGreedy = isGreedy;
+            Argument = arg.ThrowIfNull();
+        }
+
+        public override System.Collections.Generic.IEnumerable<AstNodeBase> GetChildren()
+        {
+            yield return Argument;
+        }
+
+        public override string ToString()
+        {
+            if (IsGreedy)
+            {
+                return string.Format("Repeat[{0};{1}][greedy]", MinCount, MaxCount);
+            }
+            else
+            {
+                return string.Format("Repeat[{0};{1}]", MinCount, MaxCount);
+            }
         }
     }
 }

@@ -4,7 +4,6 @@ using System.Diagnostics;
 
 namespace ORegex.Core.Ast
 {
-    [DebuggerDisplay("Atom:{Name}")]
     public sealed class AstAtomNode<TValue> : AstNodeBase
     {
         public readonly string Name;
@@ -20,6 +19,11 @@ namespace ORegex.Core.Ast
         public override IEnumerable<AstNodeBase> GetChildren()
         {
             yield break;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{{{0}}}",Name);
         }
     }
 }

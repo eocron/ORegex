@@ -12,9 +12,10 @@ namespace ORegex.Core.Parse
             var lexer = new RegexGrammarLexer(new AntlrInputStream(input));
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new RegexGrammarParser(tokenStream);
+            parser.AddErrorListener(new ORegexErrorListener());
 
             var context = parser.expr();
-
+            
             var args = new ORegexAstFactoryArgs<TValue>(predicateTable, parser);
             var result = ORegexAstFactory<TValue>.Create(context, args);
 #if DEBUG

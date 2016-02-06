@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Antlr4.Runtime.Tree;
 using ORegex.Core.Ast;
 using ORegex.Core.Ast.GroupQuantifiers;
@@ -92,18 +93,16 @@ namespace ORegex.Core.Parse
                 matchEnd = true;
             }
 
-            for (int i = 0; i < node.ChildCount; i++)
+            AstNodeBase inner = null;
+            if (matchBegin)
             {
-                if (matchBegin && i == 0 || matchEnd && i == node.ChildCount - 1)
-                {
-                    continue;
-                }
-
-                var child = node.GetChild(i);
-
-                children.Add(Create(child, args));
+                inner = Create(node.GetChild(1), args);
             }
-            return new AstRootNode(children, matchBegin, matchEnd);
+            else
+            {
+                inner = Create(node.GetChild(0), args);
+            }
+            return new AstRootNode(inner, matchBegin, matchEnd);
         }
 
         private static AstNodeBase CreateAtom(IParseTree node, ORegexAstFactoryArgs<TValue> args)
@@ -155,11 +154,16 @@ namespace ORegex.Core.Parse
         private static AstGroupNode CreateGroup(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             var predicate = node.GetChild(0).GetText();
-            List<AstNodeBase> children = new List<AstNodeBase>();
-            for (int i = 1; i < node.ChildCount - 1; i++)
+            var inner = Create(node.GetChild(1), args);
+
+            var children = new List<AstNodeBase>();
+            if (inner is AstConcatNode)
             {
-                var child = Create(node.GetChild(i), args);
-                children.Add(child);
+                children.AddRange(inner.GetChildren());
+            }
+            else
+            {
+                children.Add(inner);
             }
 
             QuantifierBase quantifier = null;
@@ -181,15 +185,47 @@ namespace ORegex.Core.Parse
             var oper = node.GetChild(1).ToString();
             int min = 0, max = 0;
             bool isGreedy = false;
-            switch(oper)
+            var match = Regex.Match(oper,@"{(?<min>\d+),(?<max>\d+)?}(?<greed>\?)?");
+            if (match.Success)
             {
-                case "*": min = 0; max = int.MaxValue; break;
-                case "*?": min = 0; max = int.MaxValue; isGreedy = true; break;
-                case "+": min = 1; max = int.MaxValue; break;
-                case "+?": min = 1; max = int.MaxValue; isGreedy = true; break;
-                case "?": min = 0; max = 1; break;
-                default:
-                    throw new NotImplementedException("Unsuported operator.");
+                isGreedy = match.Groups["greed"].Success;
+                min = int.Parse(match.Groups["min"].Value);
+                max = match.Groups["max"].Success ? int.Parse(match.Groups["max"].Value) : int.MaxValue;
+            }
+            else
+            {
+                switch (oper)
+                {
+                    case "*":
+                        min = 0;
+                        max = int.MaxValue;
+                        break;
+                    case "*?":
+                        min = 0;
+                        max = int.MaxValue;
+                        isGreedy = true;
+                        break;
+                    case "+":
+                        min = 1;
+                        max = int.MaxValue;
+                        break;
+                    case "+?":
+                        min = 1;
+                        max = int.MaxValue;
+                        isGreedy = true;
+                        break;
+                    case "?":
+                        min = 0;
+                        max = 1;
+                        break;
+                    case "??":
+                        min = 0;
+                        max = 1;
+                        isGreedy = true;
+                        break;
+                    default:
+                        throw new NotImplementedException("Unsuported operator.");
+                }
             }
 
             return new AstRepeatNode(arg, min, max, isGreedy);

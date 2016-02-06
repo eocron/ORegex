@@ -92,12 +92,13 @@ CBR4        : '>';
 Q1          : '\''
             ;
 
-UNOper      : '*'                                                               //zero or infinity repetition
-            | '+'                                                               //one or infinity repetition
-            | '?'                                                               //zero or one
-            | '*?'                                                              //zero or infinity repetition greedy
-            | '+?'                                                              //one or infinity repetition greedy
-            | '??'                                                              //zero or one greedy
+UNOper      : '*' Greed?                                                        //zero or infinity repetition
+            | '+' Greed?                                                        //one or infinity repetition
+            | '?' Greed?                                                        //zero or one
+            | OBR1 INT ',' INT? CBR1 Greed?                                     //counted repetition
+            ;
+
+Greed       : '?'
             ;
 
 BINOper     : '|'                                                               //or operator
