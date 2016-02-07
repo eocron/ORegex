@@ -13,7 +13,7 @@ namespace ORegex.Core.StateMachine
             }
             else if(node is AstConcatNode)
             {
-                EvaluatConcat(start, end, (AstConcatNode) node);
+                EvaluateConcat(start, end, (AstConcatNode) node);
             }
             else if(node is AstOrNode)
             {
@@ -41,10 +41,39 @@ namespace ORegex.Core.StateMachine
         private void EvaluateRepeat(State<TValue> start, State<TValue> end, AstRepeatNode astRepeatNode)
         {
             var prev = start;
-            if (astRepeatNode.MinCount == 0)
+            for (int i = 0; i < astRepeatNode.MinCount; i++)
             {
-                start.AddEpsilonTransition(end);
+                var next = new State<TValue>();
+                Evaluate(prev, next, astRepeatNode.Argument);
+                prev = next;
             }
+
+            prev.AddEpsilonTransition(end);
+
+            if (astRepeatNode.MaxCount == int.MaxValue)
+            {
+                RepeatZeroOrInfinite(prev, end, astRepeatNode.Argument);
+            }
+            else
+            {
+                int count = astRepeatNode.MaxCount - astRepeatNode.MinCount;
+                for (int i = 0; i < count; i++)
+                {                
+                    var next = new State<TValue>();
+                    Evaluate(prev, next, astRepeatNode.Argument);
+                    next.AddEpsilonTransition(end);
+                    prev = next;
+                }
+            }
+        }
+
+        private void RepeatZeroOrInfinite(State<TValue> start, State<TValue> end, AstNodeBase node)
+        {
+            var tmp = new State<TValue>();
+            Evaluate(tmp,tmp, node);
+            start.AddEpsilonTransition(tmp);
+            tmp.AddEpsilonTransition(end);
+            start.AddEpsilonTransition(end);
         }
 
         private void EvaluateOr(State<TValue> start, State<TValue> end, AstOrNode node)
@@ -55,7 +84,7 @@ namespace ORegex.Core.StateMachine
             }
         }
 
-        private void EvaluatConcat(State<TValue> start, State<TValue> end, AstConcatNode node)
+        private void EvaluateConcat(State<TValue> start, State<TValue> end, AstConcatNode node)
         {
             var prev = start;
             foreach (var child in node.GetChildren())
@@ -65,6 +94,11 @@ namespace ORegex.Core.StateMachine
                 prev = next;
             }
             prev.AddEpsilonTransition(end);
+
+            if (node is AstGroupNode)
+            {
+                //throw new NotImplementedException("Group quantifier logic.");
+            }
         }
 
         private void EvaluateAtom(State<TValue> start, State<TValue> end, AstAtomNode<TValue> node)

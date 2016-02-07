@@ -7,7 +7,7 @@ namespace ORegex.Core.Parse
 {
     public sealed class ORegexParser<TValue>
     {
-        public AstNodeBase Parse(string input, Dictionary<string, Func<TValue, bool>> predicateTable)
+        public AstNodeBase Parse(string input, PredicateTable<TValue> predicateTable)
         {
             var lexer = new RegexGrammarLexer(new AntlrInputStream(input));
             var tokenStream = new CommonTokenStream(lexer);

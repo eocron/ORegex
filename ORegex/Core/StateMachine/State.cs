@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Schema;
 
 namespace ORegex.Core.StateMachine
 {
     public sealed class State<TValue>
     {
-        public static readonly Func<TValue, bool> Any = x => true;
-
         public bool IsFinal;
 
         public readonly List<Tuple<Func<TValue, bool>, State<TValue>>> Transitions = new List<Tuple<Func<TValue, bool>, State<TValue>>>();
 
         public void AddTransition(Func<TValue, bool> transition, State<TValue> state)
         {
-            Transitions.Add(Tuple.Create(transition, state));
+            if (!Transitions.Any(x => x.Item1 == transition && x.Item2 == state))
+            {
+                Transitions.Add(Tuple.Create(transition, state));
+            }
         }
 
         public void AddEpsilonTransition(State<TValue> state)

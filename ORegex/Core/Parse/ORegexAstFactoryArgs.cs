@@ -8,15 +8,15 @@ namespace ORegex.Core.Parse
 {
     public sealed class ORegexAstFactoryArgs<TValue>
     {
-        private readonly Dictionary<string, Func<TValue, bool>> _predicateTable;
+        private readonly PredicateTable<TValue> _predicateTable;
         private static readonly Func<TValue, bool> AlwaysTruePredicate = x => true; 
         private readonly RegexGrammarParser _parser;
 
-        public ORegexAstFactoryArgs(Dictionary<string, Func<TValue, bool>> predicateTable, RegexGrammarParser parser)
+        public ORegexAstFactoryArgs(PredicateTable<TValue> predicateTable, RegexGrammarParser parser)
         {
-            _predicateTable = predicateTable.ThrowIfNull();
+            _predicateTable = new PredicateTable<TValue>(predicateTable.ThrowIfNull());
             _parser = parser.ThrowIfNull();
-            _predicateTable.Add(".", AlwaysTruePredicate);
+            _predicateTable.AddPredicate(".", AlwaysTruePredicate);
         }
 
         public bool IsName(IParseTree node, string name)
@@ -33,17 +33,13 @@ namespace ORegex.Core.Parse
 
         public Func<TValue, bool> GetPredicate(string atomName)
         {
-            if (!_predicateTable.ContainsKey(atomName))
-            {
-                throw new ArgumentException("No predicate with such name: " + atomName);
-            }
-            return _predicateTable[atomName];
+            return _predicateTable.GetPredicate(atomName);
         }
 
         public void GetInvertedPredicate(IEnumerable<string> names, out Func<TValue, bool> predicate, out string invertedName)
         {
             invertedName = string.Format("inverted: {0}",string.Join(",", names));
-            if (!_predicateTable.ContainsKey(invertedName))
+            if (!_predicateTable.Contains(invertedName))
             {
                 var predicates = names.Select(GetPredicate).ToArray();
 
@@ -51,7 +47,7 @@ namespace ORegex.Core.Parse
                 {
                     return !predicates.Any(p => p(x));
                 };
-                _predicateTable[invertedName] = invertedPredicate;
+                _predicateTable.AddPredicate(invertedName, invertedPredicate);
             }
 
             predicate = GetPredicate(invertedName);

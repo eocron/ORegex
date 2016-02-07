@@ -12,7 +12,7 @@ namespace ORegex.Core.Parse
             _parser = new ORegexParser<TValue>();
         }
 
-        public void Build(string input, Dictionary<string, Func<TValue, bool>> predicateTable)
+        public void Build(string input, PredicateTable<TValue> predicateTable)
         {
             var ast = _parser.Parse(input, predicateTable);
         }
