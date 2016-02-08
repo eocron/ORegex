@@ -76,7 +76,10 @@
       <DependentUpon>RegexGrammar.g4</DependentUpon>
     </Compile>
     <Compile Include="Core\Parse\ORegexParser.cs" />
+    <Compile Include="Core\StateMachine\DFA.cs" />
+    <Compile Include="Core\StateMachine\DFABuilder.cs" />
     <Compile Include="Core\StateMachine\StateMachineBuilder.cs" />
+    <Compile Include="Core\StateMachine\SubSetMachine.cs" />
     <Compile Include="FSM\ObjectLevenshteinDistance.cs" />
     <Compile Include="Core\StateMachine\State.cs" />
     <Compile Include="ObjectCapture.cs" />
