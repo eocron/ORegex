@@ -77,9 +77,14 @@
     </Compile>
     <Compile Include="Core\Parse\ORegexParser.cs" />
     <Compile Include="Core\StateMachine\DFA.cs" />
-    <Compile Include="Core\StateMachine\DFABuilder.cs" />
+    <Compile Include="Core\StateMachine\Edge.cs" />
+    <Compile Include="Core\StateMachine\IdGenerator.cs" />
+    <Compile Include="Core\StateMachine\MinimizeDFA.cs" />
+    <Compile Include="Core\StateMachine\NFA.cs" />
+    <Compile Include="Core\StateMachine\Set.cs" />
+    <Compile Include="Core\StateMachine\StateToDFA.cs" />
+    <Compile Include="Core\StateMachine\SubsetMachine.cs" />
     <Compile Include="Core\StateMachine\StateMachineBuilder.cs" />
-    <Compile Include="Core\StateMachine\SubSetMachine.cs" />
     <Compile Include="FSM\ObjectLevenshteinDistance.cs" />
     <Compile Include="Core\StateMachine\State.cs" />
     <Compile Include="ObjectCapture.cs" />
@@ -100,6 +105,7 @@
     </Antlr4>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

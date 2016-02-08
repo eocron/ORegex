@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ORegex.Core.Ast;
 
 namespace ORegex.Core.StateMachine
@@ -80,7 +81,7 @@ namespace ORegex.Core.StateMachine
         {
             foreach (var child in node.GetChildren())
             {
-                Evaluate(start,end, child);
+                EvaluateCondition(start, end, child);
             }
         }
 
@@ -103,7 +104,27 @@ namespace ORegex.Core.StateMachine
 
         private void EvaluateAtom(State<TValue> start, State<TValue> end, AstAtomNode<TValue> node)
         {
-            start.AddTransition(node.Condition, end);
+            EvaluateCondition(start, end, node.Condition);
+        }
+
+        private void EvaluateCondition(State<TValue> a, State<TValue> b, Func<TValue, bool> condition)
+        {
+            var tmp1 = new State<TValue>();
+            var tmp2 = new State<TValue>();
+
+            a.AddEpsilonTransition(tmp1);
+            tmp1.AddTransition(condition, tmp2);
+            tmp2.AddEpsilonTransition(b);
+        }
+
+        private void EvaluateCondition(State<TValue> a, State<TValue> b, AstNodeBase node)
+        {
+            var tmp1 = new State<TValue>();
+            var tmp2 = new State<TValue>();
+
+            a.AddEpsilonTransition(tmp1);
+            Evaluate(tmp1, tmp2, node);
+            tmp2.AddEpsilonTransition(b);
         }
     }
 }

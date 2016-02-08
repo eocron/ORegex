@@ -41,7 +41,7 @@ namespace ORegex.Core.Parse
             invertedName = string.Format("inverted: {0}",string.Join(",", names));
             if (!_predicateTable.Contains(invertedName))
             {
-                var predicates = names.Select(GetPredicate).ToArray();
+                var predicates = names.Select(GetPredicate).Distinct().ToArray();
 
                 Func<TValue, bool> invertedPredicate = x =>
                 {

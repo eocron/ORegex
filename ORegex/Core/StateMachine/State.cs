@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Schema;
 
 namespace ORegex.Core.StateMachine
 {
     public sealed class State<TValue>
     {
+        public static readonly Func<TValue, bool> Epsilon = x => true;
+
         public bool IsFinal;
 
         public readonly List<Tuple<Func<TValue, bool>, State<TValue>>> Transitions = new List<Tuple<Func<TValue, bool>, State<TValue>>>();
@@ -21,7 +22,7 @@ namespace ORegex.Core.StateMachine
 
         public void AddEpsilonTransition(State<TValue> state)
         {
-            AddTransition(null, state);
+            AddTransition(Epsilon, state);
         }
 
         public bool TryEvaluate(TValue value, out State<TValue> nextState)

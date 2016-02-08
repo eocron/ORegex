@@ -109,3 +109,5 @@ BeginOper   : '^'                                                               
 
 EndOper     : '$'                                                               //end of sequence quantifier
             ;
+
+ErrorChar   : .;

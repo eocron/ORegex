@@ -4,10 +4,10 @@ using ORegex.Core;
 
 namespace ORegex
 {
-    public sealed class PredicateTable<TValue>
+    public class PredicateTable<TValue>
     {
-        private readonly Dictionary<string, Func<TValue, bool>> _table;
-        private readonly Dictionary<Func<TValue, bool>, string> _tableInverted;
+        protected readonly Dictionary<string, Func<TValue, bool>> _table;
+        protected readonly Dictionary<Func<TValue, bool>, string> _tableInverted;
 
         public PredicateTable()
         {
@@ -20,7 +20,7 @@ namespace ORegex
             _table = new Dictionary<string, Func<TValue, bool>>(other._table);
             _tableInverted = new Dictionary<Func<TValue, bool>, string>(other._tableInverted);
         }
-        public void AddPredicate(string name, Func<TValue, bool> predicate)
+        public virtual void AddPredicate(string name, Func<TValue, bool> predicate)
         {
             name.ThrowIfEmpty();
             predicate.ThrowIfNull();
@@ -38,16 +38,16 @@ namespace ORegex
             _tableInverted[predicate] = name;
         }
 
-        public string GetName(Func<TValue, bool> predicate)
+        public virtual string GetName(Func<TValue, bool> predicate)
         {
             if (!_tableInverted.ContainsKey(predicate))
             {
-                return "SYSTEM";
+                throw new ArgumentException("No such predicate.");
             }
             return _tableInverted[predicate];
         }
 
-        public Func<TValue, bool> GetPredicate(string name)
+        public virtual Func<TValue, bool> GetPredicate(string name)
         {
             if (!_table.ContainsKey(name))
             {
@@ -56,7 +56,7 @@ namespace ORegex
             return _table[name];
         }
 
-        public bool Contains(string name)
+        public virtual bool Contains(string name)
         {
             return _table.ContainsKey(name);
         }

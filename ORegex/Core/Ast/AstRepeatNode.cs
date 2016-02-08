@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 namespace ORegex.Core.Ast
 {
     public sealed class AstRepeatNode : AstNodeBase
@@ -13,6 +14,10 @@ namespace ORegex.Core.Ast
 
         public AstRepeatNode(AstNodeBase arg, int minCount, int maxCount, bool isGreedy)
         {
+            if (minCount > maxCount)
+            {
+                throw new ORegexException("Invalid expression repeat interval.");
+            }
             MinCount = minCount;
             MaxCount = maxCount;
             IsGreedy = isGreedy;
