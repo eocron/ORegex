@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
+using ORegex.Core.StateMachine;
 
 namespace ORegex.Core
 {
@@ -24,6 +25,16 @@ namespace ORegex.Core
                 throw new ArgumentNullException("Value is null.");
             }
             return value;
+        }
+
+        public static HashSet<TValue> ToHashSet<TValue>(this IEnumerable<TValue> enumerable)
+        {
+            return new HashSet<TValue>(enumerable);
+        }
+
+        public static Set<TValue> ToSet<TValue>(this IEnumerable<TValue> enumerable)
+        {
+            return new Set<TValue>(enumerable);
         }
     }
 }

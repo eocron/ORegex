@@ -76,14 +76,13 @@
       <DependentUpon>RegexGrammar.g4</DependentUpon>
     </Compile>
     <Compile Include="Core\Parse\ORegexParser.cs" />
-    <Compile Include="Core\StateMachine\DFA.cs" />
-    <Compile Include="Core\StateMachine\Edge.cs" />
+    <Compile Include="Core\StateMachine\FAMinimizer.cs" />
+    <Compile Include="Core\StateMachine\FASubsetConverter.cs" />
+    <Compile Include="Core\StateMachine\FATrans.cs" />
+    <Compile Include="Core\StateMachine\FA.cs" />
     <Compile Include="Core\StateMachine\IdGenerator.cs" />
-    <Compile Include="Core\StateMachine\MinimizeDFA.cs" />
-    <Compile Include="Core\StateMachine\NFA.cs" />
     <Compile Include="Core\StateMachine\Set.cs" />
     <Compile Include="Core\StateMachine\StateToDFA.cs" />
-    <Compile Include="Core\StateMachine\SubsetMachine.cs" />
     <Compile Include="Core\StateMachine\StateMachineBuilder.cs" />
     <Compile Include="FSM\ObjectLevenshteinDistance.cs" />
     <Compile Include="Core\StateMachine\State.cs" />

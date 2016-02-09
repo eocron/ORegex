@@ -18,13 +18,13 @@ namespace TestUtility
             richTextBox2.Text += string.Format("\nPossible names: {0}", string.Join(", ",_table.AvailableNames));
         }
 
-        private void DrawGraph(DFA<object> dfsm)
+        private void DrawGraph(FA<object> fsm)
         {
             var graph = new Graph("graph");
-            foreach (var t in dfsm.Edges)
+            foreach (var t in fsm.Transitions)
             {
                 var edge = graph.AddEdge("q"+t.StartState, _table.GetName(t.Condition), "q"+t.EndState);
-                if (dfsm.final.Contains(t.EndState))
+                if (fsm.F.Contains(t.EndState))
                 {
                     edge.TargetNode.Attr.Fillcolor = Color.Gray;
                     edge.TargetNode.Attr.Shape = Shape.DoubleCircle;

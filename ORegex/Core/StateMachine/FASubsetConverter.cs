@@ -1,30 +1,27 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using state = System.Int32;
 
 namespace ORegex.Core.StateMachine
 {
-    public sealed class SubsetMachine<TValue>
+    public sealed class FASubsetConverter<TValue>
     {
         /// <summary>
         /// Subset machine that employs the powerset construction or subset construction algorithm.
         /// It creates a DFA that recognizes the same language as the given NFA.
         /// </summary>
-        public static DFA<TValue> SubsetConstruct(NFA<TValue> nfa)
+        public static FA<TValue> NfaToDfa(FA<TValue> nfa)
         {
-            int num = 0;
-            DFA<TValue> dfa = new DFA<TValue>();
+            FA<TValue> dfa = new FA<TValue>();
 
             // Sets of NFA states which is represented by some DFA state
-            var markedStates = new HashSet<Set<state>>();
-            var unmarkedStates = new HashSet<Set<state>>();
+            var markedStates = new HashSet<Set<int>>();
+            var unmarkedStates = new HashSet<Set<int>>();
 
             // Gives a number to each state in the DFA
-            var dfaStateNum = new Dictionary<HashSet<state>, state>();
+            var dfaStateNum = new Dictionary<Set<int>, int>();
 
-            var nfaInitial = new Set<state>();
-            nfaInitial.Add(nfa.initial);
+            var nfaInitial = nfa.Q0.ToSet();
 
             // Initially, EpsilonClosure(nfa.initial) is the only state in the DFAs states
             // and it's unmarked.
@@ -32,9 +29,9 @@ namespace ORegex.Core.StateMachine
             unmarkedStates.Add(first);
 
             // The initial dfa state
-            state dfaInitial = GenNewState(ref num);
+            int dfaInitial = dfa.NewState();
             dfaStateNum[first] = dfaInitial;
-            dfa.start = dfaInitial;
+            dfa.AddStart(dfaInitial);
 
             while (unmarkedStates.Count != 0)
             {
@@ -49,10 +46,10 @@ namespace ORegex.Core.StateMachine
 
                 // If this state contains the NFA's final state, add it to the DFA's set of
                 // final states.
-                if (aState.Contains(nfa.final))
-                    dfa.final.Add(dfaStateNum[aState]);
+                if (nfa.F.Any(x=> aState.Contains(x)))
+                    dfa.AddFinal(dfaStateNum[aState]);
 
-                IEnumerator<Func<TValue, bool>> iE = nfa.inputs.GetEnumerator();
+                var iE = nfa.Sigma.GetEnumerator();
 
                 // For each input symbol the NFA knows...
                 while (iE.MoveNext())
@@ -67,23 +64,14 @@ namespace ORegex.Core.StateMachine
                         if (!unmarkedStates.Contains(next) && !markedStates.Contains(next))
                         {
                             unmarkedStates.Add(next);
-                            dfaStateNum.Add(next, GenNewState(ref num));
+                            dfaStateNum.Add(next, dfa.NewState());
                         }
 
                         var from = dfaStateNum[aState];
                         var to = dfaStateNum[next];
                         var condition = iE.Current;
 
-                        if (!dfa.transTable.ContainsKey(from))
-                        {
-                            dfa.transTable[from] = new List<Edge<TValue>>();
-                        }
-                        dfa.transTable[from].Add(new Edge<TValue>()
-                        {
-                            StartState = from,
-                            EndState = to,
-                            Condition = condition
-                        });
+                        dfa.AddTransition(from, condition, to);
                     }
                 }
             }
@@ -97,27 +85,25 @@ namespace ORegex.Core.StateMachine
         /// <param name="nfa"></param>
         /// <param name="states"></param>
         /// <returns></returns>
-        private static Set<state> EpsilonClosure(NFA<TValue> nfa, Set<state> states)
+        private static Set<int> EpsilonClosure(FA<TValue> nfa, Set<int> states)
         {
             // Push all states onto a stack
-            Stack<state> uncheckedStack = new Stack<state>(states);
+            Stack<int> uncheckedStack = new Stack<int>(states);
 
             // Initialize EpsilonClosure(states) to states
-            Set<state> epsilonClosure = states;
+            Set<int> epsilonClosure = states;
 
             while (uncheckedStack.Count != 0)
             {
                 // Pop state t, the top element, off the stack
-                state t = uncheckedStack.Pop();
-
-                int i = 0;
+                var t = uncheckedStack.Pop();
 
                 // For each state u with an edge from t to u labeled Epsilon
-                foreach (var input in nfa.transTable[t])
+                foreach (var input in nfa.GetTransitionsFrom(t))
                 {
-                    if (input == State<TValue>.Epsilon)
+                    if (input.Condition == State<TValue>.Epsilon)
                     {
-                        state u = Array.IndexOf(nfa.transTable[t], input, i);
+                        int u = input.EndState;
 
                         // If u is not already in epsilonClosure, add it and push it onto stack
                         if (!epsilonClosure.Contains(u))
@@ -126,22 +112,10 @@ namespace ORegex.Core.StateMachine
                             uncheckedStack.Push(u);
                         }
                     }
-
-                    i = i + 1;
                 }
             }
 
             return epsilonClosure;
         }
-
-        /// <summary>
-        /// Creates unique state numbers for DFA states
-        /// </summary>
-        /// <returns></returns>
-        private static state GenNewState(ref state num)
-        {
-            return num++;
-        }
-
     }
 }

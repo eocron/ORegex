@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ORegex;
+using ORegex.Core.StateMachine;
 
 namespace TestUtility
 {
@@ -19,6 +20,7 @@ namespace TestUtility
             AddPredicate("1", x => x == null);
             AddPredicate("2", x => x == null);
             AddPredicate("3", x => x == null);
+            AddPredicate("eps", State<TValue>.Epsilon);
         }
 
         public override void AddPredicate(string name, Func<TValue, bool> predicate)

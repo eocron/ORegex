@@ -14,7 +14,7 @@ namespace ORegex.Core.Parse
             _converter = new StateToDFA<TValue>();
         }
 
-        public DFA<TValue> Build(string input, PredicateTable<TValue> predicateTable)
+        public FA<TValue> Build(string input, PredicateTable<TValue> predicateTable)
         {
             var ast = _parser.Parse(input, predicateTable);
             var start = new State<TValue>();

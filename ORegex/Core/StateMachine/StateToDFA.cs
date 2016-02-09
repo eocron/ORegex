@@ -4,24 +4,19 @@ namespace ORegex.Core.StateMachine
 {
     public sealed class StateToDFA<TValue>
     {
-        private readonly MinimizeDFA<TValue> _minimizer = new MinimizeDFA<TValue>(); 
-        public DFA<TValue> Convert(State<TValue> start, State<TValue> end)
+        public FA<TValue> Convert(State<TValue> start, State<TValue> end)
         {
             var gen = new IdGenerator();
-            var edges = new List<Edge<TValue>>();
+            var edges = new List<FATrans<TValue>>();
 
             GetAllEdges(start, gen, edges, new HashSet<State<TValue>>());
-            var nfa = new NFA<TValue>(gen.Count, gen.GetId(start), gen.GetId(end));
-            foreach (var e in edges)
-            {
-                nfa.AddTrans(e);
-            }
-            var dfa = SubsetMachine<TValue>.SubsetConstruct(nfa);
-           // dfa = _minimizer.MinimizeDFSM(dfa);
+            var nfa = new FA<TValue>(edges, new[]{gen.GetId(start)}, new[]{gen.GetId(end)});
+            var dfa = FASubsetConverter<TValue>.NfaToDfa(nfa);
+            dfa = FAMinimizer<TValue>.Minimize(dfa);
             return dfa;
         }
 
-        private void GetAllEdges(State<TValue> state, IdGenerator gen, List<Edge<TValue>> edges,
+        private void GetAllEdges(State<TValue> state, IdGenerator gen, List<FATrans<TValue>> edges,
             HashSet<State<TValue>> visited)
         {
             if (visited.Contains(state))
@@ -32,12 +27,7 @@ namespace ORegex.Core.StateMachine
 
             foreach (var t in state.Transitions)
             {
-                edges.Add(new Edge<TValue>()
-                {
-                    Condition = t.Item1,
-                    StartState = gen.GetId(state),
-                    EndState = gen.GetId(t.Item2)
-                });
+                edges.Add(new FATrans<TValue>(gen.GetId(state), t.Item1, gen.GetId(t.Item2)));
                 GetAllEdges(t.Item2, gen, edges, visited);
             }
         }
