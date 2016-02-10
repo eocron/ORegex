@@ -63,6 +63,7 @@
     <Compile Include="Core\Ast\GroupQuantifiers\CaptureQuantifier.cs" />
     <Compile Include="Core\Ast\GroupQuantifiers\LookAheadQuantifier.cs" />
     <Compile Include="Core\Ast\GroupQuantifiers\QuantifierBase.cs" />
+    <Compile Include="Core\Ast\Range.cs" />
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\ORegexException.cs" />
     <Compile Include="Core\Parse\ORegexAstFactory.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Core\StateMachine\FATrans.cs" />
     <Compile Include="Core\StateMachine\FA.cs" />
     <Compile Include="Core\StateMachine\IdGenerator.cs" />
+    <Compile Include="Core\StateMachine\PredicateConst.cs" />
     <Compile Include="Core\StateMachine\Set.cs" />
     <Compile Include="Core\StateMachine\StateToDFA.cs" />
     <Compile Include="Core\StateMachine\StateMachineBuilder.cs" />

@@ -12,7 +12,8 @@ namespace ORegex.Core.Ast
 
         public AstNodeBase Argument;
 
-        public AstRepeatNode(AstNodeBase arg, int minCount, int maxCount, bool isGreedy)
+        public AstRepeatNode(AstNodeBase arg, int minCount, int maxCount, bool isGreedy, Range range)
+            : base(range)
         {
             if (minCount > maxCount)
             {

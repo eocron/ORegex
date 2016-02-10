@@ -17,8 +17,8 @@ namespace ORegex.Core.Parse
         public FA<TValue> Build(string input, PredicateTable<TValue> predicateTable)
         {
             var ast = _parser.Parse(input, predicateTable);
-            var start = new State<TValue>();
-            var end = new State<TValue>();
+            var start = _stb.CreateNewState();
+            var end = _stb.CreateNewState();
             _stb.Evaluate(start,end, ast);
             
             var result = _converter.Convert(start, end);

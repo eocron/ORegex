@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using ORegex.Core.StateMachine;
 
 namespace ORegex.Core.Parse
 {
     public sealed class ORegexAstFactoryArgs<TValue>
     {
         private readonly PredicateTable<TValue> _predicateTable;
-        private static readonly Func<TValue, bool> AlwaysTruePredicate = x => true; 
         private readonly RegexGrammarParser _parser;
 
         public ORegexAstFactoryArgs(PredicateTable<TValue> predicateTable, RegexGrammarParser parser)
         {
             _predicateTable = new PredicateTable<TValue>(predicateTable.ThrowIfNull());
             _parser = parser.ThrowIfNull();
-            _predicateTable.AddPredicate(".", AlwaysTruePredicate);
+            _predicateTable.AddPredicate(".", PredicateConst<TValue>.AlwaysTrue);
         }
 
         public bool IsName(IParseTree node, string name)

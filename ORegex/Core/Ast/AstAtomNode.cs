@@ -10,7 +10,8 @@ namespace ORegex.Core.Ast
 
         public Func<TValue, bool> Condition;
 
-        public AstAtomNode(string name, Func<TValue, bool> condition)
+        public AstAtomNode(string name, Func<TValue, bool> condition, Range range)
+            : base(range)
         {
             Name = name.ThrowIfEmpty();
             Condition = condition.ThrowIfNull();

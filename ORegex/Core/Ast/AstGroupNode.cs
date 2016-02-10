@@ -9,8 +9,8 @@ namespace ORegex.Core.Ast
     {
         public QuantifierBase Quantifier;
 
-        public AstGroupNode(IEnumerable<AstNodeBase> values, QuantifierBase quantifier = null)
-            : base(values)
+        public AstGroupNode(IEnumerable<AstNodeBase> values, QuantifierBase quantifier, Range range)
+            : base(values, range)
         {
             Quantifier = quantifier;
         }

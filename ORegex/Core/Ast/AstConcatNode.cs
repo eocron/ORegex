@@ -5,7 +5,8 @@ namespace ORegex.Core.Ast
 {
     public class AstConcatNode : AstCollectionNodeBase
     {
-        public AstConcatNode(IEnumerable<AstNodeBase> children) : base(children)
+        public AstConcatNode(IEnumerable<AstNodeBase> children, Range range)
+            : base(children, range)
         {
         }
 

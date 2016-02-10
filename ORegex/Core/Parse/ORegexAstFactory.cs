@@ -57,11 +57,6 @@ namespace ORegex.Core.Parse
             return args.IsName(node, "natom") || args.IsName(node, "atom");
         }
 
-        private static bool IsOrAtom(IParseTree node, ORegexAstFactoryArgs<TValue> args)
-        {
-            return node.ChildCount >= 3 && args.IsName(node, "atom");
-        }
-
         private static bool IsGroup(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             return node.ChildCount == 3 && args.IsName(node, "group");
@@ -102,7 +97,7 @@ namespace ORegex.Core.Parse
             {
                 inner = Create(node.GetChild(0), args);
             }
-            return new AstRootNode(inner, matchBegin, matchEnd);
+            return new AstRootNode(inner, matchBegin, matchEnd, new Range(node));
         }
 
         private static AstNodeBase CreateAtom(IParseTree node, ORegexAstFactoryArgs<TValue> args)
@@ -112,7 +107,7 @@ namespace ORegex.Core.Parse
                 var name = node.GetChild(0).GetText();
                 if (name == ".")
                 {
-                    return new AstAtomNode<TValue>(name, args.GetPredicate(name));
+                    return new AstAtomNode<TValue>(name, args.GetPredicate(name), new Range(node));
                 }
                 else
                 {
@@ -134,11 +129,11 @@ namespace ORegex.Core.Parse
                     Func<TValue, bool> p;
                     string n;
                     args.GetInvertedPredicate(children.Select(x => x.Name), out p, out n);
-                    return new AstAtomNode<TValue>(n, p);
+                    return new AstAtomNode<TValue>(n, p, new Range(node));
                 }
                 else
                 {
-                    return new AstOrNode(children);
+                    return new AstOrNode(children, new Range(node));
                 }
             }
         }
@@ -148,7 +143,7 @@ namespace ORegex.Core.Parse
             var name = node.GetChild(0).ToString();
             var atomName = name.Substring(1, name.Length - 2);
             var atomPredicate = args.GetPredicate(atomName);
-            return new AstAtomNode<TValue>(atomName, atomPredicate);
+            return new AstAtomNode<TValue>(atomName, atomPredicate, new Range(node));
         }
 
         private static AstGroupNode CreateGroup(IParseTree node, ORegexAstFactoryArgs<TValue> args)
@@ -176,7 +171,7 @@ namespace ORegex.Core.Parse
             {
                 quantifier = new LookAheadQuantifier(predicate);
             }
-            return new AstGroupNode(children, quantifier);
+            return new AstGroupNode(children, quantifier, new Range(node));
         }
 
         private static AstRepeatNode CreateUnOper(IParseTree node, ORegexAstFactoryArgs<TValue> args)
@@ -228,7 +223,7 @@ namespace ORegex.Core.Parse
                 }
             }
 
-            return new AstRepeatNode(arg, min, max, isGreedy);
+            return new AstRepeatNode(arg, min, max, isGreedy, new Range(node));
         }
 
         private static AstOrNode CreateBinOper(IParseTree node, ORegexAstFactoryArgs<TValue> args)
@@ -242,7 +237,7 @@ namespace ORegex.Core.Parse
                     children.Add(Create(child, args));
                 }
             }
-            return new AstOrNode(children);
+            return new AstOrNode(children, new Range(node));
         }
 
         private static AstConcatNode CreateConcat(IParseTree node, ORegexAstFactoryArgs<TValue> args)
@@ -254,7 +249,7 @@ namespace ORegex.Core.Parse
 
                 children.Add(Create(child, args));
             }
-            return new AstConcatNode(children); 
+            return new AstConcatNode(children, new Range(node)); 
         }
     }
 }

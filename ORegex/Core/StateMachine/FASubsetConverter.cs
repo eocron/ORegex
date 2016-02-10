@@ -12,7 +12,7 @@ namespace ORegex.Core.StateMachine
         /// </summary>
         public static FA<TValue> NfaToDfa(FA<TValue> nfa)
         {
-            FA<TValue> dfa = new FA<TValue>();
+            FA<TValue> dfa = new FA<TValue>(nfa.Name);
 
             // Sets of NFA states which is represented by some DFA state
             var markedStates = new HashSet<Set<int>>();
@@ -101,7 +101,7 @@ namespace ORegex.Core.StateMachine
                 // For each state u with an edge from t to u labeled Epsilon
                 foreach (var input in nfa.GetTransitionsFrom(t))
                 {
-                    if (input.Condition == State<TValue>.Epsilon)
+                    if (input.Condition == PredicateConst<TValue>.Epsilon)
                     {
                         int u = input.EndState;
 

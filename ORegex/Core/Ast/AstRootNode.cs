@@ -11,7 +11,8 @@ namespace ORegex.Core.Ast
 
         public AstNodeBase Regex;
 
-        public AstRootNode(AstNodeBase innerExpression, bool matchBegin, bool matchEnd)
+        public AstRootNode(AstNodeBase innerExpression, bool matchBegin, bool matchEnd, Range range)
+            : base(range)
         {
             MatchBegin = matchBegin;
             MatchEnd = matchEnd;

@@ -31,6 +31,10 @@ group       : OBR3 binOper CBR3
 atom        : natom
             | any
             | OBR2 natom+ CBR2
+            | macro
+            ;
+
+macro       : ID
             ;
 
 any         : ANY
@@ -110,4 +114,5 @@ BeginOper   : '^'                                                               
 EndOper     : '$'                                                               //end of sequence quantifier
             ;
 
-ErrorChar   : .;
+ErrorChar   : .
+            ;

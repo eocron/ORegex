@@ -6,6 +6,8 @@ namespace ORegex.Core.StateMachine
 {
     public sealed class FA<TValue>
     {
+        public readonly string Name;
+
         public readonly HashSet<FATrans<TValue>> Transitions;
 
         public IEnumerable<int> Q
@@ -28,7 +30,7 @@ namespace ORegex.Core.StateMachine
         {
             get
             {
-                return Transitions.Select(x => x.Condition).Where(x=> !ReferenceEquals(x, State<TValue>.Epsilon)).Distinct();
+                return Transitions.Select(x => x.Condition).Where(x=> !ReferenceEquals(x, PredicateConst<TValue>.Epsilon)).Distinct();
             }
         }
 
@@ -39,24 +41,18 @@ namespace ORegex.Core.StateMachine
             return StateCount++;
         }
 
-        public FA(IEnumerable<FATrans<TValue>> transitions, IEnumerable<int> q0, IEnumerable<int> f)
+        public FA(string name, IEnumerable<FATrans<TValue>> transitions, IEnumerable<int> q0, IEnumerable<int> f)
         {
+            Name = name.ThrowIfEmpty();
             Transitions = transitions.ToHashSet();
             Q0 = q0.ToHashSet();
             F = f.ToHashSet();
             StateCount = Q.Count();
         }
 
-        public FA(FA<TValue> other)
+        public FA(string name)
         {
-            Transitions = other.Transitions.ToHashSet();
-            Q0 = other.Q0.ToHashSet();
-            F = other.F.ToHashSet();
-            StateCount = other.StateCount;
-        }
-
-        public FA()
-        {
+            Name = name.ThrowIfEmpty();
             Transitions = new HashSet<FATrans<TValue>>();
             Q0 = new HashSet<int>();
             F = new HashSet<int>();

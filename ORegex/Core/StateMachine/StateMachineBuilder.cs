@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using ORegex.Core.Ast;
+using ORegex.Core.Ast.GroupQuantifiers;
 
 namespace ORegex.Core.StateMachine
 {
@@ -44,7 +45,7 @@ namespace ORegex.Core.StateMachine
             var prev = start;
             for (int i = 0; i < astRepeatNode.MinCount; i++)
             {
-                var next = new State<TValue>();
+                var next = CreateNewState();
                 Evaluate(prev, next, astRepeatNode.Argument);
                 prev = next;
             }
@@ -59,8 +60,8 @@ namespace ORegex.Core.StateMachine
             {
                 int count = astRepeatNode.MaxCount - astRepeatNode.MinCount;
                 for (int i = 0; i < count; i++)
-                {                
-                    var next = new State<TValue>();
+                {
+                    var next = CreateNewState();
                     Evaluate(prev, next, astRepeatNode.Argument);
                     next.AddEpsilonTransition(end);
                     prev = next;
@@ -70,7 +71,7 @@ namespace ORegex.Core.StateMachine
 
         private void RepeatZeroOrInfinite(State<TValue> start, State<TValue> end, AstNodeBase node)
         {
-            var tmp = new State<TValue>();
+            var tmp = CreateNewState();
             Evaluate(tmp,tmp, node);
             start.AddEpsilonTransition(tmp);
             tmp.AddEpsilonTransition(end);
@@ -87,19 +88,29 @@ namespace ORegex.Core.StateMachine
 
         private void EvaluateConcat(State<TValue> start, State<TValue> end, AstConcatNode node)
         {
+            string groupName = null;
+            if (node is AstGroupNode)
+            {
+                var group = (AstGroupNode) node;
+                if (group.Quantifier != null && group.Quantifier is CaptureQuantifier)
+                {
+                    var captureQ = (CaptureQuantifier) group.Quantifier;
+                    groupName = captureQ.CaptureName;
+                }
+            }
+
+            if (groupName != null)
+            {
+                //throw new NotImplementedException();
+            }
             var prev = start;
             foreach (var child in node.GetChildren())
             {
-                var next = new State<TValue>();
+                var next = CreateNewState();
                 Evaluate(prev, next, child);
                 prev = next;
             }
             prev.AddEpsilonTransition(end);
-
-            if (node is AstGroupNode)
-            {
-                //throw new NotImplementedException("Group quantifier logic.");
-            }
         }
 
         private void EvaluateAtom(State<TValue> start, State<TValue> end, AstAtomNode<TValue> node)
@@ -109,8 +120,8 @@ namespace ORegex.Core.StateMachine
 
         private void EvaluateCondition(State<TValue> a, State<TValue> b, Func<TValue, bool> condition)
         {
-            var tmp1 = new State<TValue>();
-            var tmp2 = new State<TValue>();
+            var tmp1 = CreateNewState();
+            var tmp2 = CreateNewState();
 
             a.AddEpsilonTransition(tmp1);
             tmp1.AddTransition(condition, tmp2);
@@ -119,12 +130,17 @@ namespace ORegex.Core.StateMachine
 
         private void EvaluateCondition(State<TValue> a, State<TValue> b, AstNodeBase node)
         {
-            var tmp1 = new State<TValue>();
-            var tmp2 = new State<TValue>();
+            var tmp1 = CreateNewState();
+            var tmp2 = CreateNewState();
 
             a.AddEpsilonTransition(tmp1);
             Evaluate(tmp1, tmp2, node);
             tmp2.AddEpsilonTransition(b);
+        }
+
+        public State<TValue> CreateNewState()
+        {
+            return new State<TValue>();
         }
     }
 }

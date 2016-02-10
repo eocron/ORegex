@@ -7,7 +7,7 @@ namespace ORegex.Core.Ast
     {
         public readonly AstNodeBase[] Children;
 
-        protected AstCollectionNodeBase(IEnumerable<AstNodeBase> children)
+        protected AstCollectionNodeBase(IEnumerable<AstNodeBase> children, Range range) : base(range)
         {
             Children = children.ToArray();
         }

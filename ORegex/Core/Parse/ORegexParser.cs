@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using ORegex.Core.Ast;
 
 namespace ORegex.Core.Parse
@@ -15,7 +16,7 @@ namespace ORegex.Core.Parse
             parser.AddErrorListener(new ORegexErrorListener());
 
             var context = parser.expr();
-            
+
             var args = new ORegexAstFactoryArgs<TValue>(predicateTable, parser);
             var result = ORegexAstFactory<TValue>.Create(context, args);
 #if DEBUG

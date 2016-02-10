@@ -20,7 +20,8 @@ namespace TestUtility
             AddPredicate("1", x => x == null);
             AddPredicate("2", x => x == null);
             AddPredicate("3", x => x == null);
-            AddPredicate("eps", State<TValue>.Epsilon);
+            //AddPredicate("eps", PredicateConst<TValue>.Epsilon);
+            //AddPredicate(".", PredicateConst<TValue>.AlwaysTrue);
         }
 
         public override void AddPredicate(string name, Func<TValue, bool> predicate)

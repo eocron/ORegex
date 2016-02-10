@@ -9,6 +9,12 @@ namespace ORegex.Core.Ast
     {
         public abstract IEnumerable<AstNodeBase> GetChildren();
 
+        public readonly Range Range;
+
+        public AstNodeBase(Range range)
+        {
+            Range = range;
+        }
         public static void Print(AstNodeBase node, int depth = 0)
         {
             var attr = node.GetType().GetCustomAttributes(true).OfType<DebuggerDisplayAttribute>().FirstOrDefault();

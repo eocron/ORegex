@@ -15,7 +15,7 @@ namespace ORegex.Core.StateMachine
         private static FA<TValue> Reverse(FA<TValue> dfa)
         {
             return
-                new FA<TValue>(dfa.Transitions.Select(x => new FATrans<TValue>(x.EndState, x.Condition, x.StartState)),
+                new FA<TValue>(dfa.Name, dfa.Transitions.Select(x => new FATrans<TValue>(x.EndState, x.Condition, x.StartState)),
                     dfa.F, dfa.Q0);
         }
     }
