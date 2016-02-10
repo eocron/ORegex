@@ -8,9 +8,9 @@ namespace ORegex.Core.StateMachine
     public sealed class FSAFactory<TValue>
     {
         private readonly FSAPreprocessor<TValue> _preprocessor = new FSAPreprocessor<TValue>(); 
-        public FSA<TValue> Create(AstNodeBase root)
+        public FSA<TValue> Create(AstNodeBase root, string name = "#MAIN#")
         {
-            var result = new FSA<TValue>("main");
+            var result = new FSA<TValue>(name);
             var start = result.NewState();
             var end = result.NewState();
             Evaluate(start, end, result, root);
@@ -114,18 +114,21 @@ namespace ORegex.Core.StateMachine
                 }
             }
 
-            if (groupName != null)
+            if (groupName != null && groupName != fsa.Name)
             {
-                //throw new NotImplementedException();
+                fsa.AddTransition(start, Create(node, groupName), end);
             }
-            var prev = start;
-            foreach (var child in node.GetChildren())
+            else
             {
-                var next = CreateNewState(fsa);
-                Evaluate(prev, next, fsa, child);
-                prev = next;
+                var prev = start;
+                foreach (var child in node.GetChildren())
+                {
+                    var next = CreateNewState(fsa);
+                    Evaluate(prev, next, fsa, child);
+                    prev = next;
+                }
+                fsa.AddEpsilonTransition(prev, end);
             }
-            fsa.AddEpsilonTransition(prev,end);
         }
 
         private void EvaluateAtom(int start, int end, FSA<TValue> fsa, AstAtomNode<TValue> node)

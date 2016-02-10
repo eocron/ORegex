@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Microsoft.Glee.Drawing;
+using ORegex;
 using ORegex.Core.Ast;
 using ORegex.Core.Parse;
 using ORegex.Core.StateMachine;
@@ -24,18 +25,33 @@ namespace TestUtility
 
         private void DrawGraph(FSA<object> fsm)
         {
-            var graph = new Graph("graph");
+            var graph = new Graph(fsm.Name);
+            FillGraph(graph, fsm, _table);
+            gViewer1.Graph = graph;
+            gViewer1.Refresh();
+        }
+
+        private void FillGraph<TValue>(Graph graph, FSA<TValue> fsm, PredicateTable<TValue> table)
+        {
             foreach (var t in fsm.Transitions)
             {
-                var edge = graph.AddEdge("q"+t.StartState, _table.GetName(t.Condition), "q"+t.EndState);
+                Edge edge = null;
+                if (t.Info is FSAPredicateEdge<TValue>)
+                {
+                    var info = (FSAPredicateEdge<TValue>)t.Info;
+                    edge = graph.AddEdge("q" + t.StartState, table.GetName(info.Predicate), "q" + t.EndState);
+                }
+                else if (t.Info is FSACaptureEdge<TValue>)
+                {
+                    var info = (FSACaptureEdge<TValue>)t.Info;
+                    edge = graph.AddEdge("q" + t.StartState, info.InnerFsa.Name, "q" + t.EndState);
+                }
                 if (fsm.F.Contains(t.EndState))
                 {
                     edge.TargetNode.Attr.Fillcolor = Microsoft.Glee.Drawing.Color.Gray;
                     edge.TargetNode.Attr.Shape = Shape.DoubleCircle;
                 }
             }
-            gViewer1.Graph = graph;
-            gViewer1.Refresh();
         }
         private void ProcessORegex(string oregex)
         {
@@ -116,9 +132,8 @@ namespace TestUtility
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
             }
         }
         

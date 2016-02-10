@@ -7,19 +7,33 @@ namespace ORegex.Core.StateMachine
 
         public readonly int EndState;
 
-        public readonly Func<TValue, bool> Condition;
+        public readonly FSAEdgeInfoBase<TValue> Info;
 
         public FSATransition(int from, Func<TValue, bool> condition, int to)
         {
             StartState = from;
-            Condition = condition;
+            Info = new FSAPredicateEdge<TValue>(condition);
+            EndState = to;
+        }
+
+        public FSATransition(int from, IFSA<TValue> condition, int to)
+        {
+            StartState = from;
+            Info = new FSACaptureEdge<TValue>(condition);
+            EndState = to;
+        }
+
+        public FSATransition(int from, FSAEdgeInfoBase<TValue> info, int to)
+        {
+            StartState = from;
+            Info = info;
             EndState = to;
         }
 
         public override bool Equals(object obj)
         {
             var other = (FSATransition<TValue>) obj;
-            return other.Condition == Condition && other.StartState == StartState && other.EndState == EndState;
+            return other.Info == Info && other.StartState == StartState && other.EndState == EndState;
         }
 
         public override int GetHashCode()
@@ -30,7 +44,7 @@ namespace ORegex.Core.StateMachine
             hash *= prime;
             hash += EndState.GetHashCode();
             hash *= prime;
-            hash += Condition.GetHashCode();
+            hash += Info.GetHashCode();
             return hash;
         }
     }

@@ -16,7 +16,6 @@ namespace ORegex.Core.Parse
         {
             _predicateTable = new PredicateTable<TValue>(predicateTable.ThrowIfNull());
             _parser = parser.ThrowIfNull();
-            _predicateTable.AddPredicate(".", PredicateConst<TValue>.AlwaysTrue);
         }
 
         public bool IsName(IParseTree node, string name)
@@ -38,6 +37,7 @@ namespace ORegex.Core.Parse
 
         public void GetInvertedPredicate(IEnumerable<string> names, out Func<TValue, bool> predicate, out string invertedName)
         {
+            names = names.Distinct().OrderByDescending(x => x);
             invertedName = string.Format("inverted: {0}",string.Join(",", names));
             if (!_predicateTable.Contains(invertedName))
             {

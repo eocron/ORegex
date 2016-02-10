@@ -1,10 +1,15 @@
 ﻿using System.Collections.Generic;
 
-namespace ORegex.Core.StateMachine
+namespace ORegex.Core
 {
+    /// <summary>
+    /// This is hashSet implemantiton with GetHashCode and Equals overriden.
+    /// It will remain all functionality but also provide mathematical set equality.
+    /// </summary>
+    /// <typeparam name="TValue"></typeparam>
     public sealed class Set<TValue> : HashSet<TValue>
     {
-        public Set():base()
+        public Set()
         {
         }
 
@@ -25,7 +30,7 @@ namespace ORegex.Core.StateMachine
         public override bool Equals(object obj)
         {
             var hs = (Set<TValue>) obj;
-            return this.SetEquals(hs);
+            return SetEquals(hs);
         }
     }
 }

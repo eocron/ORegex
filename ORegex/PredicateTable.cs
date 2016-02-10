@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ORegex.Core;
+using ORegex.Core.StateMachine;
 
 namespace ORegex
 {
@@ -13,9 +14,10 @@ namespace ORegex
         {
             _table = new Dictionary<string, Func<TValue, bool>>();
             _tableInverted = new Dictionary<Func<TValue, bool>, string>();
+            AddPredicate(".", PredicateConst<TValue>.AlwaysTrue);
         }
 
-        public PredicateTable(PredicateTable<TValue> other)
+        public PredicateTable(PredicateTable<TValue> other) : base()
         {
             _table = new Dictionary<string, Func<TValue, bool>>(other._table);
             _tableInverted = new Dictionary<Func<TValue, bool>, string>(other._tableInverted);

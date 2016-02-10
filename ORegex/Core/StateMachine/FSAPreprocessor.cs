@@ -24,7 +24,7 @@ namespace ORegex.Core.StateMachine
         private static FSA<TValue> Reverse(FSA<TValue> dfa)
         {
             return
-                new FSA<TValue>(dfa.Name, dfa.Transitions.Select(x => new FSATransition<TValue>(x.EndState, x.Condition, x.StartState)),
+                new FSA<TValue>(dfa.Name, dfa.Transitions.Select(x => new FSATransition<TValue>(x.EndState, x.Info, x.StartState)),
                     dfa.F, dfa.Q0);
         }
 
@@ -123,7 +123,7 @@ namespace ORegex.Core.StateMachine
                 // For each state u with an edge from t to u labeled Epsilon
                 foreach (var input in nfa.GetTransitionsFrom(t))
                 {
-                    if (input.Condition == PredicateConst<TValue>.Epsilon)
+                    if (FSAPredicateEdge<TValue>.IsEpsilonPredicate(input.Info))
                     {
                         int u = input.EndState;
 

@@ -12,7 +12,7 @@ namespace TestUtility
     public sealed class DebugPredicateTable<TValue> : PredicateTable<TValue>
     {
         public readonly HashSet<string> AvailableNames = new HashSet<string>(); 
-        public DebugPredicateTable()
+        public DebugPredicateTable() : base()
         {
             AddPredicate("a", x => x == null);
             AddPredicate("b", x => x == null);
@@ -34,7 +34,7 @@ namespace TestUtility
         {
             if (!_tableInverted.ContainsKey(predicate))
             {
-                return "Generated: "+ Regex.Match(predicate.Method.Name, @"\>(.+)").Groups[1].Value;
+                return "Gen:"+ Regex.Match(predicate.Method.Name, @"\>(.+)").Groups[1].Value;
             }
             return base.GetName(predicate);
         }

@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace ORegex.Core.StateMachine
 {
-    public sealed class FSA<TValue>
+    public sealed class FSA<TValue> : IFSA<TValue>
     {
-        public readonly string Name;
+        public string Name { get; private set; }
 
         public readonly HashSet<FSATransition<TValue>> Transitions;
 
@@ -14,11 +14,11 @@ namespace ORegex.Core.StateMachine
 
         public readonly HashSet<int> F;
 
-        public IEnumerable<Func<TValue, bool>> Sigma
+        public IEnumerable<FSAEdgeInfoBase<TValue>> Sigma
         {
             get
             {
-                return Transitions.Select(x => x.Condition).Where(x=> !ReferenceEquals(x, PredicateConst<TValue>.Epsilon)).Distinct();
+                return Transitions.Select(x => x.Info).Where(x=> !FSAPredicateEdge<TValue>.IsEpsilonPredicate(x)).Distinct();
             }
         }
 
@@ -57,6 +57,16 @@ namespace ORegex.Core.StateMachine
             Q0 = new HashSet<int>();
             F = new HashSet<int>();
             StateCount = 0;
+        }
+
+        public void AddTransition(int from, FSA<TValue> condition, int to)
+        {
+            AddTransition(new FSATransition<TValue>(from, condition, to));
+        }
+
+        public void AddTransition(int from, FSAEdgeInfoBase<TValue> condition, int to)
+        {
+            AddTransition(new FSATransition<TValue>(from, condition, to));
         }
 
         public void AddTransition(int from, Func<TValue, bool> condition, int to)
@@ -100,7 +110,7 @@ namespace ORegex.Core.StateMachine
         /// <param name="states"></param>
         /// <param name="inp"></param>
         /// <returns></returns>
-        public Set<int> Move(Set<int> states, Func<TValue, bool> inp)
+        public Set<int> Move(Set<int> states, FSAEdgeInfoBase<TValue> inp)
         {
             var result = new Set<int>();
 
@@ -113,7 +123,7 @@ namespace ORegex.Core.StateMachine
                 foreach (var input in GetTransitionsFrom(state))
                 {
                     // If the transition is on input inp, add it to the resulting set
-                    if (ReferenceEquals(input.Condition, inp))
+                    if (input.Info.Equals(inp))
                     {
                         result.Add(input.EndState);
                     }
@@ -121,6 +131,11 @@ namespace ORegex.Core.StateMachine
                 }
             }
             return result;
+        }
+
+        public bool Run(ObjectStream<TValue> stream)
+        {
+            throw new NotImplementedException();
         }
     }
 }

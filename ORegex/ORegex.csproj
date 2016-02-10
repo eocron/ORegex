@@ -65,7 +65,9 @@
     <Compile Include="Core\Ast\GroupQuantifiers\QuantifierBase.cs" />
     <Compile Include="Core\Ast\Range.cs" />
     <Compile Include="Core\Extensions.cs" />
+    <Compile Include="Core\ObjectStream.cs" />
     <Compile Include="Core\ORegexException.cs" />
+    <Compile Include="Core\ORegexSyntaxException.cs" />
     <Compile Include="Core\Parse\ORegexAstFactory.cs" />
     <Compile Include="Core\Parse\ORegexAstFactoryArgs.cs" />
     <Compile Include="Core\Parse\ORegexCompiler.cs" />
@@ -77,11 +79,15 @@
       <DependentUpon>RegexGrammar.g4</DependentUpon>
     </Compile>
     <Compile Include="Core\Parse\ORegexParser.cs" />
+    <Compile Include="Core\StateMachine\FSACaptureEdge.cs" />
+    <Compile Include="Core\StateMachine\FSAEdgeInfoBase.cs" />
+    <Compile Include="Core\StateMachine\FSAPredicateEdge.cs" />
     <Compile Include="Core\StateMachine\FSAPreprocessor.cs" />
     <Compile Include="Core\StateMachine\FSATransition.cs" />
     <Compile Include="Core\StateMachine\FSA.cs" />
+    <Compile Include="Core\StateMachine\IFSA.cs" />
     <Compile Include="Core\StateMachine\PredicateConst.cs" />
-    <Compile Include="Core\StateMachine\Set.cs" />
+    <Compile Include="Core\Set.cs" />
     <Compile Include="Core\StateMachine\FSAFactory.cs" />
     <Compile Include="FSM\ObjectLevenshteinDistance.cs" />
     <Compile Include="ObjectCapture.cs" />
