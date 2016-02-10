@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -7,6 +6,7 @@ using Microsoft.Glee.Drawing;
 using ORegex.Core.Ast;
 using ORegex.Core.Parse;
 using ORegex.Core.StateMachine;
+using Color = System.Drawing.Color;
 
 namespace TestUtility
 {
@@ -22,7 +22,7 @@ namespace TestUtility
             HighLightSyntax();
         }
 
-        private void DrawGraph(FA<object> fsm)
+        private void DrawGraph(FSA<object> fsm)
         {
             var graph = new Graph("graph");
             foreach (var t in fsm.Transitions)
@@ -30,7 +30,7 @@ namespace TestUtility
                 var edge = graph.AddEdge("q"+t.StartState, _table.GetName(t.Condition), "q"+t.EndState);
                 if (fsm.F.Contains(t.EndState))
                 {
-                    edge.TargetNode.Attr.Fillcolor = Color.Gray;
+                    edge.TargetNode.Attr.Fillcolor = Microsoft.Glee.Drawing.Color.Gray;
                     edge.TargetNode.Attr.Shape = Shape.DoubleCircle;
                 }
             }
@@ -53,7 +53,7 @@ namespace TestUtility
 
             if (!string.IsNullOrWhiteSpace(oregex))
             {
-                Colorize(richTextBox1, 0, oregex.Length, System.Drawing.Color.LimeGreen);//asdaa
+                Colorize(richTextBox1, 0, oregex.Length, Color.LimeGreen);//asdaa
                 try
                 {
                     var ast = _parser.Parse(oregex, _table);
@@ -66,11 +66,11 @@ namespace TestUtility
 
                         if (node is AstGroupNode)
                         {
-                            Colorize(richTextBox1, node.Range.Index, node.Range.Length, System.Drawing.Color.DodgerBlue);
+                            Colorize(richTextBox1, node.Range.Index, node.Range.Length, Color.DodgerBlue);
                         }
                         else if(node is AstAtomNode<object>)
                         {
-                            Colorize(richTextBox1, node.Range.Index, node.Range.Length, System.Drawing.Color.Brown);
+                            Colorize(richTextBox1, node.Range.Index, node.Range.Length, Color.Brown);
                         }
 
                         foreach (var child in node.GetChildren())
@@ -81,12 +81,12 @@ namespace TestUtility
                 }
                 catch (Exception e)
                 {
-                    Colorize(richTextBox1, 0, oregex.Length, System.Drawing.Color.Red);
+                    Colorize(richTextBox1, 0, oregex.Length, Color.Red);
                 }
             }
         }
 
-        private void Colorize(RichTextBox rtb, int index, int length, System.Drawing.Color color)
+        private void Colorize(RichTextBox rtb, int index, int length, Color color)
         {
             var prevI = rtb.SelectionStart;
             var prevL = rtb.SelectionLength;

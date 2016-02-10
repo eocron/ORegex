@@ -1,18 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace ORegex.Core.StateMachine
 {
-    public sealed class FASubsetConverter<TValue>
+    public sealed class FSAPreprocessor<TValue>
     {
+        public FSA<TValue> Preprocess(FSA<TValue> fsa)
+        {
+            var dfa = NfaToDfa(fsa);
+            dfa = Minimize(dfa);
+            return dfa;
+        }
+
+        private static FSA<TValue> Minimize(FSA<TValue> dfa)
+        {
+            var reversedNDFSM = Reverse(dfa);
+            var reversedDFSM = NfaToDfa(reversedNDFSM);
+            var NDFSM = Reverse(reversedDFSM);
+            var DFA = NfaToDfa(NDFSM);
+            return DFA;
+        }
+
+        private static FSA<TValue> Reverse(FSA<TValue> dfa)
+        {
+            return
+                new FSA<TValue>(dfa.Name, dfa.Transitions.Select(x => new FSATransition<TValue>(x.EndState, x.Condition, x.StartState)),
+                    dfa.F, dfa.Q0);
+        }
+
         /// <summary>
         /// Subset machine that employs the powerset construction or subset construction algorithm.
         /// It creates a DFA that recognizes the same language as the given NFA.
         /// </summary>
-        public static FA<TValue> NfaToDfa(FA<TValue> nfa)
+        public static FSA<TValue> NfaToDfa(FSA<TValue> nfa)
         {
-            FA<TValue> dfa = new FA<TValue>(nfa.Name);
+            FSA<TValue> dfa = new FSA<TValue>(nfa.Name);
 
             // Sets of NFA states which is represented by some DFA state
             var markedStates = new HashSet<Set<int>>();
@@ -46,7 +68,7 @@ namespace ORegex.Core.StateMachine
 
                 // If this state contains the NFA's final state, add it to the DFA's set of
                 // final states.
-                if (nfa.F.Any(x=> aState.Contains(x)))
+                if (nfa.F.Any(x => aState.Contains(x)))
                     dfa.AddFinal(dfaStateNum[aState]);
 
                 var iE = nfa.Sigma.GetEnumerator();
@@ -85,7 +107,7 @@ namespace ORegex.Core.StateMachine
         /// <param name="nfa"></param>
         /// <param name="states"></param>
         /// <returns></returns>
-        private static Set<int> EpsilonClosure(FA<TValue> nfa, Set<int> states)
+        private static Set<int> EpsilonClosure(FSA<TValue> nfa, Set<int> states)
         {
             // Push all states onto a stack
             Stack<int> uncheckedStack = new Stack<int>(states);

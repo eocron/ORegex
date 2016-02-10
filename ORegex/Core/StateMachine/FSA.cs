@@ -4,23 +4,11 @@ using System.Linq;
 
 namespace ORegex.Core.StateMachine
 {
-    public sealed class FA<TValue>
+    public sealed class FSA<TValue>
     {
         public readonly string Name;
 
-        public readonly HashSet<FATrans<TValue>> Transitions;
-
-        public IEnumerable<int> Q
-        {
-            get
-            {
-                return
-                    Transitions.Select(x => x.StartState)
-                        .Concat(Transitions.Select(x => x.EndState))
-                        .Distinct()
-                        .OrderBy(x => x);
-            }
-        }
+        public readonly HashSet<FSATransition<TValue>> Transitions;
 
         public readonly HashSet<int> Q0;
 
@@ -34,6 +22,18 @@ namespace ORegex.Core.StateMachine
             }
         }
 
+        public IEnumerable<int> Q
+        {
+            get
+            {
+                return
+                    Transitions.Select(x => x.StartState)
+                        .Concat(Transitions.Select(x => x.EndState))
+                        .Distinct()
+                        .OrderBy(x => x);
+            }
+        }
+
         public int StateCount { get; private set; }
 
         public int NewState()
@@ -41,7 +41,7 @@ namespace ORegex.Core.StateMachine
             return StateCount++;
         }
 
-        public FA(string name, IEnumerable<FATrans<TValue>> transitions, IEnumerable<int> q0, IEnumerable<int> f)
+        public FSA(string name, IEnumerable<FSATransition<TValue>> transitions, IEnumerable<int> q0, IEnumerable<int> f)
         {
             Name = name.ThrowIfEmpty();
             Transitions = transitions.ToHashSet();
@@ -50,10 +50,10 @@ namespace ORegex.Core.StateMachine
             StateCount = Q.Count();
         }
 
-        public FA(string name)
+        public FSA(string name)
         {
             Name = name.ThrowIfEmpty();
-            Transitions = new HashSet<FATrans<TValue>>();
+            Transitions = new HashSet<FSATransition<TValue>>();
             Q0 = new HashSet<int>();
             F = new HashSet<int>();
             StateCount = 0;
@@ -61,10 +61,15 @@ namespace ORegex.Core.StateMachine
 
         public void AddTransition(int from, Func<TValue, bool> condition, int to)
         {
-            AddTransition(new FATrans<TValue>(from, condition, to));
+            AddTransition(new FSATransition<TValue>(from, condition, to));
         }
 
-        public void AddTransition(FATrans<TValue> trans)
+        public void AddEpsilonTransition(int from, int to)
+        {
+            AddTransition(from, PredicateConst<TValue>.Epsilon, to);
+        }
+
+        public void AddTransition(FSATransition<TValue> trans)
         {
             if (trans == null)
             {
@@ -83,7 +88,7 @@ namespace ORegex.Core.StateMachine
             Q0.Add(state);
         }
 
-        public IEnumerable<FATrans<TValue>> GetTransitionsFrom(int state)
+        public IEnumerable<FSATransition<TValue>> GetTransitionsFrom(int state)
         {
             return Transitions.Where(x => x.StartState == state);
         }

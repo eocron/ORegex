@@ -77,17 +77,13 @@
       <DependentUpon>RegexGrammar.g4</DependentUpon>
     </Compile>
     <Compile Include="Core\Parse\ORegexParser.cs" />
-    <Compile Include="Core\StateMachine\FAMinimizer.cs" />
-    <Compile Include="Core\StateMachine\FASubsetConverter.cs" />
-    <Compile Include="Core\StateMachine\FATrans.cs" />
-    <Compile Include="Core\StateMachine\FA.cs" />
-    <Compile Include="Core\StateMachine\IdGenerator.cs" />
+    <Compile Include="Core\StateMachine\FSAPreprocessor.cs" />
+    <Compile Include="Core\StateMachine\FSATransition.cs" />
+    <Compile Include="Core\StateMachine\FSA.cs" />
     <Compile Include="Core\StateMachine\PredicateConst.cs" />
     <Compile Include="Core\StateMachine\Set.cs" />
-    <Compile Include="Core\StateMachine\StateToDFA.cs" />
-    <Compile Include="Core\StateMachine\StateMachineBuilder.cs" />
+    <Compile Include="Core\StateMachine\FSAFactory.cs" />
     <Compile Include="FSM\ObjectLevenshteinDistance.cs" />
-    <Compile Include="Core\StateMachine\State.cs" />
     <Compile Include="ObjectCapture.cs" />
     <Compile Include="ObjectGroup.cs" />
     <Compile Include="ObjectGroupCollection.cs" />

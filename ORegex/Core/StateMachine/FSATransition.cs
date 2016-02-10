@@ -1,15 +1,15 @@
 ﻿using System;
 namespace ORegex.Core.StateMachine
 {
-    public sealed class FATrans<TValue>
+    public sealed class FSATransition<TValue>
     {
-        public int StartState;
+        public readonly int StartState;
 
-        public int EndState;
+        public readonly int EndState;
 
-        public Func<TValue, bool> Condition;
+        public readonly Func<TValue, bool> Condition;
 
-        public FATrans(int from, Func<TValue, bool> condition, int to)
+        public FSATransition(int from, Func<TValue, bool> condition, int to)
         {
             StartState = from;
             Condition = condition;
@@ -18,7 +18,7 @@ namespace ORegex.Core.StateMachine
 
         public override bool Equals(object obj)
         {
-            var other = (FATrans<TValue>) obj;
+            var other = (FSATransition<TValue>) obj;
             return other.Condition == Condition && other.StartState == StartState && other.EndState == EndState;
         }
 
