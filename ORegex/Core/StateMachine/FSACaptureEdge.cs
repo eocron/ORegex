@@ -2,6 +2,9 @@
 {
     public sealed class FSACaptureEdge<TValue> : FSAEdgeInfoBase<TValue>
     {
+        public override bool IsCaptureEdge { get { return true; } }
+        public override bool IsPredicateEdge { get { return false; } }
+
         public readonly IFSA<TValue> InnerFsa;
 
         public FSACaptureEdge(IFSA<TValue> fsaCondition)

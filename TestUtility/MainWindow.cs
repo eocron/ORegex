@@ -39,7 +39,6 @@ namespace TestUtility
             var dfa = _compiler.Build(oregex, _table);
             var elapsed = sw.Elapsed;
             label1.Text = "Compiled in: " + elapsed;
-            //Visit(start, idGen, new HashSet<object>(), graph);
             DrawGraph(dfa);
         }
 
@@ -108,6 +107,7 @@ namespace TestUtility
             {
                 try
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
                     ProcessORegex(text);
                 }
                 catch (Exception ex)
@@ -126,8 +126,11 @@ namespace TestUtility
         {
             try
             {
-                var test = new PerformanceTest();
+                var sw = Stopwatch.StartNew();
+                var test = new PerformanceTest<object>((int)numericUpDown1.Value);
                 test.Run();
+                sw.Stop();
+                label2.Text = "Elapsed " + sw.Elapsed;
             }
             catch (Exception ex)
             {

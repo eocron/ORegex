@@ -4,6 +4,9 @@ namespace ORegex.Core.StateMachine
 {
     public sealed class FSAPredicateEdge<TValue> : FSAEdgeInfoBase<TValue>
     {
+        public override bool IsCaptureEdge { get { return false; } }
+        public override bool IsPredicateEdge  { get{return true;} }
+
         public readonly Func<TValue, bool> Predicate; 
         public FSAPredicateEdge(Func<TValue, bool> predicate)
         {
@@ -32,10 +35,10 @@ namespace ORegex.Core.StateMachine
 
         public static bool IsEpsilonPredicate(FSAEdgeInfoBase<TValue> info)
         {
-            var pInfo = info as FSAPredicateEdge<TValue>;
-            if (pInfo != null)
+            if (info.IsPredicateEdge)
             {
-                return pInfo.Predicate == PredicateConst<TValue>.Epsilon;
+                var pInfo = (FSAPredicateEdge<TValue>)info;
+                return ReferenceEquals(pInfo.Predicate, PredicateConst<TValue>.Epsilon);
             }
             return false;
         }

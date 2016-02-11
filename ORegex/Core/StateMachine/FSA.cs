@@ -6,6 +6,14 @@ namespace ORegex.Core.StateMachine
 {
     public sealed class FSA<TValue> : IFSA<TValue>
     {
+        #region Speedup
+
+        private readonly HashSet<FSAEdgeInfoBase<TValue>> _sigma = new HashSet<FSAEdgeInfoBase<TValue>>();
+
+        private readonly Dictionary<int, List<FSATransition<TValue>>> _lookup = new Dictionary<int, List<FSATransition<TValue>>>();
+
+        #endregion
+
         public string Name { get; private set; }
 
         public readonly HashSet<FSATransition<TValue>> Transitions;
@@ -14,11 +22,12 @@ namespace ORegex.Core.StateMachine
 
         public readonly HashSet<int> F;
 
+
         public IEnumerable<FSAEdgeInfoBase<TValue>> Sigma
         {
             get
             {
-                return Transitions.Select(x => x.Info).Where(x=> !FSAPredicateEdge<TValue>.IsEpsilonPredicate(x)).Distinct();
+                return _sigma;
             }
         }
 
@@ -48,6 +57,26 @@ namespace ORegex.Core.StateMachine
             Q0 = q0.ToHashSet();
             F = f.ToHashSet();
             StateCount = Q.Count();
+
+            #region Speedup
+            foreach(var t in Transitions)
+            {
+                List<FSATransition<TValue>> predics;
+                if (!_lookup.TryGetValue(t.StartState, out predics))
+                {
+                    predics = new List<FSATransition<TValue>>();
+                    _lookup[t.StartState] = predics;
+                }
+                predics.Add(t);
+
+                if (!FSAPredicateEdge<TValue>.IsEpsilonPredicate(t.Info))
+                {
+                    _sigma.Add(t.Info);
+                }
+            }
+            
+
+            #endregion
         }
 
         public FSA(string name)
@@ -86,6 +115,21 @@ namespace ORegex.Core.StateMachine
                 throw new ArgumentNullException("trans");
             }
             Transitions.Add(trans);
+            #region Speedup
+            List<FSATransition<TValue>> predics;
+            if(!_lookup.TryGetValue(trans.StartState, out predics))
+            {
+                predics = new List<FSATransition<TValue>>();
+                _lookup[trans.StartState] = predics;
+            }
+
+            predics.Add(trans);
+
+            if (!FSAPredicateEdge<TValue>.IsEpsilonPredicate(trans.Info))
+            {
+                _sigma.Add(trans.Info);
+            }
+            #endregion
         }
 
         public void AddFinal(int state)
@@ -98,9 +142,15 @@ namespace ORegex.Core.StateMachine
             Q0.Add(state);
         }
 
+        private readonly List<FSATransition<TValue>> EmptyList = new List<FSATransition<TValue>>();
         public IEnumerable<FSATransition<TValue>> GetTransitionsFrom(int state)
         {
-            return Transitions.Where(x => x.StartState == state);
+            List<FSATransition<TValue>> trans;
+            if(_lookup.TryGetValue(state, out trans))
+            {
+                return trans;
+            }
+            return EmptyList;
         }
 
         /// <summary>
@@ -117,17 +167,13 @@ namespace ORegex.Core.StateMachine
             // For each state in the set of states
             foreach (var state in states)
             {
-                int i = 0;
-
-                // For each transition from this state
                 foreach (var input in GetTransitionsFrom(state))
                 {
                     // If the transition is on input inp, add it to the resulting set
-                    if (input.Info.Equals(inp))
+                    if (FSAEdgeInfoBase<TValue>.IsEqualFast(input.Info, inp))
                     {
                         result.Add(input.EndState);
                     }
-                    i = i + 1;
                 }
             }
             return result;

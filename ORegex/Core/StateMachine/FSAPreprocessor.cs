@@ -71,13 +71,12 @@ namespace ORegex.Core.StateMachine
                 if (nfa.F.Any(x => aState.Contains(x)))
                     dfa.AddFinal(dfaStateNum[aState]);
 
-                var iE = nfa.Sigma.GetEnumerator();
-
                 // For each input symbol the NFA knows...
-                while (iE.MoveNext())
+                
+                foreach (var current in nfa.Sigma)
                 {
                     // Next state
-                    var next = EpsilonClosure(nfa, nfa.Move(aState, iE.Current));
+                    var next = EpsilonClosure(nfa, nfa.Move(aState, current));
 
                     if (next.Count > 0)
                     {
@@ -91,7 +90,7 @@ namespace ORegex.Core.StateMachine
 
                         var from = dfaStateNum[aState];
                         var to = dfaStateNum[next];
-                        var condition = iE.Current;
+                        var condition = current;
 
                         dfa.AddTransition(from, condition, to);
                     }
