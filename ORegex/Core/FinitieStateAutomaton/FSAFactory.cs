@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using ORegex.Core.Ast;
 using ORegex.Core.Ast.GroupQuantifiers;
 
-namespace ORegex.Core.StateMachine
+namespace ORegex.Core.FinitieStateAutomaton
 {
     public sealed class FSAFactory<TValue>
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace ORegex.Core.StateMachine
+namespace ORegex.Core.FinitieStateAutomaton
 {
     public sealed class FSAPreprocessor<TValue>
     {

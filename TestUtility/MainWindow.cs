@@ -5,8 +5,8 @@ using System.Windows.Forms;
 using Microsoft.Glee.Drawing;
 using ORegex;
 using ORegex.Core.Ast;
+using ORegex.Core.FinitieStateAutomaton;
 using ORegex.Core.Parse;
-using ORegex.Core.StateMachine;
 using Color = System.Drawing.Color;
 
 namespace TestUtility

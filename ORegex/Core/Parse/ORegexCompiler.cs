@@ -1,4 +1,4 @@
-﻿using ORegex.Core.StateMachine;
+﻿using ORegex.Core.FinitieStateAutomaton;
 
 namespace ORegex.Core.Parse
 {

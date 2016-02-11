@@ -1,5 +1,6 @@
 ﻿using System;
-namespace ORegex.Core.StateMachine
+
+namespace ORegex.Core.FinitieStateAutomaton
 {
     public sealed class FSATransition<TValue>
     {

@@ -1,4 +1,4 @@
-﻿namespace ORegex.Core.StateMachine
+﻿namespace ORegex.Core.FinitieStateAutomaton
 {
     public sealed class FSACaptureEdge<TValue> : FSAEdgeInfoBase<TValue>
     {

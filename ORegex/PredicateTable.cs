@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ORegex.Core;
-using ORegex.Core.StateMachine;
+using ORegex.Core.FinitieStateAutomaton;
 
 namespace ORegex
 {
