@@ -16,6 +16,8 @@ namespace TestUtility
         private readonly ORegexCompiler<object> _compiler = new ORegexCompiler<object>();
         private readonly DebugPredicateTable<object> _table = new DebugPredicateTable<object>();
         private readonly ORegexParser<object> _parser = new ORegexParser<object>(); 
+        private readonly GleeGraphCreator _graphCreator = new GleeGraphCreator();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -25,34 +27,12 @@ namespace TestUtility
 
         private void DrawGraph(FSA<object> fsm)
         {
-            var graph = new Graph(fsm.Name);
-            FillGraph(graph, fsm, _table);
+            var graph = _graphCreator.Create(fsm, _table);
             gViewer1.Graph = graph;
             gViewer1.Refresh();
         }
 
-        private void FillGraph<TValue>(Graph graph, FSA<TValue> fsm, PredicateTable<TValue> table)
-        {
-            foreach (var t in fsm.Transitions)
-            {
-                Edge edge = null;
-                if (t.Info is FSAPredicateEdge<TValue>)
-                {
-                    var info = (FSAPredicateEdge<TValue>)t.Info;
-                    edge = graph.AddEdge("q" + t.StartState, table.GetName(info.Predicate), "q" + t.EndState);
-                }
-                else if (t.Info is FSACaptureEdge<TValue>)
-                {
-                    var info = (FSACaptureEdge<TValue>)t.Info;
-                    edge = graph.AddEdge("q" + t.StartState, info.InnerFsa.Name, "q" + t.EndState);
-                }
-                if (fsm.F.Contains(t.EndState))
-                {
-                    edge.TargetNode.Attr.Fillcolor = Microsoft.Glee.Drawing.Color.Gray;
-                    edge.TargetNode.Attr.Shape = Shape.DoubleCircle;
-                }
-            }
-        }
+
         private void ProcessORegex(string oregex)
         {
             Stopwatch sw = Stopwatch.StartNew();
@@ -140,6 +120,19 @@ namespace TestUtility
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
             HighLightSyntax();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var test = new PerformanceTest();
+                test.Run();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
