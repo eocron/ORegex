@@ -5,8 +5,6 @@
         public abstract bool IsCaptureEdge { get; }
         public abstract bool IsPredicateEdge { get; }
 
-        public abstract bool MeetCondition(ObjectStream<TValue> input);
-
         public static bool IsEqualFast(FSAEdgeInfoBase<TValue> a, FSAEdgeInfoBase<TValue> b)
         {
             if(a.IsCaptureEdge && b.IsCaptureEdge)

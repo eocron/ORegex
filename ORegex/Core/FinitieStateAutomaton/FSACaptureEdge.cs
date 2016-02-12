@@ -5,15 +5,11 @@
         public override bool IsCaptureEdge { get { return true; } }
         public override bool IsPredicateEdge { get { return false; } }
 
-        public readonly IFSA<TValue> InnerFsa;
+        public readonly FSA<TValue> InnerFsa;
 
-        public FSACaptureEdge(IFSA<TValue> fsaCondition)
+        public FSACaptureEdge(FSA<TValue> fsaCondition)
         {
             InnerFsa = fsaCondition;
-        }
-        public override bool MeetCondition(ObjectStream<TValue> input)
-        {
-            return InnerFsa.Run(input);
         }
 
         public override bool Equals(object obj)

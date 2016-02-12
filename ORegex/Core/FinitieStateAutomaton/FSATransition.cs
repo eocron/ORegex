@@ -17,7 +17,7 @@ namespace ORegex.Core.FinitieStateAutomaton
             EndState = to;
         }
 
-        public FSATransition(int from, IFSA<TValue> condition, int to)
+        public FSATransition(int from, FSA<TValue> condition, int to)
         {
             StartState = from;
             Info = new FSACaptureEdge<TValue>(condition);

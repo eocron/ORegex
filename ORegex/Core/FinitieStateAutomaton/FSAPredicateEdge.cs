@@ -13,11 +13,6 @@ namespace ORegex.Core.FinitieStateAutomaton
             Predicate = predicate.ThrowIfNull();
         }
 
-        public override bool MeetCondition(ObjectStream<TValue> input)
-        {
-            return Predicate(input.CurrentElement);
-        }
-
         public override bool Equals(object obj)
         {
             var pred = obj as FSAPredicateEdge<TValue>;
