@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using ORegex;
 using ORegex.Core.Ast;
 using ORegex.Core.FinitieStateAutomaton;
 using ORegex.Core.Parse;
@@ -147,9 +148,9 @@ namespace TestUtility
         private void TestRegexEqualityButton_Click(object sender, EventArgs e)
         {
             var regex = new Regex(RegexPatternBox.Text);
-
-            var matches = regex.Matches(InputTextBox.Text).Cast<Match>();
-            
+            var oregex = new ObjectRegex<char>(ORegexPatternBox.Text, ORegexOptions.None, _table);
+            var matches = regex.Matches(InputTextBox.Text).Cast<Match>().ToArray();
+            var omatches = oregex.Matches(InputTextBox.Text.ToCharArray()).ToArray();
         }
     }
 }

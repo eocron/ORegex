@@ -239,7 +239,7 @@
             this.InputTextBox.Name = "InputTextBox";
             this.InputTextBox.Size = new System.Drawing.Size(457, 355);
             this.InputTextBox.TabIndex = 0;
-            this.InputTextBox.Text = "";
+            this.InputTextBox.Text = "abbbbabbbbbb";
             // 
             // label4
             // 
@@ -258,6 +258,7 @@
             this.RegexPatternBox.Name = "RegexPatternBox";
             this.RegexPatternBox.Size = new System.Drawing.Size(407, 20);
             this.RegexPatternBox.TabIndex = 2;
+            this.RegexPatternBox.Text = "a(?<g1>b)+";
             // 
             // label5
             // 
@@ -276,6 +277,7 @@
             this.ORegexPatternBox.Name = "ORegexPatternBox";
             this.ORegexPatternBox.Size = new System.Drawing.Size(407, 20);
             this.ORegexPatternBox.TabIndex = 4;
+            this.ORegexPatternBox.Text = "{a}(?<g1>{b})+";
             // 
             // TestRegexEqualityButton
             // 

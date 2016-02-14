@@ -38,10 +38,10 @@ namespace ORegex
             }
         }
 
-        internal ObjectCapture(Capture capture, TValue[] collection, int codeLength)
+        internal ObjectCapture(TValue[] collection, int index, int length)
         {
-            Index = capture.Index/codeLength;
-            Length = capture.Length/codeLength;
+            Index = index;
+            Length = length;
             _collection = collection;
         }
         /// <summary>

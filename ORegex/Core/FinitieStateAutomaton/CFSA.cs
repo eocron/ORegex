@@ -81,11 +81,6 @@ namespace ORegex.Core.FinitieStateAutomaton
             }
         }
 
-        private struct StateToken
-        {
-            public IEnumerator<int> Transitions;
-        }
-
         public Range Run(ObjectStream<TValue> stream)
         {
             int startIndex = stream.CurrentIndex;
@@ -116,13 +111,13 @@ namespace ORegex.Core.FinitieStateAutomaton
                         if (cond(stream.CurrentElement))
                         {
                             stream.Step();
+                            if (stream.IsEos())
+                            {
+                                break;
+                            }
                             if (RecRun(predic.EndState, stream))
                             {
                                 return true;
-                            }
-                            else
-                            {
-                                stream.CurrentIndex = streamIndex;
                             }
                         }
                     }
@@ -135,11 +130,15 @@ namespace ORegex.Core.FinitieStateAutomaton
                             //capture range.
                             var name = fsa.Name;
 
-                            return true;
-                        }
-                        else
-                        {
-                            stream.CurrentIndex = streamIndex;
+                            stream.Step();
+                            if (stream.IsEos())
+                            {
+                                break;
+                            }
+                            if (RecRun(predic.EndState, stream))
+                            {
+                                return true;
+                            }
                         }
                     }
                 }
