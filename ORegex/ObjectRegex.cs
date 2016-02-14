@@ -47,6 +47,7 @@ namespace ORegex
         {
             var stream = new ObjectStream<TValue>(values);
 
+            TValue iter;
             while (!stream.IsEos())
             {
                 var range = _cfsa.Run(stream);

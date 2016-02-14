@@ -10,7 +10,7 @@ namespace ORegex.Core
     {
         private readonly TValue[] _sequence;
 
-        private int _currentPosition;
+        private int _currentPosition = 0;
 
         public int CurrentIndex
         {
@@ -37,7 +37,5 @@ namespace ORegex.Core
         {
             return _currentPosition >= _sequence.Length;
         }
-
-
     }
 }

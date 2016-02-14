@@ -84,20 +84,21 @@ namespace ORegex.Core.FinitieStateAutomaton
         public Range Run(ObjectStream<TValue> stream)
         {
             int startIndex = stream.CurrentIndex;
-            if (RecRun(_startState, stream))
+            if (!stream.IsEos())
             {
-                return new Range(startIndex, stream.CurrentIndex - startIndex);
+                if (RecRun(_startState, stream))
+                {
+                    return new Range(startIndex, stream.CurrentIndex - startIndex);
+                }
             }
-            else
-            {
-                stream.CurrentIndex = startIndex;
-                return default(Range);
-            }
+            stream.CurrentIndex = startIndex;
+            return default(Range);
         }
 
         public bool RecRun(int state, ObjectStream<TValue> stream)
-        {
+        {            
             int streamIndex = stream.CurrentIndex;
+            
             var predicates = _transitionMatrix[state];
             if (predicates != null)
             {
@@ -110,14 +111,18 @@ namespace ORegex.Core.FinitieStateAutomaton
                         var cond = predic.Condition;
                         if (cond(stream.CurrentElement))
                         {
+                            state = predic.EndState;
                             stream.Step();
                             if (stream.IsEos())
                             {
-                                break;
+                                break; //no more elements - need to find out if current state is final.
                             }
-                            if (RecRun(predic.EndState, stream))
+                            else
                             {
-                                return true;
+                                if (RecRun(state, stream))
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -127,22 +132,20 @@ namespace ORegex.Core.FinitieStateAutomaton
                         var range = fsa.Run(stream);
                         if (range.Length != 0)
                         {
+                            state = predic.EndState;
                             //capture range.
                             var name = fsa.Name;
 
-                            stream.Step();
-                            if (stream.IsEos())
-                            {
-                                break;
-                            }
-                            if (RecRun(predic.EndState, stream))
+                            if (RecRun(state, stream))
                             {
                                 return true;
                             }
                         }
                     }
+                    stream.CurrentIndex = streamIndex;
                 }
             }
+
 
             if (IsFinal(state))
             {

@@ -151,6 +151,24 @@ namespace TestUtility
             var oregex = new ObjectRegex<char>(ORegexPatternBox.Text, ORegexOptions.None, _table);
             var matches = regex.Matches(InputTextBox.Text).Cast<Match>().ToArray();
             var omatches = oregex.Matches(InputTextBox.Text.ToCharArray()).ToArray();
+
+            if (matches.Length != omatches.Length)
+            {
+                MessageBox.Show("Invalid matches count!", "Count", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            for (int i = 0; i < matches.Length; i++)
+            {
+                var exp = matches[i];
+                var act = omatches[i];
+
+                if (exp.Index != act.Index || exp.Length != act.Length)
+                {
+                    MessageBox.Show("Invalid range!" , "Match dismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            MessageBox.Show("All good.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
