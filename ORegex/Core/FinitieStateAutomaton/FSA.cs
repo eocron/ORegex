@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ORegex.Core.Ast;
 
 namespace ORegex.Core.FinitieStateAutomaton
 {
@@ -179,7 +180,7 @@ namespace ORegex.Core.FinitieStateAutomaton
             return result;
         }
 
-        public bool Run(ObjectStream<TValue> stream)
+        public Range Run(ObjectStream<TValue> stream)
         {
             throw new NotImplementedException();
         }

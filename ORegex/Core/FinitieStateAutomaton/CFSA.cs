@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using ORegex.Core.Ast;
 
 namespace ORegex.Core.FinitieStateAutomaton
 {
@@ -9,8 +11,10 @@ namespace ORegex.Core.FinitieStateAutomaton
     /// </summary>
     public sealed class CFSA<TValue> : IFSA<TValue>
     {
-        private struct CFSATransition
+        public struct CFSATransition
         {
+            public int StartState;
+
             public CFSA<TValue> InnerFSA;
 
             public Func<TValue, bool> Condition;
@@ -25,10 +29,21 @@ namespace ORegex.Core.FinitieStateAutomaton
         private readonly int _startState;
 
         private readonly bool[] _finalsLookup;
+
+        public IEnumerable<CFSATransition> Transitions
+        {
+            get { return _transitionMatrix.Where(x=> x!= null).SelectMany(x => x); }
+        }
+
         public CFSA(FSA<TValue> fsa)
         {
             Name = fsa.Name;
-            _transitionMatrix = fsa.Transitions.ToLookup(x => x.StartState, x => x).OrderBy(x => x.Key).Select(x=>CompileTransitions(x).ToArray()).ToArray();
+            _transitionMatrix = new CFSATransition[fsa.StateCount][];
+            foreach (var look in fsa.Transitions.ToLookup(x => x.StartState, x => x))
+            {
+                _transitionMatrix[look.Key] = CompileTransitions(look).ToArray();
+            }
+
             _startState = fsa.Q0.First();
             _finalsLookup = new bool[_transitionMatrix.Length];
             foreach (var f in fsa.F)
@@ -45,7 +60,8 @@ namespace ORegex.Core.FinitieStateAutomaton
                 {
                     var pInfo = (FSAPredicateEdge<TValue>)t.Info;
                     yield return new CFSATransition()
-                        {
+                        {                            
+                            StartState = t.StartState,
                             InnerFSA = null,
                             Condition = pInfo.Predicate,
                             EndState = t.EndState
@@ -56,6 +72,7 @@ namespace ORegex.Core.FinitieStateAutomaton
                     var pInfo = (FSACaptureEdge<TValue>)t.Info;
                     yield return new CFSATransition()
                         {
+                            StartState = t.StartState,
                             InnerFSA = new CFSA<TValue>(pInfo.InnerFsa),
                             Condition = null,
                             EndState = t.EndState
@@ -64,47 +81,84 @@ namespace ORegex.Core.FinitieStateAutomaton
             }
         }
 
-        public bool Run(ObjectStream<TValue> stream)
+        private struct StateToken
         {
-            var state = _startState;
+            public IEnumerator<int> Transitions;
+        }
 
-            int StartIndex = stream.CurrentIndex;
-            var stack = new Stack<Queue<int>>();
-            stack.Push(new Queue<int>() { StartIndex });
-            while(!stream.IsEos())
+        public Range Run(ObjectStream<TValue> stream)
+        {
+            int startIndex = stream.CurrentIndex;
+            if (RecRun(_startState, stream))
             {
-                var states = stack.Pop();
-                
-                int current = states.Dequeue();
-                
-                var transitions = GetTransitions(state, stream);
+                return new Range(startIndex, stream.CurrentIndex - startIndex);
+            }
+            else
+            {
+                stream.CurrentIndex = startIndex;
+                return default(Range);
+            }
+        }
 
-                //
-                stream.Step();
+        public bool RecRun(int state, ObjectStream<TValue> stream)
+        {
+            int streamIndex = stream.CurrentIndex;
+            var predicates = _transitionMatrix[state];
+            if (predicates != null)
+            {
+                for (int i = 0; i < predicates.Length; i++)
+                {
+                    var predic = predicates[i];
+
+                    if (predic.Condition != null)
+                    {
+                        var cond = predic.Condition;
+                        if (cond(stream.CurrentElement))
+                        {
+                            stream.Step();
+                            if (RecRun(predic.EndState, stream))
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                stream.CurrentIndex = streamIndex;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var fsa = predic.InnerFSA;
+                        var range = fsa.Run(stream);
+                        if (range.Length != 0)
+                        {
+                            //capture range.
+                            var name = fsa.Name;
+
+                            return true;
+                        }
+                        else
+                        {
+                            stream.CurrentIndex = streamIndex;
+                        }
+                    }
+                }
+            }
+
+            if (IsFinal(state))
+            {
+                return true;
+            }
+            else
+            {
+                stream.CurrentIndex = streamIndex;
+                return false;
             }
         }
 
         public bool IsFinal(int state)
         {
             return _finalsLookup[state];
-        }
-
-        public Queue<int> GetTransitions(int state, ObjectStream<TValue> stream)
-        {
-            var result = new Queue<int>();
-            var predicates = _transitionMatrix[state];
-            for (int i = 0; i < predicates.Length; i++)
-            {
-                bool predicateSet = 
-                bool success = predicates[i].Condition != null && predicates[i].Condition(stream.CurrentElement) ||
-                    predicates[i].InnerFSA != null && predicates[i].InnerFSA.Run(stream);
-
-                if(success)
-                {
-                    result.Enqueue(predicates[i].EndState);
-                }
-            }
-            return result;
         }
     }
 }

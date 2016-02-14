@@ -36,14 +36,22 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.label2 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
+            this.IterationsCountBox = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            this.PerfTestButton = new System.Windows.Forms.Button();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.InputTextBox = new System.Windows.Forms.RichTextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.RegexPatternBox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.ORegexPatternBox = new System.Windows.Forms.TextBox();
+            this.TestRegexEqualityButton = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IterationsCountBox)).BeginInit();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // gViewer1
@@ -63,7 +71,7 @@
             this.gViewer1.NavigationVisible = false;
             this.gViewer1.PanButtonPressed = false;
             this.gViewer1.SaveButtonVisible = false;
-            this.gViewer1.Size = new System.Drawing.Size(491, 465);
+            this.gViewer1.Size = new System.Drawing.Size(583, 352);
             this.gViewer1.TabIndex = 0;
             this.gViewer1.ZoomF = 1D;
             this.gViewer1.ZoomFraction = 0.5D;
@@ -77,7 +85,7 @@
             this.richTextBox1.ForeColor = System.Drawing.Color.Black;
             this.richTextBox1.Location = new System.Drawing.Point(6, 134);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(287, 308);
+            this.richTextBox1.Size = new System.Drawing.Size(287, 199);
             this.richTextBox1.TabIndex = 1;
             this.richTextBox1.Text = "^\n\t\t\t{a}(?<group1>{a})\n| {a}{a}*?\n| ({a}{a}({a})?)\n\n///i write some regex\n/*asdfs" +
     "df*/\n\n| [{a}{a}]\n| [^{a}{a}]\n| (?<={a})\n| .\n| {a}{2,}\n| {a}{2,3}?\n$";
@@ -86,7 +94,7 @@
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button1.Location = new System.Drawing.Point(6, 448);
+            this.button1.Location = new System.Drawing.Point(6, 339);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(287, 23);
             this.button1.TabIndex = 2;
@@ -122,10 +130,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(952, 435);
+            this.tabControl1.Size = new System.Drawing.Size(899, 394);
             this.tabControl1.TabIndex = 5;
             // 
             // tabPage1
@@ -138,7 +147,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(796, 477);
+            this.tabPage1.Size = new System.Drawing.Size(891, 368);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Expression Tests";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -146,56 +155,16 @@
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.label3);
-            this.tabPage2.Controls.Add(this.numericUpDown1);
+            this.tabPage2.Controls.Add(this.IterationsCountBox);
             this.tabPage2.Controls.Add(this.label2);
-            this.tabPage2.Controls.Add(this.button2);
+            this.tabPage2.Controls.Add(this.PerfTestButton);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(944, 409);
+            this.tabPage2.Size = new System.Drawing.Size(894, 367);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Performance Tests";
             this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(8, 86);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(0, 13);
-            this.label2.TabIndex = 1;
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(8, 32);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(215, 51);
-            this.button2.TabIndex = 0;
-            this.button2.Text = "Run";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // numericUpDown1
-            // 
-            this.numericUpDown1.Increment = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.numericUpDown1.Location = new System.Drawing.Point(100, 6);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
-            100000000,
-            0,
-            0,
-            0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(123, 20);
-            this.numericUpDown1.TabIndex = 2;
-            this.numericUpDown1.Value = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
             // 
             // label3
             // 
@@ -206,11 +175,124 @@
             this.label3.TabIndex = 3;
             this.label3.Text = "Iterations count:";
             // 
+            // IterationsCountBox
+            // 
+            this.IterationsCountBox.Increment = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.IterationsCountBox.Location = new System.Drawing.Point(100, 6);
+            this.IterationsCountBox.Maximum = new decimal(new int[] {
+            100000000,
+            0,
+            0,
+            0});
+            this.IterationsCountBox.Name = "IterationsCountBox";
+            this.IterationsCountBox.Size = new System.Drawing.Size(123, 20);
+            this.IterationsCountBox.TabIndex = 2;
+            this.IterationsCountBox.Value = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(8, 86);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(0, 13);
+            this.label2.TabIndex = 1;
+            // 
+            // PerfTestButton
+            // 
+            this.PerfTestButton.Location = new System.Drawing.Point(8, 32);
+            this.PerfTestButton.Name = "PerfTestButton";
+            this.PerfTestButton.Size = new System.Drawing.Size(215, 51);
+            this.PerfTestButton.TabIndex = 0;
+            this.PerfTestButton.Text = "Run";
+            this.PerfTestButton.UseVisualStyleBackColor = true;
+            this.PerfTestButton.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.TestRegexEqualityButton);
+            this.tabPage3.Controls.Add(this.ORegexPatternBox);
+            this.tabPage3.Controls.Add(this.label5);
+            this.tabPage3.Controls.Add(this.RegexPatternBox);
+            this.tabPage3.Controls.Add(this.label4);
+            this.tabPage3.Controls.Add(this.InputTextBox);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(891, 368);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Regex Test";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // InputTextBox
+            // 
+            this.InputTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.InputTextBox.Location = new System.Drawing.Point(425, 3);
+            this.InputTextBox.Name = "InputTextBox";
+            this.InputTextBox.Size = new System.Drawing.Size(457, 355);
+            this.InputTextBox.TabIndex = 0;
+            this.InputTextBox.Text = "";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(9, 4);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(74, 13);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "Regex pattern";
+            // 
+            // RegexPatternBox
+            // 
+            this.RegexPatternBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.RegexPatternBox.Location = new System.Drawing.Point(12, 21);
+            this.RegexPatternBox.Name = "RegexPatternBox";
+            this.RegexPatternBox.Size = new System.Drawing.Size(407, 20);
+            this.RegexPatternBox.TabIndex = 2;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(12, 48);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(82, 13);
+            this.label5.TabIndex = 3;
+            this.label5.Text = "ORegex pattern";
+            // 
+            // ORegexPatternBox
+            // 
+            this.ORegexPatternBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.ORegexPatternBox.Location = new System.Drawing.Point(12, 74);
+            this.ORegexPatternBox.Name = "ORegexPatternBox";
+            this.ORegexPatternBox.Size = new System.Drawing.Size(407, 20);
+            this.ORegexPatternBox.TabIndex = 4;
+            // 
+            // TestRegexEqualityButton
+            // 
+            this.TestRegexEqualityButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.TestRegexEqualityButton.Location = new System.Drawing.Point(43, 310);
+            this.TestRegexEqualityButton.Name = "TestRegexEqualityButton";
+            this.TestRegexEqualityButton.Size = new System.Drawing.Size(184, 23);
+            this.TestRegexEqualityButton.TabIndex = 5;
+            this.TestRegexEqualityButton.Text = "Test patterns equality";
+            this.TestRegexEqualityButton.UseVisualStyleBackColor = true;
+            this.TestRegexEqualityButton.Click += new System.EventHandler(this.TestRegexEqualityButton_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(951, 433);
+            this.ClientSize = new System.Drawing.Size(898, 392);
             this.Controls.Add(this.tabControl1);
             this.MinimumSize = new System.Drawing.Size(521, 282);
             this.Name = "MainWindow";
@@ -220,7 +302,9 @@
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IterationsCountBox)).EndInit();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -235,10 +319,17 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button PerfTestButton;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown IterationsCountBox;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.RichTextBox InputTextBox;
+        private System.Windows.Forms.TextBox RegexPatternBox;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox ORegexPatternBox;
+        private System.Windows.Forms.Button TestRegexEqualityButton;
     }
 }
 

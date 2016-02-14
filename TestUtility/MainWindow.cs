@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Microsoft.Glee.Drawing;
-using ORegex;
 using ORegex.Core.Ast;
 using ORegex.Core.FinitieStateAutomaton;
 using ORegex.Core.Parse;
-using Color = System.Drawing.Color;
 
 namespace TestUtility
 {
     public partial class MainWindow : Form
     {
-        private readonly ORegexCompiler<object> _compiler = new ORegexCompiler<object>();
-        private readonly DebugPredicateTable<object> _table = new DebugPredicateTable<object>();
-        private readonly ORegexParser<object> _parser = new ORegexParser<object>(); 
+        private readonly ORegexCompiler<char> _compiler = new ORegexCompiler<char>();
+        private readonly DebugPredicateTable _table = new DebugPredicateTable();
+        private readonly ORegexParser<char> _parser = new ORegexParser<char>(); 
         private readonly GleeGraphCreator _graphCreator = new GleeGraphCreator();
 
         public MainWindow()
@@ -25,13 +25,19 @@ namespace TestUtility
             HighLightSyntax();
         }
 
-        private void DrawGraph(FSA<object> fsm)
+        private void DrawGraph(FSA<char> fsm)
         {
             var graph = _graphCreator.Create(fsm, _table);
             gViewer1.Graph = graph;
             gViewer1.Refresh();
         }
 
+        private void DrawGraph(CFSA<char> fsm)
+        {
+            var graph = _graphCreator.Create(fsm, _table);
+            gViewer1.Graph = graph;
+            gViewer1.Refresh();
+        }
 
         private void ProcessORegex(string oregex)
         {
@@ -127,7 +133,7 @@ namespace TestUtility
             try
             {
                 var sw = Stopwatch.StartNew();
-                var test = new PerformanceTest<object>((int)numericUpDown1.Value);
+                var test = new PerformanceTest((int)IterationsCountBox.Value);
                 test.Run();
                 sw.Stop();
                 label2.Text = "Elapsed " + sw.Elapsed;
@@ -136,6 +142,14 @@ namespace TestUtility
             {
                 MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void TestRegexEqualityButton_Click(object sender, EventArgs e)
+        {
+            var regex = new Regex(RegexPatternBox.Text);
+
+            var matches = regex.Matches(InputTextBox.Text).Cast<Match>();
+            
         }
     }
 }

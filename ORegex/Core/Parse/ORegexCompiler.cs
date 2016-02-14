@@ -12,11 +12,12 @@ namespace ORegex.Core.Parse
             _stb = new FSAFactory<TValue>();
         }
 
-        public FSA<TValue> Build(string input, PredicateTable<TValue> predicateTable)
+        public CFSA<TValue> Build(string input, PredicateTable<TValue> predicateTable)
         {
             var ast = _parser.Parse(input, predicateTable);
             var dfa = _stb.Create(ast);
-            return dfa;
+            var cfsa = new CFSA<TValue>(dfa);
+            return cfsa;
         }
     }
 }

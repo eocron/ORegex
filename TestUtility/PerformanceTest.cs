@@ -3,10 +3,10 @@ using ORegex.Core.Parse;
 
 namespace TestUtility
 {
-    public sealed class PerformanceTest<TValue>
+    public sealed class PerformanceTest
     {
-        private readonly ORegexCompiler<TValue> _compiler = new ORegexCompiler<TValue>();
-        private readonly DebugPredicateTable<TValue> _table = new DebugPredicateTable<TValue>();
+        private readonly ORegexCompiler<char> _compiler = new ORegexCompiler<char>();
+        private readonly DebugPredicateTable _table = new DebugPredicateTable();
         public readonly int IterCount;
         public PerformanceTest(int iterCount = 100)
         {

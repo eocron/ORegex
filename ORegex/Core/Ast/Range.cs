@@ -3,7 +3,7 @@ using Antlr4.Runtime.Tree;
 
 namespace ORegex.Core.Ast
 {
-    public sealed class Range
+    public struct Range
     {
         public readonly int Index;
         public readonly int Length;
@@ -13,6 +13,12 @@ namespace ORegex.Core.Ast
             var context = (ParserRuleContext) tree;
             Index = context.start.StartIndex;
             Length = context.stop.StopIndex - Index + 1;
+        }
+
+        public Range(int index, int length)
+        {
+            Index = index;
+            Length = length;
         }
     }
 }

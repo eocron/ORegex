@@ -15,6 +15,7 @@ namespace ORegex.Core
         public int CurrentIndex
         {
             get { return _currentPosition; }
+            set { _currentPosition = value; }
         }
 
         public ObjectStream(IEnumerable<TValue> sequence)

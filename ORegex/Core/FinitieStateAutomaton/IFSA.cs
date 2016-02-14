@@ -1,8 +1,10 @@
-﻿namespace ORegex.Core.FinitieStateAutomaton
+﻿using ORegex.Core.Ast;
+
+namespace ORegex.Core.FinitieStateAutomaton
 {
     public interface IFSA<TValue>
     {
         string Name { get; }
-        bool Run(ObjectStream<TValue> stream);
+        Range Run(ObjectStream<TValue> stream);
     }
 }
