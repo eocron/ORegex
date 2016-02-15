@@ -1,0 +1,28 @@
+﻿<TEST>
+	<REGEX>ab+</REGEX>
+	<OREGEX>{a}{b}+</OREGEX>
+	<TEXT>
+      abbbbabbbbbb23r23rsdfsdfab34u5r0384q328y5t90q2h3rgoqheroghaskfjgho;afs
+      ab
+      ab
+      a
+      b
+      ab
+      a
+      b
+      b
+      ab
+      ab
+      a
+      b
+      
+      erth
+      ws
+      h
+      sw
+      trh
+      sw
+      rth
+      ab
+	</TEXT>
+</TEST>

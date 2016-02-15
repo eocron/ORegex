@@ -1,0 +1,7 @@
+﻿<TEST>
+	<REGEX>a*</REGEX>
+	<OREGEX>{a}*</OREGEX>
+	<TEXT>
+      abababababaabbb
+	</TEXT>
+</TEST>

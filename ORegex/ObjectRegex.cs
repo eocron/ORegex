@@ -43,17 +43,16 @@ namespace ORegex
             return table;
         }
 
-        public IEnumerable<ObjectCapture<TValue>> Matches(TValue[] values)
+        public IEnumerable<ObjectMatch<TValue>> Matches(TValue[] values)
         {
             var stream = new ObjectStream<TValue>(values);
 
-            TValue iter;
             while (!stream.IsEos())
             {
                 var range = _cfsa.Run(stream);
                 if (range.Length != 0)
                 {
-                    yield return new ObjectCapture<TValue>(values, range.Index, range.Length);
+                    yield return new ObjectMatch<TValue>(values, range.Index, range.Length);
                 }
                 else
                 {

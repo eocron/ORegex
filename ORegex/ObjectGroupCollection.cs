@@ -22,7 +22,7 @@
 //            var names = pattern.GetGroupNames();
 //            var nums = pattern.GetGroupNumbers();
 //            _nameToGroup = new Dictionary<string, ObjectGroup<TValue>>();
-//            for(int i = 0; i < names.Length;i++)
+//            for (int i = 0; i < names.Length; i++)
 //            {
 //                _nameToGroup[names[i]] = _groups[nums[i]];
 //            }

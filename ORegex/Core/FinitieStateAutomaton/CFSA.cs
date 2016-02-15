@@ -92,7 +92,7 @@ namespace ORegex.Core.FinitieStateAutomaton
                 }
             }
             stream.CurrentIndex = startIndex;
-            return default(Range);
+            return new Range(-1,-1);
         }
 
         public bool RecRun(int state, ObjectStream<TValue> stream)
@@ -130,7 +130,7 @@ namespace ORegex.Core.FinitieStateAutomaton
                     {
                         var fsa = predic.InnerFSA;
                         var range = fsa.Run(stream);
-                        if (range.Length != 0)
+                        if (range.Length >=0)
                         {
                             state = predic.EndState;
                             //capture range.

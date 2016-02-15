@@ -1,0 +1,7 @@
+﻿<TEST>
+	<REGEX>a|b</REGEX>
+	<OREGEX>{a}|{b}</OREGEX>
+	<TEXT>
+      abababababaabbb
+	</TEXT>
+</TEST>
