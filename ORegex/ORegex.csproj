@@ -89,7 +89,6 @@
     <Compile Include="Core\FinitieStateAutomaton\PredicateConst.cs" />
     <Compile Include="Core\Set.cs" />
     <Compile Include="Core\FinitieStateAutomaton\FSAFactory.cs" />
-    <Compile Include="FSM\ObjectLevenshteinDistance.cs" />
     <Compile Include="ObjectCapture.cs" />
     <Compile Include="ObjectGroup.cs" />
     <Compile Include="ObjectGroupCollection.cs" />
