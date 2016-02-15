@@ -58,7 +58,6 @@ namespace ORegex.Core.FinitieStateAutomaton
             Q0 = q0.ToHashSet();
             F = f.ToHashSet();
             StateCount = Q.Count();
-
             #region Speedup
             foreach(var t in Transitions)
             {

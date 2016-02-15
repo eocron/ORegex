@@ -12,6 +12,10 @@ namespace ORegex.Core
 
         private int _currentPosition = 0;
 
+        public TValue[] Sequence
+        {
+            get { return _sequence; }
+        }
         public int CurrentIndex
         {
             get { return _currentPosition; }

@@ -66,6 +66,7 @@
     <Compile Include="Core\Ast\Range.cs" />
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\FinitieStateAutomaton\CFSA.cs" />
+    <Compile Include="Core\FinitieStateAutomaton\CFSAContext.cs" />
     <Compile Include="Core\ObjectStream.cs" />
     <Compile Include="Core\ORegexException.cs" />
     <Compile Include="Core\ORegexSyntaxException.cs" />
@@ -90,11 +91,11 @@
     <Compile Include="Core\Set.cs" />
     <Compile Include="Core\FinitieStateAutomaton\FSAFactory.cs" />
     <Compile Include="ObjectCapture.cs" />
+    <Compile Include="ObjectCaptureCollection.cs" />
     <Compile Include="ObjectGroup.cs" />
     <Compile Include="ObjectGroupCollection.cs" />
     <Compile Include="ObjectMatch.cs" />
     <Compile Include="ObjectRegex.cs" />
-    <Compile Include="ORegexFactory.cs" />
     <Compile Include="ORegexOptions.cs" />
     <Compile Include="PredicateTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

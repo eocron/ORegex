@@ -8,7 +8,7 @@ namespace ORegex.Core.Parse
 {
     public sealed class ORegexParser<TValue>
     {
-        public AstNodeBase Parse(string input, PredicateTable<TValue> predicateTable)
+        public AstRootNode Parse(string input, PredicateTable<TValue> predicateTable)
         {
             var lexer = new RegexGrammarLexer(new AntlrInputStream(input));
             var tokenStream = new CommonTokenStream(lexer);
@@ -18,7 +18,7 @@ namespace ORegex.Core.Parse
             var context = parser.expr();
 
             var args = new ORegexAstFactoryArgs<TValue>(predicateTable, parser);
-            var result = ORegexAstFactory<TValue>.Create(context, args);
+            var result = ORegexAstFactory<TValue>.CreateAstTree(context, args);
 #if DEBUG
             AstNodeBase.Print(result);
 #endif

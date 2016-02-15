@@ -7,7 +7,7 @@ namespace ORegex.Core.FinitieStateAutomaton
     public sealed class FSAFactory<TValue>
     {
         private readonly FSAPreprocessor<TValue> _preprocessor = new FSAPreprocessor<TValue>(); 
-        public FSA<TValue> Create(AstNodeBase root, string name = "#MAIN#")
+        public FSA<TValue> Create(AstNodeBase root, string name)
         {
             var result = new FSA<TValue>(name);
             var start = result.NewState();

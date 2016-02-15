@@ -11,6 +11,8 @@ namespace ORegex.Core.FinitieStateAutomaton
     /// </summary>
     public sealed class CFSA<TValue>
     {
+        public string[] CaptureGroupNames;
+ 
         public struct CFSATransition
         {
             public int StartState;
@@ -35,13 +37,14 @@ namespace ORegex.Core.FinitieStateAutomaton
             get { return _transitionMatrix.Where(x=> x!= null).SelectMany(x => x); }
         }
 
-        public CFSA(FSA<TValue> fsa)
+        public CFSA(FSA<TValue> fsa, string[] captureGroupNames)
         {
+            CaptureGroupNames = captureGroupNames;
             Name = fsa.Name;
             _transitionMatrix = new CFSATransition[fsa.StateCount][];
             foreach (var look in fsa.Transitions.ToLookup(x => x.StartState, x => x))
             {
-                _transitionMatrix[look.Key] = CompileTransitions(look).ToArray();
+                _transitionMatrix[look.Key] = CompileTransitions(look, captureGroupNames).ToArray();
             }
 
             _startState = fsa.Q0.First();
@@ -52,7 +55,7 @@ namespace ORegex.Core.FinitieStateAutomaton
             }
         }
 
-        private static IEnumerable<CFSATransition> CompileTransitions(IEnumerable<FSATransition<TValue>> transitions)
+        private static IEnumerable<CFSATransition> CompileTransitions(IEnumerable<FSATransition<TValue>> transitions, string[] captureGroupNames)
         {
             foreach (var t in transitions)
             {
@@ -73,7 +76,7 @@ namespace ORegex.Core.FinitieStateAutomaton
                     yield return new CFSATransition()
                         {
                             StartState = t.StartState,
-                            InnerFSA = new CFSA<TValue>(pInfo.InnerFsa),
+                            InnerFSA = new CFSA<TValue>(pInfo.InnerFsa, captureGroupNames),
                             Condition = null,
                             EndState = t.EndState
                         };
@@ -81,21 +84,21 @@ namespace ORegex.Core.FinitieStateAutomaton
             }
         }
 
-        public Range Run(ObjectStream<TValue> stream)
+        public ObjectCapture<TValue> Run(ObjectStream<TValue> stream, CFSAContext<TValue> context)
         {
             int startIndex = stream.CurrentIndex;
             if (!stream.IsEos())
             {
-                if (RecRun(_startState, stream))
+                if (RecRun(_startState, stream, context))
                 {
-                    return new Range(startIndex, stream.CurrentIndex - startIndex);
+                    return new ObjectCapture<TValue>(stream.Sequence, startIndex, stream.CurrentIndex - startIndex);
                 }
             }
             stream.CurrentIndex = startIndex;
-            return new Range(-1,-1);
+            return null;
         }
 
-        public bool RecRun(int state, ObjectStream<TValue> stream)
+        public bool RecRun(int state, ObjectStream<TValue> stream, CFSAContext<TValue> context)
         {            
             int streamIndex = stream.CurrentIndex;
             
@@ -119,7 +122,7 @@ namespace ORegex.Core.FinitieStateAutomaton
                             }
                             else
                             {
-                                if (RecRun(state, stream))
+                                if (RecRun(state, stream, context))
                                 {
                                     return true;
                                 }
@@ -129,14 +132,14 @@ namespace ORegex.Core.FinitieStateAutomaton
                     else
                     {
                         var fsa = predic.InnerFSA;
-                        var range = fsa.Run(stream);
-                        if (range.Length >=0)
+                        var capture = fsa.Run(stream, context);
+                        if (capture != null)
                         {
                             state = predic.EndState;
                             //capture range.
                             var name = fsa.Name;
-
-                            if (RecRun(state, stream))
+                            context.AddCapture(name, capture);
+                            if (RecRun(state, stream, context))
                             {
                                 return true;
                             }

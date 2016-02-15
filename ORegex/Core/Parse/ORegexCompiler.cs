@@ -15,8 +15,8 @@ namespace ORegex.Core.Parse
         public CFSA<TValue> Build(string input, PredicateTable<TValue> predicateTable)
         {
             var ast = _parser.Parse(input, predicateTable);
-            var dfa = _stb.Create(ast);
-            var cfsa = new CFSA<TValue>(dfa);
+            var dfa = _stb.Create(ast, ast.CaptureGroupNames[0]);
+            var cfsa = new CFSA<TValue>(dfa, ast.CaptureGroupNames);
             return cfsa;
         }
     }

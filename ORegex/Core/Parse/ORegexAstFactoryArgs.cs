@@ -11,10 +11,13 @@ namespace ORegex.Core.Parse
         private readonly PredicateTable<TValue> _predicateTable;
         private readonly RegexGrammarParser _parser;
 
+        public List<string> CaptureGroupNames; 
+
         public ORegexAstFactoryArgs(PredicateTable<TValue> predicateTable, RegexGrammarParser parser)
         {
             _predicateTable = new PredicateTable<TValue>(predicateTable.ThrowIfNull());
             _parser = parser.ThrowIfNull();
+            CaptureGroupNames = new List<string>();
         }
 
         public bool IsName(IParseTree node, string name)

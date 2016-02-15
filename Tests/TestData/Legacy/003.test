@@ -1,6 +1,6 @@
 ﻿<TEST>
-	<REGEX>a*</REGEX>
-	<OREGEX>{a}*</OREGEX>
+	<REGEX>aa*</REGEX>
+	<OREGEX>{a}{a}*</OREGEX>
 	<TEXT>
       abababababaabbb
 	</TEXT>

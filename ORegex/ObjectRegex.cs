@@ -41,15 +41,19 @@ namespace ORegex
         public IEnumerable<ObjectMatch<TValue>> Matches(TValue[] values)
         {
             var stream = new ObjectStream<TValue>(values);
-
+            
             while (!stream.IsEos())
             {
-                var range = _cfsa.Run(stream);
-                if (range.Length != 0)
+                var context = new CFSAContext<TValue>(_cfsa);
+                var capture = _cfsa.Run(stream, context);
+                if (capture != null)
                 {
-                    yield return new ObjectMatch<TValue>(values, range.Index, range.Length);
+                    var match = new ObjectMatch<TValue>(values, capture.Index, capture.Length, context);
+                    
+                    yield return match;
                 }
-                else
+                
+                if(capture == null || capture.Length == 0)
                 {
                     stream.Step();
                 }

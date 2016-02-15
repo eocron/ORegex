@@ -10,6 +10,12 @@ namespace ORegex.Core.Parse
 {
     public sealed class ORegexAstFactory<TValue>
     {
+        public const string MainCaptureName = "#0";
+
+        public static AstRootNode CreateAstTree(IParseTree node, ORegexAstFactoryArgs<TValue> args)
+        {
+            return CreateRoot(node, args);
+        }
         public static AstNodeBase Create(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             if(IsRoot(node, args))
@@ -72,8 +78,9 @@ namespace ORegex.Core.Parse
             return node.ChildCount == 2 && args.IsName(node, "unOper");
         }
 
-        private static AstNodeBase CreateRoot(IParseTree node, ORegexAstFactoryArgs<TValue> args)
+        private static AstRootNode CreateRoot(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
+            args.CaptureGroupNames.Add(MainCaptureName);
             List<AstNodeBase> children = new List<AstNodeBase>();
             bool matchBegin = false;
             bool matchEnd = false;
@@ -97,7 +104,7 @@ namespace ORegex.Core.Parse
             {
                 inner = Create(node.GetChild(0), args);
             }
-            return new AstRootNode(inner, matchBegin, matchEnd, new Range(node));
+            return new AstRootNode(inner, matchBegin, matchEnd, new Range(node), args.CaptureGroupNames);
         }
 
         private static AstNodeBase CreateAtom(IParseTree node, ORegexAstFactoryArgs<TValue> args)
@@ -165,6 +172,7 @@ namespace ORegex.Core.Parse
             if(predicate.StartsWith("(?<") && predicate.Length > 4)
             {
                 var name = predicate.Substring(3, predicate.Length - 4);
+                args.CaptureGroupNames.Add(name);
                 quantifier = new CaptureQuantifier(predicate, name);
             }
             else if(predicate.StartsWith("(?"))

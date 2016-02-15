@@ -1,0 +1,7 @@
+﻿<TEST>
+	<REGEX>ba?b?</REGEX>
+	<OREGEX>{b}{a}?{b}?</OREGEX>
+	<TEXT>
+      ababbabbbb
+	</TEXT>
+</TEST>

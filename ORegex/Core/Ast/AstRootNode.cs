@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace ORegex.Core.Ast
 {
@@ -11,12 +12,15 @@ namespace ORegex.Core.Ast
 
         public AstNodeBase Regex;
 
-        public AstRootNode(AstNodeBase innerExpression, bool matchBegin, bool matchEnd, Range range)
+        public string[] CaptureGroupNames;
+
+        public AstRootNode(AstNodeBase innerExpression, bool matchBegin, bool matchEnd, Range range, IEnumerable<string> captureGroupNames)
             : base(range)
         {
             MatchBegin = matchBegin;
             MatchEnd = matchEnd;
             Regex = innerExpression;
+            CaptureGroupNames = captureGroupNames.ToArray();
         }
 
         public override string ToString()

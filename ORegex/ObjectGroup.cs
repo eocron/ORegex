@@ -11,7 +11,7 @@ namespace ORegex
     [DebuggerDisplay("success={IsSuccess}, index={Index}, length={Length};")]
     public class ObjectGroup<TValue> : ObjectCapture<TValue>
     {
-        public readonly ObjectCapture<TValue>[] Captures;
+        public readonly ObjectCaptureCollection<TValue> Captures;
         /// <summary>
         /// Is group catch successful
         /// </summary>
@@ -33,9 +33,16 @@ namespace ORegex
             }
         }
 
-        internal ObjectGroup(TValue[] collection, int index, int length) : base(collection, index, length)
+        internal ObjectGroup(TValue[] collection, int index, int length, IEnumerable<ObjectCapture<TValue>> captures) : base(collection, index, length)
         {
-            IsSuccess = true;
+            Captures = new ObjectCaptureCollection<TValue>();
+            Captures.Add(this);
+            foreach (var c in captures)
+            {
+                Captures.Add(c);
+            }
+
+            IsSuccess = Captures.Count > 0;
         }
     }
 }
