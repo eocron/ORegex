@@ -86,7 +86,6 @@
     <Compile Include="Core\FinitieStateAutomaton\FSAPreprocessor.cs" />
     <Compile Include="Core\FinitieStateAutomaton\FSATransition.cs" />
     <Compile Include="Core\FinitieStateAutomaton\FSA.cs" />
-    <Compile Include="Core\FinitieStateAutomaton\IFSA.cs" />
     <Compile Include="Core\FinitieStateAutomaton\PredicateConst.cs" />
     <Compile Include="Core\Set.cs" />
     <Compile Include="Core\FinitieStateAutomaton\FSAFactory.cs" />

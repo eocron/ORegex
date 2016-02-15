@@ -37,7 +37,7 @@ namespace TestUtility
                 }
                 if (fsm.F.Contains(t.EndState))
                 {
-                    edge.TargetNode.Attr.Fillcolor = Microsoft.Glee.Drawing.Color.Gray;
+                    edge.TargetNode.Attr.Fillcolor = Color.Gray;
                     edge.TargetNode.Attr.Shape = Shape.DoubleCircle;
                 }
             }

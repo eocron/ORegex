@@ -9,7 +9,7 @@ namespace ORegex.Core.FinitieStateAutomaton
     /// <summary>
     /// Compiled FSA
     /// </summary>
-    public sealed class CFSA<TValue> : IFSA<TValue>
+    public sealed class CFSA<TValue>
     {
         public struct CFSATransition
         {

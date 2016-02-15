@@ -5,7 +5,7 @@ using ORegex.Core.Ast;
 
 namespace ORegex.Core.FinitieStateAutomaton
 {
-    public sealed class FSA<TValue> : IFSA<TValue>
+    public sealed class FSA<TValue>
     {
         #region Speedup
 
