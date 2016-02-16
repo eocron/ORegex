@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Xml.Linq;
+using NUnit.Framework;
 
 namespace Tests.Core
 {
@@ -9,9 +10,12 @@ namespace Tests.Core
     {
         public string Name { get; set; }
 
+        public bool Ignored { get; set; }
+
         private readonly Lazy<XElement> _getRoot; 
-        public SingleFileTest(string filePath)
+        public SingleFileTest(string filePath, bool isIgnored)
         {
+            Ignored = isIgnored;
             Name = Path.GetFileNameWithoutExtension(filePath);
             _getRoot = new Lazy<XElement>(() => ReadFile(filePath));
         }
@@ -33,6 +37,10 @@ namespace Tests.Core
 
         public XElement GetRoot()
         {
+            if (Ignored)
+            {
+                Assert.Ignore("Ignored test.");
+            }
             return _getRoot.Value;
         }
 

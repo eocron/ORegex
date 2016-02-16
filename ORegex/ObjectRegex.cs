@@ -44,11 +44,11 @@ namespace ORegex
             
             while (!stream.IsEos())
             {
-                var context = new CFSAContext<TValue>(_cfsa);
+                var context = new CFSAContext<TValue>(_cfsa, values);
                 var capture = _cfsa.Run(stream, context);
                 if (capture != null)
                 {
-                    var match = new ObjectMatch<TValue>(values, capture.Index, capture.Length, context);
+                    var match = new ObjectMatch<TValue>(values, capture.Index, capture.Length);
                     
                     yield return match;
                 }

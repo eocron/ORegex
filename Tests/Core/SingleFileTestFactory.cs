@@ -14,11 +14,8 @@ namespace Tests.Core
             foreach (var file in files)
             {
                 var name = Path.GetFileNameWithoutExtension(file);
-                if (expectedToFail.Contains(name))
-                {
-                    continue;
-                }
-                yield return new SingleFileTest(file);
+                bool isIgnored = expectedToFail != null && expectedToFail.Contains(name);
+                yield return new SingleFileTest(file, isIgnored);
             }
         }
     }

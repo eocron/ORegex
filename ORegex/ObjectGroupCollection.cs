@@ -13,30 +13,10 @@ namespace ORegex
 
         private readonly ObjectGroup<TValue>[] _captures;
 
-        //internal ObjectGroupCollection(string[] captureGroupNames)
-        //{
-        //    _nameToCaptures = new Dictionary<string, List<ObjectCapture<TValue>>>(captureGroupNames.Length * 2);
-        //    _captures = new List<ObjectCapture<TValue>>[captureGroupNames.Length];
-
-        //    for (int i = 0; i < captureGroupNames.Length; i++)
-        //    {
-        //        List<ObjectCapture<TValue>> tmp;
-        //        if (!_nameToCaptures.TryGetValue(captureGroupNames[i], out tmp))
-        //        {
-        //            tmp = new List<ObjectCapture<TValue>>();
-        //        }
-
-        //        _captures[i] = tmp;
-        //        _nameToCaptures[i.ToString()] = tmp;
-        //        _nameToCaptures[captureGroupNames[i]] = tmp;
-        //    }
-        //}
-
-        internal ObjectGroupCollection(TValue[] values, CFSAContext<TValue> context)
+        internal ObjectGroupCollection(CFSAContext<TValue> context)
         {
             _nameToGroup = new Dictionary<string, ObjectGroup<TValue>>();
             _captures = new ObjectGroup<TValue>[context._captures.Length];
-
         }
 
         public int Count
@@ -64,6 +44,11 @@ namespace ORegex
         internal void Add(string name, ObjectGroup<TValue> group)
         {
             _nameToGroup.Add(name, group);
+        }
+
+        internal void Add(int id, ObjectGroup<TValue> group)
+        {
+            _captures[id].Captures.Add(group);
         }
 
         public IEnumerator<ObjectGroup<TValue>> GetEnumerator()

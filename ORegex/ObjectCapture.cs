@@ -12,15 +12,16 @@ namespace ORegex
     public class ObjectCapture<TValue>: IEnumerable<TValue>
     {
         protected readonly TValue[] _collection;
+
         /// <summary>
         /// Start index
         /// </summary>
-        public readonly int Index;
+        public int Index { get; private set; }
 
         /// <summary>
         /// Length of capture
         /// </summary>
-        public readonly int Length;
+        public int Length { get; private set; }
 
         /// <summary>
         /// Value between end and start point
@@ -42,10 +43,7 @@ namespace ORegex
             Length = length;
             _collection = collection;
         }
-        /// <summary>
-        /// STD
-        /// </summary>
-        /// <returns></returns>
+
         public IEnumerator<TValue> GetEnumerator()
         {
             return Value.GetEnumerator();

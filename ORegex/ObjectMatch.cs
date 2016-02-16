@@ -9,12 +9,11 @@ namespace ORegex
     [DebuggerDisplay("index={Index}, length={Length};")]
     public sealed class ObjectMatch<TValue> : ObjectGroup<TValue>
     {
-        public readonly ObjectGroupCollection<TValue> Groups;
+        public ObjectGroupCollection<TValue> Groups { get; set; }
 
-        internal ObjectMatch(TValue[] collection, int index, int length, CFSAContext<TValue> context)
-            : base(collection, index, length, context._captures[0])
+        internal ObjectMatch(TValue[] collection, int index, int length)
+            : base(collection, index, length)
         {
-            Groups = new ObjectGroupCollection<TValue>(collection, context);
         }
     }
 }

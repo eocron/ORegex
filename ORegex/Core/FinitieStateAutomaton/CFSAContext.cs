@@ -6,11 +6,14 @@ namespace ORegex.Core.FinitieStateAutomaton
     {
         public readonly Dictionary<string, List<ObjectCapture<TValue>>> _nameToCaptures;
 
-        public readonly List<ObjectCapture<TValue>>[] _captures; 
+        public readonly List<ObjectCapture<TValue>>[] _captures;
 
-        public CFSAContext(CFSA<TValue> cfsa)
+        public readonly TValue[] Sequence;
+
+        public CFSAContext(CFSA<TValue> cfsa, TValue[] collection)
         {
             var captureGroupNames = cfsa.CaptureGroupNames;
+            Sequence = collection;
             _nameToCaptures = new Dictionary<string, List<ObjectCapture<TValue>>>(captureGroupNames.Length * 2);
             _captures = new List<ObjectCapture<TValue>>[captureGroupNames.Length];
 
