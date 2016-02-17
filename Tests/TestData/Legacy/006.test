@@ -1,0 +1,8 @@
+﻿<TEST>
+	<REGEX>.b?</REGEX>
+	<OREGEX>.{b}?</OREGEX>
+	<TEXT>ababbabbbb      c
+  
+  
+  </TEXT>
+</TEST>

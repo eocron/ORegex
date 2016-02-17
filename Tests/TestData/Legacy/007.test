@@ -1,0 +1,5 @@
+﻿<TEST>
+	<REGEX>.*b</REGEX>
+	<OREGEX>.*{b}</OREGEX>
+	<TEXT>abab</TEXT>
+</TEST>

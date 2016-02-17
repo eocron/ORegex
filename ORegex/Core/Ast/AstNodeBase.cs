@@ -17,6 +17,10 @@ namespace ORegex.Core.Ast
         }
         public static void Print(AstNodeBase node, int depth = 0)
         {
+            if (depth == 0)
+            {
+                Console.WriteLine();
+            }
             var attr = node.GetType().GetCustomAttributes(true).OfType<DebuggerDisplayAttribute>().FirstOrDefault();
 
             Console.Write(string.Join("", Enumerable.Repeat("  ", depth)));

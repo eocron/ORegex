@@ -16,7 +16,10 @@ namespace ORegex
         /// <summary>
         /// Is group catch successful
         /// </summary>
-        public bool IsSuccess { get; set; }
+        public bool IsSuccess
+        {
+            get { return Length >= 0; }
+        }
 
 
         public override IEnumerable<TValue> Value
