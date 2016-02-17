@@ -15,9 +15,9 @@ namespace ORegex.Core.FinitieStateAutomaton
  
         public struct CFSATransition
         {
-            public int StartState;
+            public int ClassGUID;
 
-            public CFSA<TValue> InnerFSA;
+            public int StartState;
 
             public Func<TValue, bool> Condition;
 
@@ -59,28 +59,13 @@ namespace ORegex.Core.FinitieStateAutomaton
         {
             foreach (var t in transitions)
             {
-                if (t.Info.IsPredicateEdge)
+                yield return new CFSATransition()
                 {
-                    var pInfo = (FSAPredicateEdge<TValue>)t.Info;
-                    yield return new CFSATransition()
-                        {                            
-                            StartState = t.StartState,
-                            InnerFSA = null,
-                            Condition = pInfo.Predicate,
-                            EndState = t.EndState
-                        };
-                }
-                else if (t.Info.IsCaptureEdge)
-                {
-                    var pInfo = (FSACaptureEdge<TValue>)t.Info;
-                    yield return new CFSATransition()
-                        {
-                            StartState = t.StartState,
-                            InnerFSA = new CFSA<TValue>(pInfo.InnerFsa, captureGroupNames),
-                            Condition = null,
-                            EndState = t.EndState
-                        };
-                }
+                    ClassGUID = t.Info.ClassGUID,
+                    StartState = t.StartState,
+                    Condition = t.Info.Predicate,
+                    EndState = t.EndState
+                };
             }
         }
 
@@ -109,36 +94,17 @@ namespace ORegex.Core.FinitieStateAutomaton
                 {
                     var predic = predicates[i];
 
-                    if (predic.Condition != null)
+                    var cond = predic.Condition;
+                    if (cond(stream.CurrentElement))
                     {
-                        var cond = predic.Condition;
-                        if (cond(stream.CurrentElement))
+                        state = predic.EndState;
+                        stream.Step();
+                        if (stream.IsEos())
                         {
-                            state = predic.EndState;
-                            stream.Step();
-                            if (stream.IsEos())
-                            {
-                                break; //no more elements - need to find out if current state is final.
-                            }
-                            else
-                            {
-                                if (RecRun(state, stream, context))
-                                {
-                                    return true;
-                                }
-                            }
+                            break; //no more elements - need to find out if current state is final.
                         }
-                    }
-                    else
-                    {
-                        var fsa = predic.InnerFSA;
-                        var capture = fsa.Run(stream, context);
-                        if (capture != null)
+                        else
                         {
-                            state = predic.EndState;
-                            //capture range.
-                            var name = fsa.Name;
-                            context.AddCapture(name, capture);
                             if (RecRun(state, stream, context))
                             {
                                 return true;

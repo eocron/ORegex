@@ -81,8 +81,6 @@
       <DependentUpon>RegexGrammar.g4</DependentUpon>
     </Compile>
     <Compile Include="Core\Parse\ORegexParser.cs" />
-    <Compile Include="Core\FinitieStateAutomaton\FSACaptureEdge.cs" />
-    <Compile Include="Core\FinitieStateAutomaton\FSAEdgeInfoBase.cs" />
     <Compile Include="Core\FinitieStateAutomaton\FSAPredicateEdge.cs" />
     <Compile Include="Core\FinitieStateAutomaton\FSAPreprocessor.cs" />
     <Compile Include="Core\FinitieStateAutomaton\FSATransition.cs" />

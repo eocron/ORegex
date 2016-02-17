@@ -2,15 +2,15 @@
 
 namespace ORegex.Core.FinitieStateAutomaton
 {
-    public sealed class FSAPredicateEdge<TValue> : FSAEdgeInfoBase<TValue>
+    public sealed class FSAPredicateEdge<TValue>
     {
-        public override bool IsCaptureEdge { get { return false; } }
-        public override bool IsPredicateEdge  { get{return true;} }
+        public readonly int ClassGUID;
 
         public readonly Func<TValue, bool> Predicate; 
-        public FSAPredicateEdge(Func<TValue, bool> predicate)
+        public FSAPredicateEdge(Func<TValue, bool> predicate, int classGUID)
         {
             Predicate = predicate.ThrowIfNull();
+            ClassGUID = classGUID;
         }
 
         public override bool Equals(object obj)
@@ -18,24 +18,24 @@ namespace ORegex.Core.FinitieStateAutomaton
             var pred = obj as FSAPredicateEdge<TValue>;
             if (pred != null)
             {
-                return pred.Predicate.Equals(Predicate);
+                return pred.Predicate.Equals(Predicate) && pred.ClassGUID == ClassGUID;
             }
             return false;
         }
 
         public override int GetHashCode()
         {
-            return Predicate.GetHashCode();
+            return Predicate.GetHashCode() ^ ClassGUID.GetHashCode();
         }
 
-        public static bool IsEpsilonPredicate(FSAEdgeInfoBase<TValue> info)
+        public static bool IsEpsilonPredicate(FSAPredicateEdge<TValue> info)
         {
-            if (info.IsPredicateEdge)
-            {
-                var pInfo = (FSAPredicateEdge<TValue>)info;
-                return ReferenceEquals(pInfo.Predicate, PredicateConst<TValue>.Epsilon);
-            }
-            return false;
+            return ReferenceEquals(info.Predicate, PredicateConst<TValue>.Epsilon);
+        }
+
+        public static bool IsEqualFast(FSAPredicateEdge<TValue> a, FSAPredicateEdge<TValue> b)
+        {
+            return ReferenceEquals(a.Predicate, b.Predicate) && a.ClassGUID == b.ClassGUID;
         }
     }
 }

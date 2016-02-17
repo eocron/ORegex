@@ -9,7 +9,7 @@ namespace ORegex.Core.FinitieStateAutomaton
     {
         #region Speedup
 
-        private readonly HashSet<FSAEdgeInfoBase<TValue>> _sigma = new HashSet<FSAEdgeInfoBase<TValue>>();
+        private readonly HashSet<FSAPredicateEdge<TValue>> _sigma = new HashSet<FSAPredicateEdge<TValue>>();
 
         private readonly Dictionary<int, List<FSATransition<TValue>>> _lookup = new Dictionary<int, List<FSATransition<TValue>>>();
 
@@ -24,7 +24,7 @@ namespace ORegex.Core.FinitieStateAutomaton
         public readonly HashSet<int> F;
 
 
-        public IEnumerable<FSAEdgeInfoBase<TValue>> Sigma
+        public IEnumerable<FSAPredicateEdge<TValue>> Sigma
         {
             get
             {
@@ -88,24 +88,19 @@ namespace ORegex.Core.FinitieStateAutomaton
             StateCount = 0;
         }
 
-        public void AddTransition(int from, FSA<TValue> condition, int to)
+        public void AddTransition(int from, FSAPredicateEdge<TValue> condition, int to)
         {
             AddTransition(new FSATransition<TValue>(from, condition, to));
         }
 
-        public void AddTransition(int from, FSAEdgeInfoBase<TValue> condition, int to)
+        public void AddTransition(int from, Func<TValue, bool> condition, int to, int classGUID)
         {
-            AddTransition(new FSATransition<TValue>(from, condition, to));
-        }
-
-        public void AddTransition(int from, Func<TValue, bool> condition, int to)
-        {
-            AddTransition(new FSATransition<TValue>(from, condition, to));
+            AddTransition(new FSATransition<TValue>(from, condition, to, classGUID));
         }
 
         public void AddEpsilonTransition(int from, int to)
         {
-            AddTransition(from, PredicateConst<TValue>.Epsilon, to);
+            AddTransition(from, PredicateConst<TValue>.Epsilon, to, -1);
         }
 
         public void AddTransition(FSATransition<TValue> trans)
@@ -160,7 +155,7 @@ namespace ORegex.Core.FinitieStateAutomaton
         /// <param name="states"></param>
         /// <param name="inp"></param>
         /// <returns></returns>
-        public Set<int> Move(Set<int> states, FSAEdgeInfoBase<TValue> inp)
+        public Set<int> Move(Set<int> states, FSAPredicateEdge<TValue> inp)
         {
             var result = new Set<int>();
 
@@ -170,7 +165,7 @@ namespace ORegex.Core.FinitieStateAutomaton
                 foreach (var input in GetTransitionsFrom(state))
                 {
                     // If the transition is on input inp, add it to the resulting set
-                    if (FSAEdgeInfoBase<TValue>.IsEqualFast(input.Info, inp))
+                    if (FSAPredicateEdge<TValue>.IsEqualFast(input.Info, inp))
                     {
                         result.Add(input.EndState);
                     }

@@ -14,8 +14,11 @@ namespace ORegex.Core.Parse
 
         public static AstRootNode CreateAstTree(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
-            return CreateRoot(node, args);
+            var tree = CreateRoot(node, args);
+
+            return tree;
         }
+
         public static AstNodeBase Create(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             if(IsRoot(node, args))
