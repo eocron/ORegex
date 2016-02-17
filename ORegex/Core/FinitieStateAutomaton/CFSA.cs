@@ -13,7 +13,7 @@ namespace ORegex.Core.FinitieStateAutomaton
     {
         public string[] CaptureGroupNames;
  
-        public struct CFSATransition
+        public class CFSATransition
         {
             public int ClassGUID;
 
@@ -86,27 +86,31 @@ namespace ORegex.Core.FinitieStateAutomaton
         public bool RecRun(int state, ObjectStream<TValue> stream, CFSAContext<TValue> context)
         {            
             int streamIndex = stream.CurrentIndex;
-            
+
+            CFSATransition lastTransition = null;
             var predicates = _transitionMatrix[state];
             if (predicates != null)
             {
                 for (int i = 0; i < predicates.Length; i++)
                 {
                     var predic = predicates[i];
-
-                    var cond = predic.Condition;
-                    if (cond(stream.CurrentElement))
+                    if (predic.Condition(stream.CurrentElement))
                     {
                         state = predic.EndState;
                         stream.Step();
                         if (stream.IsEos())
                         {
+                            lastTransition = predic;
                             break; //no more elements - need to find out if current state is final.
                         }
                         else
                         {
                             if (RecRun(state, stream, context))
                             {
+                                if (predic.ClassGUID != 0)
+                                {
+                                    Console.WriteLine("Captured " + predic.ClassGUID);
+                                }
                                 return true;
                             }
                         }
@@ -118,6 +122,13 @@ namespace ORegex.Core.FinitieStateAutomaton
 
             if (IsFinal(state))
             {
+                if (lastTransition!= null)
+                {
+                    if (lastTransition.ClassGUID != 0)
+                    {
+                        Console.WriteLine("Captured " + lastTransition.ClassGUID);
+                    }
+                }
                 return true;
             }
             else

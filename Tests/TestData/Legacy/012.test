@@ -1,0 +1,5 @@
+﻿<TEST>
+	<REGEX>a(?&lt;g1&gt;[^ab]|b)</REGEX>
+	<OREGEX>{a}(?&lt;g1&gt;[^{a}{b}]|{b})</OREGEX>
+	<TEXT>ababacaa</TEXT>
+</TEST>
