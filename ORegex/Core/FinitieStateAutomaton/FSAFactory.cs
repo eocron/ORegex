@@ -12,7 +12,7 @@ namespace ORegex.Core.FinitieStateAutomaton
             var result = new FSA<TValue>(name);
             var start = result.NewState();
             var end = result.NewState();
-            Evaluate(start, end, result, root, 0);
+            Evaluate(start, end, result, root);
             result.AddFinal(end);
             result.AddStart(start);
 
@@ -21,27 +21,27 @@ namespace ORegex.Core.FinitieStateAutomaton
             return result;
         }
 
-        public void Evaluate(int start, int end, FSA<TValue> fsa, AstNodeBase node, int classGUID)
+        public void Evaluate(int start, int end, FSA<TValue> fsa, AstNodeBase node)
         {
             if (node is AstAtomNode<TValue>)
             {
-                EvaluateAtom(start,end, fsa,(AstAtomNode<TValue>)node, classGUID);
+                EvaluateAtom(start,end, fsa,(AstAtomNode<TValue>)node);
             }
             else if(node is AstConcatNode)
             {
-                EvaluateConcat(start, end, fsa, (AstConcatNode)node, classGUID);
+                EvaluateConcat(start, end, fsa, (AstConcatNode)node);
             }
             else if(node is AstOrNode)
             {
-                EvaluateOr(start, end, fsa, (AstOrNode)node, classGUID);
+                EvaluateOr(start, end, fsa, (AstOrNode)node);
             }
             else if(node is AstRepeatNode)
             {
-                EvaluateRepeat(start, end, fsa, (AstRepeatNode)node, classGUID);
+                EvaluateRepeat(start, end, fsa, (AstRepeatNode)node);
             }
             else if(node is AstRootNode)
             {
-                EvaluateRoot(start, end, fsa, (AstRootNode)node, classGUID);
+                EvaluateRoot(start, end, fsa, (AstRootNode)node);
             }
             else
             {
@@ -49,18 +49,18 @@ namespace ORegex.Core.FinitieStateAutomaton
             }
         }
 
-        private void EvaluateRoot(int start, int end, FSA<TValue> fsa, AstRootNode astRootNode, int classGUID)
+        private void EvaluateRoot(int start, int end, FSA<TValue> fsa, AstRootNode astRootNode)
         {
-            Evaluate(start, end, fsa, astRootNode.Regex, classGUID);
+            Evaluate(start, end, fsa, astRootNode.Regex);
         }
 
-        private void EvaluateRepeat(int start, int end, FSA<TValue> fsa, AstRepeatNode astRepeatNode, int classGUID)
+        private void EvaluateRepeat(int start, int end, FSA<TValue> fsa, AstRepeatNode astRepeatNode)
         {
             var prev = start;
             for (int i = 0; i < astRepeatNode.MinCount; i++)
             {
                 var next = CreateNewState(fsa);
-                Evaluate(prev, next, fsa, astRepeatNode.Argument, classGUID);
+                Evaluate(prev, next, fsa, astRepeatNode.Argument);
                 prev = next;
             }
 
@@ -68,7 +68,7 @@ namespace ORegex.Core.FinitieStateAutomaton
 
             if (astRepeatNode.MaxCount == int.MaxValue)
             {
-                RepeatZeroOrInfinite(prev, end, fsa, astRepeatNode.Argument, classGUID);
+                RepeatZeroOrInfinite(prev, end, fsa, astRepeatNode.Argument);
             }
             else
             {
@@ -76,53 +76,39 @@ namespace ORegex.Core.FinitieStateAutomaton
                 for (int i = 0; i < count; i++)
                 {
                     var next = CreateNewState(fsa);
-                    Evaluate(prev, next, fsa, astRepeatNode.Argument, classGUID);
+                    Evaluate(prev, next, fsa, astRepeatNode.Argument);
                     fsa.AddEpsilonTransition(next, end);
                     prev = next;
                 }
             }
         }
 
-        private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, AstNodeBase node, int classGUID)
+        private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, AstNodeBase node)
         {
             var tmp = CreateNewState(fsa);
-            Evaluate(tmp, tmp, fsa, node, classGUID);
+            Evaluate(tmp, tmp, fsa, node);
             fsa.AddEpsilonTransition(start, tmp);
             fsa.AddEpsilonTransition(tmp, end);
             fsa.AddEpsilonTransition(start, end);
         }
 
-        private void EvaluateOr(int start, int end, FSA<TValue> fsa, AstOrNode node, int classGUID)
+        private void EvaluateOr(int start, int end, FSA<TValue> fsa, AstOrNode node)
         {
             foreach (var child in node.GetChildren())
             {
-                EvaluateCondition(start, end, fsa, child, classGUID);
+                EvaluateCondition(start, end, fsa, child);
             }
         }
 
-        private void EvaluateConcat(int start, int end, FSA<TValue> fsa, AstConcatNode node, int classGUID)
+        private void EvaluateConcat(int start, int end, FSA<TValue> fsa, AstConcatNode node)
         {
             string groupName = null;
-            if (node is AstGroupNode)
-            {
-                var group = (AstGroupNode) node;
-                if (group.Quantifier != null && group.Quantifier is CaptureQuantifier)
-                {
-                    var captureQ = (CaptureQuantifier) group.Quantifier;
-                    groupName = captureQ.CaptureName;
-                }
-            }
-
-            if (groupName != null && groupName != fsa.Name)
-            {
-                classGUID = GenerateNewGuid(classGUID);
-            }
 
             var prev = start;
             foreach (var child in node.GetChildren())
             {
                 var next = CreateNewState(fsa);
-                Evaluate(prev, next, fsa, child, classGUID);
+                Evaluate(prev, next, fsa, child);
                 prev = next;
             }
             fsa.AddEpsilonTransition(prev, end);
@@ -138,9 +124,9 @@ namespace ORegex.Core.FinitieStateAutomaton
             return new Random(oldGuid).Next();
         }
 
-        private void EvaluateAtom(int start, int end, FSA<TValue> fsa, AstAtomNode<TValue> node, int classGUID)
+        private void EvaluateAtom(int start, int end, FSA<TValue> fsa, AstAtomNode<TValue> node)
         {
-            EvaluateCondition(start, end, fsa, node.Condition, classGUID);
+            EvaluateCondition(start, end, fsa, node.Condition, node.ClassGUID);
         }
 
         private void EvaluateCondition(int start, int end, FSA<TValue> fsa, Func<TValue, bool> condition, int classGUID)
@@ -153,13 +139,13 @@ namespace ORegex.Core.FinitieStateAutomaton
             fsa.AddEpsilonTransition(tmp2, end);
         }
 
-        private void EvaluateCondition(int start, int end, FSA<TValue> fsa, AstNodeBase node, int classGUID)
+        private void EvaluateCondition(int start, int end, FSA<TValue> fsa, AstNodeBase node)
         {
             var tmp1 = CreateNewState(fsa);
             var tmp2 = CreateNewState(fsa);
 
             fsa.AddEpsilonTransition(start, tmp1);
-            Evaluate(tmp1, tmp2, fsa, node, classGUID);
+            Evaluate(tmp1, tmp2, fsa, node);
             fsa.AddEpsilonTransition(tmp2, end);
         }
 

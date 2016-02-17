@@ -15,11 +15,30 @@ namespace ORegex.Core.Parse
         public static AstRootNode CreateAstTree(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             var tree = CreateRoot(node, args);
-
+            int globalId = 0;
+            AssignClasses(tree, globalId, ref globalId);
             return tree;
         }
 
-        public static AstNodeBase Create(IParseTree node, ORegexAstFactoryArgs<TValue> args)
+        private static void AssignClasses(AstNodeBase node, int classId, ref int globalId)
+        {
+            node.ClassGUID = classId;
+            foreach (var child in node.GetChildren())
+            {
+                var group = child as AstGroupNode;
+                if (group != null && group.Quantifier is CaptureQuantifier)
+                {
+                    globalId++;
+                    AssignClasses(group, globalId, ref globalId);
+                }
+                else
+                {
+                    AssignClasses(child, classId, ref globalId);
+                }
+            }
+        }
+
+        private static AstNodeBase Create(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             if(IsRoot(node, args))
             {

@@ -7,6 +7,8 @@ namespace ORegex.Core.Ast
 {
     public abstract class AstNodeBase: IEnumerable<AstNodeBase>
     {
+        public int ClassGUID { get; set; }
+
         public abstract IEnumerable<AstNodeBase> GetChildren();
 
         public readonly Range Range;
