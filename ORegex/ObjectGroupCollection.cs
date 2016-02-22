@@ -13,10 +13,10 @@ namespace ORegex
 
         private readonly ObjectGroup<TValue>[] _captures;
 
-        internal ObjectGroupCollection(CFSAContext<TValue> context)
+        internal ObjectGroupCollection()//CFSAContext<TValue> context)
         {
             _nameToGroup = new Dictionary<string, ObjectGroup<TValue>>();
-            _captures = new ObjectGroup<TValue>[context._captures.Length];
+            _captures = new ObjectGroup<TValue>[0];
         }
 
         public int Count

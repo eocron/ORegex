@@ -173,10 +173,5 @@ namespace ORegex.Core.FinitieStateAutomaton
             }
             return result;
         }
-
-        public Range Run(ObjectStream<TValue> stream)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

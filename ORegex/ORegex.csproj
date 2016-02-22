@@ -66,8 +66,6 @@
     <Compile Include="Core\Ast\Range.cs" />
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\FinitieStateAutomaton\CFSA.cs" />
-    <Compile Include="Core\FinitieStateAutomaton\CFSAContext.cs" />
-    <Compile Include="Core\ObjectStream.cs" />
     <Compile Include="Core\ORegexException.cs" />
     <Compile Include="Core\ORegexSyntaxException.cs" />
     <Compile Include="Core\Parse\ORegexAstFactory.cs" />

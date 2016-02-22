@@ -44,7 +44,7 @@ namespace ORegex.Core.FinitieStateAutomaton
             _transitionMatrix = new CFSATransition[fsa.StateCount][];
             foreach (var look in fsa.Transitions.ToLookup(x => x.StartState, x => x))
             {
-                _transitionMatrix[look.Key] = CompileTransitions(look, captureGroupNames).ToArray();
+                _transitionMatrix[look.Key] = CompileTransitions(look).ToArray();
             }
 
             _startState = fsa.Q0.First();
@@ -55,7 +55,7 @@ namespace ORegex.Core.FinitieStateAutomaton
             }
         }
 
-        private static IEnumerable<CFSATransition> CompileTransitions(IEnumerable<FSATransition<TValue>> transitions, string[] captureGroupNames)
+        private static IEnumerable<CFSATransition> CompileTransitions(IEnumerable<FSATransition<TValue>> transitions)
         {
             foreach (var t in transitions)
             {
@@ -69,78 +69,88 @@ namespace ORegex.Core.FinitieStateAutomaton
             }
         }
 
-        public ObjectCapture<TValue> Run(ObjectStream<TValue> stream, CFSAContext<TValue> context)
+        private sealed class FSMState
         {
-            int startIndex = stream.CurrentIndex;
-            if (!stream.IsEos())
-            {
-                if (RecRun(_startState, stream, context))
-                {
-                    return new ObjectCapture<TValue>(stream.Sequence, startIndex, stream.CurrentIndex - startIndex);
-                }
-            }
-            stream.CurrentIndex = startIndex;
-            return null;
+            public int CurrentState;
+            public int CurrentIndex;
+            public int CurrentPredicateIndex;
+            public CFSATransition[] Transitions;
+            public bool IsFinal;
         }
 
-        public bool RecRun(int state, ObjectStream<TValue> stream, CFSAContext<TValue> context)
-        {            
-            int streamIndex = stream.CurrentIndex;
-
-            CFSATransition lastTransition = null;
-            var predicates = _transitionMatrix[state];
-            if (predicates != null)
+        public ObjectCapture<TValue> Run(TValue[] values, int index)
+        {
+            var stack = new Stack<FSMState>();
+            stack.Push(CreateState(_startState, index));
+            FSMState state = null;
+            while (stack.Count > 0)
             {
-                for (int i = 0; i < predicates.Length; i++)
+                state = stack.Pop();
+
+                FSMState next;
+                if (TryGetNextState(state, values, out next))
                 {
-                    var predic = predicates[i];
-                    if (predic.Condition(stream.CurrentElement))
-                    {
-                        state = predic.EndState;
-                        stream.Step();
-                        if (stream.IsEos())
-                        {
-                            lastTransition = predic;
-                            break; //no more elements - need to find out if current state is final.
-                        }
-                        else
-                        {
-                            if (RecRun(state, stream, context))
-                            {
-                                if (predic.ClassGUID != 0)
-                                {
-                                    Console.WriteLine("Captured " + predic.ClassGUID);
-                                }
-                                return true;
-                            }
-                        }
-                    }
-                    stream.CurrentIndex = streamIndex;
+                    stack.Push(state);
+                    stack.Push(next);
                 }
-            }
-
-
-            if (IsFinal(state))
-            {
-                if (lastTransition!= null)
+                else
                 {
-                    if (lastTransition.ClassGUID != 0)
+                    if (state.IsFinal)
                     {
-                        Console.WriteLine("Captured " + lastTransition.ClassGUID);
+                        break;
                     }
                 }
-                return true;
             }
-            else
+
+            if (state != null && state.IsFinal)
             {
-                stream.CurrentIndex = streamIndex;
-                return false;
+                return new ObjectCapture<TValue>(values, index, state.CurrentIndex - index);
             }
+            return null;
         }
 
         public bool IsFinal(int state)
         {
             return _finalsLookup[state];
+        }
+
+        private CFSATransition[] GetTransitions(int state)
+        {
+            return _transitionMatrix[state];
+        }
+
+        private FSMState CreateState(int state, int index)
+        {
+            return new FSMState
+            {
+                CurrentState = state,
+                CurrentIndex = index,
+                CurrentPredicateIndex = 0,
+                Transitions = GetTransitions(state),
+                IsFinal = IsFinal(state),
+            };
+        }
+
+        private bool TryGetNextState(FSMState current, TValue[] values, out FSMState nextState)
+        {
+            nextState = default(FSMState);
+            if (current.Transitions != null && 
+                current.Transitions.Length > 0 &&
+                current.CurrentPredicateIndex != current.Transitions.Length &&
+                current.CurrentIndex != values.Length)
+            {
+                var nextIndex = current.CurrentIndex + 1;
+                for (int i = current.CurrentPredicateIndex; i < current.Transitions.Length; i++)
+                {
+                    current.CurrentPredicateIndex++;
+                    if (current.Transitions[i].Condition(values[current.CurrentIndex]))
+                    {
+                        nextState = CreateState(current.Transitions[i].EndState, nextIndex);
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }

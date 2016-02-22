@@ -17,7 +17,7 @@ namespace Tests.Intergal
 
         private static IEnumerable<SingleFileTest> GetTests()
         {
-            return SingleFileTestFactory.GetTests("Legacy", "004");
+            return SingleFileTestFactory.GetTests("Legacy");//, "004");
         } 
 
         static RegexLegacyTests()

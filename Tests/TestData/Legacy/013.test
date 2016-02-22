@@ -1,0 +1,5 @@
+﻿<TEST>
+	<REGEX>ab+</REGEX>
+	<OREGEX>{a}{b}+</OREGEX>
+	<TEXT>abbbabbbbb</TEXT>
+</TEST>
