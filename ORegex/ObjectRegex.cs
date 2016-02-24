@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using ORegex.Core;
+using ORegex.Core.Ast;
 using ORegex.Core.FinitieStateAutomaton;
 
 namespace ORegex
@@ -43,10 +44,10 @@ namespace ORegex
             for (int i = 0; i < values.Length; i++)
             {
                 var capture = _cfsa.Run(values, i);
-                if (capture != null)
+                if (!capture.Equals(Range.Invalid))
                 {
                     var match = new ObjectMatch<TValue>(values, capture.Index, capture.Length);
-                    i = capture.Index + capture.Length - 1;
+                    i += capture.Length - 1;
                     yield return match;
                 }
             }

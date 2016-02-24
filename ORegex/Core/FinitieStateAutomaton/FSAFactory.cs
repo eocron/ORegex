@@ -102,7 +102,20 @@ namespace ORegex.Core.FinitieStateAutomaton
 
         private void EvaluateConcat(int start, int end, FSA<TValue> fsa, AstConcatNode node)
         {
-            string groupName = null;
+            if (node is AstGroupNode)
+            {
+                var group = (AstGroupNode) node;
+                if (group.Quantifier != null && group.Quantifier is CaptureQuantifier)
+                {
+                    var groupName = ((CaptureQuantifier) group.Quantifier).CaptureName;
+                    if (groupName != fsa.Name)
+                    {
+                        var captureFsa = Create(group, groupName);
+                        EvaluateCondition(start, end, fsa, new ComplexPredicateEdge<TValue>(captureFsa));
+                        return;
+                    }
+                }
+            }
 
             var prev = start;
             foreach (var child in node.GetChildren())
@@ -114,28 +127,18 @@ namespace ORegex.Core.FinitieStateAutomaton
             fsa.AddEpsilonTransition(prev, end);
         }
 
-        /// <summary>
-        /// TODO: Replace this shit with context.
-        /// </summary>
-        /// <param name="oldGuid"></param>
-        /// <returns></returns>
-        private int GenerateNewGuid(int oldGuid)
-        {
-            return new Random(oldGuid).Next();
-        }
-
         private void EvaluateAtom(int start, int end, FSA<TValue> fsa, AstAtomNode<TValue> node)
         {
-            EvaluateCondition(start, end, fsa, node.Condition, node.ClassGUID);
+            EvaluateCondition(start, end, fsa, node.Condition);
         }
 
-        private void EvaluateCondition(int start, int end, FSA<TValue> fsa, Func<TValue, bool> condition, int classGUID)
+        private void EvaluateCondition(int start, int end, FSA<TValue> fsa, PredicateEdgeBase<TValue> condition)
         {
             var tmp1 = CreateNewState(fsa);
             var tmp2 = CreateNewState(fsa);
 
             fsa.AddEpsilonTransition(start, tmp1);
-            fsa.AddTransition(tmp1, condition, tmp2, classGUID);
+            fsa.AddTransition(tmp1, condition, tmp2);
             fsa.AddEpsilonTransition(tmp2, end);
         }
 

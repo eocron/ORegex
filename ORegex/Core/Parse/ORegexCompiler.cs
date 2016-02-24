@@ -16,7 +16,7 @@ namespace ORegex.Core.Parse
         {
             var ast = _parser.Parse(input, predicateTable);
             var dfa = _stb.Create(ast, ast.CaptureGroupNames[0]);
-            var cfsa = new CFSA<TValue>(dfa, ast.CaptureGroupNames);
+            var cfsa = new CFSA<TValue>(dfa);
             return cfsa;
         }
     }

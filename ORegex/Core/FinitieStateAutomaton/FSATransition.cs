@@ -2,43 +2,36 @@
 
 namespace ORegex.Core.FinitieStateAutomaton
 {
-    public sealed class FSATransition<TValue>
+    public sealed class FSATransition<TValue> : IFSATransition<TValue>
     {
-        public readonly int StartState;
+        public int From { get; private set; }
 
-        public readonly int EndState;
+        public int To { get; private set; }
 
-        public readonly FSAPredicateEdge<TValue> Info;
+        public PredicateEdgeBase<TValue> Condition { get; private set; }
 
-        public FSATransition(int from, Func<TValue, bool> condition, int to, int classGUID)
+        public FSATransition(int from, PredicateEdgeBase<TValue> info, int to)
         {
-            StartState = from;
-            Info = new FSAPredicateEdge<TValue>(condition, classGUID);
-            EndState = to;
-        }
-
-        public FSATransition(int from, FSAPredicateEdge<TValue> info, int to)
-        {
-            StartState = from;
-            Info = info;
-            EndState = to;
+            From = from;
+            Condition = info;
+            To = to;
         }
 
         public override bool Equals(object obj)
         {
             var other = (FSATransition<TValue>) obj;
-            return other.Info == Info && other.StartState == StartState && other.EndState == EndState;
+            return other.Condition == Condition && other.From == From && other.To == To;
         }
 
         public override int GetHashCode()
         {
             const int prime = 123;
             int hash = prime;
-            hash += StartState.GetHashCode();
+            hash += From.GetHashCode();
             hash *= prime;
-            hash += EndState.GetHashCode();
+            hash += To.GetHashCode();
             hash *= prime;
-            hash += Info.GetHashCode();
+            hash += Condition.GetHashCode();
             return hash;
         }
     }

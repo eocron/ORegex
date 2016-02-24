@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using ORegex.Core.Ast;
 
 namespace ORegex.Core.FinitieStateAutomaton
@@ -9,40 +7,29 @@ namespace ORegex.Core.FinitieStateAutomaton
     /// <summary>
     /// Compiled FSA
     /// </summary>
-    public sealed class CFSA<TValue>
+    public sealed class CFSA<TValue> : IFSA<TValue>
     {
         public string[] CaptureGroupNames;
- 
-        public class CFSATransition
-        {
-            public int ClassGUID;
 
-            public int StartState;
-
-            public Func<TValue, bool> Condition;
-
-            public int EndState;
-        }
 
         public string Name { get; private set; }
 
-        private readonly CFSATransition[][] _transitionMatrix;
+        private readonly FSATransition<TValue>[][] _transitionMatrix;
 
         private readonly int _startState;
 
         private readonly bool[] _finalsLookup;
 
-        public IEnumerable<CFSATransition> Transitions
+        public IEnumerable<IFSATransition<TValue>> Transitions
         {
             get { return _transitionMatrix.Where(x=> x!= null).SelectMany(x => x); }
         }
 
-        public CFSA(FSA<TValue> fsa, string[] captureGroupNames)
+        public CFSA(FSA<TValue> fsa)
         {
-            CaptureGroupNames = captureGroupNames;
             Name = fsa.Name;
-            _transitionMatrix = new CFSATransition[fsa.StateCount][];
-            foreach (var look in fsa.Transitions.ToLookup(x => x.StartState, x => x))
+            _transitionMatrix = new FSATransition<TValue>[fsa.StateCount][];
+            foreach (var look in fsa.Transitions.ToLookup(x => x.From, x => x))
             {
                 _transitionMatrix[look.Key] = CompileTransitions(look).ToArray();
             }
@@ -55,17 +42,18 @@ namespace ORegex.Core.FinitieStateAutomaton
             }
         }
 
-        private static IEnumerable<CFSATransition> CompileTransitions(IEnumerable<FSATransition<TValue>> transitions)
+        private static IEnumerable<FSATransition<TValue>> CompileTransitions(IEnumerable<IFSATransition<TValue>> transitions)
         {
             foreach (var t in transitions)
             {
-                yield return new CFSATransition()
+                PredicateEdgeBase<TValue> predicate = null;
+                if (t.Condition.IsComplexPredicate)
                 {
-                    ClassGUID = t.Info.ClassGUID,
-                    StartState = t.StartState,
-                    Condition = t.Info.Predicate,
-                    EndState = t.EndState
-                };
+                    var fsa = new CFSA<TValue>((FSA<TValue>) ((ComplexPredicateEdge<TValue>) t.Condition)._fsa);
+                    predicate = new ComplexPredicateEdge<TValue>(fsa);
+                }
+
+                yield return new FSATransition<TValue>(t.From, predicate?? t.Condition, t.To);
             }
         }
 
@@ -74,14 +62,14 @@ namespace ORegex.Core.FinitieStateAutomaton
             public int CurrentState;
             public int CurrentIndex;
             public int CurrentPredicateIndex;
-            public CFSATransition[] Transitions;
+            public FSATransition<TValue>[] Transitions;
             public bool IsFinal;
         }
 
-        public ObjectCapture<TValue> Run(TValue[] values, int index)
+        public Range Run(TValue[] values, int startIndex)
         {
             var stack = new Stack<FSMState>();
-            stack.Push(CreateState(_startState, index));
+            stack.Push(CreateState(_startState, startIndex));
             FSMState state = null;
             while (stack.Count > 0)
             {
@@ -104,9 +92,9 @@ namespace ORegex.Core.FinitieStateAutomaton
 
             if (state != null && state.IsFinal)
             {
-                return new ObjectCapture<TValue>(values, index, state.CurrentIndex - index);
+                return new Range(startIndex, state.CurrentIndex - startIndex);
             }
-            return null;
+            return Range.Invalid;
         }
 
         public bool IsFinal(int state)
@@ -114,7 +102,7 @@ namespace ORegex.Core.FinitieStateAutomaton
             return _finalsLookup[state];
         }
 
-        private CFSATransition[] GetTransitions(int state)
+        private FSATransition<TValue>[] GetTransitions(int state)
         {
             return _transitionMatrix[state];
         }
@@ -139,13 +127,13 @@ namespace ORegex.Core.FinitieStateAutomaton
                 current.CurrentPredicateIndex != current.Transitions.Length &&
                 current.CurrentIndex != values.Length)
             {
-                var nextIndex = current.CurrentIndex + 1;
                 for (int i = current.CurrentPredicateIndex; i < current.Transitions.Length; i++)
                 {
                     current.CurrentPredicateIndex++;
-                    if (current.Transitions[i].Condition(values[current.CurrentIndex]))
+                    var capture = current.Transitions[i].Condition.Match(values, current.CurrentIndex);
+                    if (capture.Index >= 0)
                     {
-                        nextState = CreateState(current.Transitions[i].EndState, nextIndex);
+                        nextState = CreateState(current.Transitions[i].To, current.CurrentIndex + capture.Length);
                         return true;
                     }
                 }

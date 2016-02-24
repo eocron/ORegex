@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Antlr4.Runtime.Tree;
 using ORegex.Core.Ast;
 using ORegex.Core.Ast.GroupQuantifiers;
+using ORegex.Core.FinitieStateAutomaton;
 
 namespace ORegex.Core.Parse
 {
@@ -155,7 +156,7 @@ namespace ORegex.Core.Parse
                 var isNegate = node.GetChild(0).GetText().Length == 2;
                 if (isNegate)
                 {
-                    Func<TValue, bool> p;
+                    PredicateEdgeBase<TValue> p;
                     string n;
                     args.GetInvertedPredicate(children.Select(x => x.Name), out p, out n);
                     return new AstAtomNode<TValue>(n, p, new Range(node));

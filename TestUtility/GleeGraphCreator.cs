@@ -20,28 +20,15 @@ namespace TestUtility
             return graph;
         }
 
-        private static void FillGraph<TValue>(Graph graph, FSA<TValue> fsm, PredicateTable<TValue> table)
-        {
-            foreach (var t in fsm.Transitions)
-            {
-                Edge edge = graph.AddEdge("q" + t.StartState, table.GetName(t.Info.Predicate) + "_c" + t.Info.ClassGUID, "q" + t.EndState);
-                if (fsm.F.Contains(t.EndState))
-                {
-                    edge.TargetNode.Attr.Fillcolor = Color.Gray;
-                    edge.TargetNode.Attr.Shape = Shape.DoubleCircle;
-                }
-            }
-        }
-
-        private static void FillGraph<TValue>(Graph graph, CFSA<TValue> fsa, PredicateTable<TValue> table)
+        private static void FillGraph<TValue>(Graph graph, IFSA<TValue> fsa, PredicateTable<TValue> table)
         {
             foreach (var t in fsa.Transitions)
             {
-                Edge edge = graph.AddEdge("q" + t.StartState, table.GetName(t.Condition) + "_c" + t.ClassGUID, "q" + t.EndState);
+                Edge edge = graph.AddEdge("q" + t.From, t.Condition.IsComplexPredicate? "complex" : "func", "q" + t.To);
 
-                if (fsa.IsFinal(t.EndState))
+                if (fsa.IsFinal(t.To))
                 {
-                    edge.TargetNode.Attr.Fillcolor = Microsoft.Glee.Drawing.Color.Gray;
+                    edge.TargetNode.Attr.Fillcolor = Color.Gray;
                     edge.TargetNode.Attr.Shape = Shape.DoubleCircle;
                 }
             }

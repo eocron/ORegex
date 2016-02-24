@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using ORegex.Core.FinitieStateAutomaton;
 
 namespace ORegex.Core.Parse
 {
@@ -32,12 +33,12 @@ namespace ORegex.Core.Parse
             return name;
         }
 
-        public Func<TValue, bool> GetPredicate(string atomName)
+        public PredicateEdgeBase<TValue> GetPredicate(string atomName)
         {
             return _predicateTable.GetPredicate(atomName);
         }
 
-        public void GetInvertedPredicate(IEnumerable<string> names, out Func<TValue, bool> predicate, out string invertedName)
+        public void GetInvertedPredicate(IEnumerable<string> names, out PredicateEdgeBase<TValue> predicate, out string invertedName)
         {
             names = names.Distinct().OrderByDescending(x => x);
             invertedName = string.Format("inverted: {0}",string.Join(",", names));
@@ -47,7 +48,7 @@ namespace ORegex.Core.Parse
 
                 Func<TValue, bool> invertedPredicate = x =>
                 {
-                    return !predicates.Any(p => p(x));
+                    return !predicates.Any(p => p.IsMatch(x));
                 };
                 _predicateTable.AddPredicate(invertedName, invertedPredicate);
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using ORegex.Core.FinitieStateAutomaton;
 
 namespace ORegex.Core.Ast
 {
@@ -8,9 +9,9 @@ namespace ORegex.Core.Ast
     {
         public readonly string Name;
 
-        public Func<TValue, bool> Condition;
+        public PredicateEdgeBase<TValue> Condition;
 
-        public AstAtomNode(string name, Func<TValue, bool> condition, Range range)
+        public AstAtomNode(string name, PredicateEdgeBase<TValue> condition, Range range)
             : base(range)
         {
             Name = name.ThrowIfEmpty();

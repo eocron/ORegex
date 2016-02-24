@@ -22,7 +22,7 @@ namespace TestUtility
         public MainWindow()
         {
             InitializeComponent();
-            richTextBox2.Text += string.Format("\nPossible names: {0}", string.Join(", ",_table.AvailableNames));
+            //richTextBox2.Text += string.Format("\nPossible names: {0}", string.Join(", ",_table.AvailableNames));
             HighLightSyntax();
         }
 

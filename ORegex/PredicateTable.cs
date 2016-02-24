@@ -7,20 +7,17 @@ namespace ORegex
 {
     public class PredicateTable<TValue>
     {
-        protected readonly Dictionary<string, Func<TValue, bool>> _table;
-        protected readonly Dictionary<Func<TValue, bool>, string> _tableInverted;
+        protected readonly Dictionary<string, PredicateEdgeBase<TValue>> _table;
 
         public PredicateTable()
         {
-            _table = new Dictionary<string, Func<TValue, bool>>();
-            _tableInverted = new Dictionary<Func<TValue, bool>, string>();
-            AddPredicate(".", PredicateConst<TValue>.AlwaysTrue);
+            _table = new Dictionary<string, PredicateEdgeBase<TValue>>();
+            _table.Add(".", FuncPredicateEdge<TValue>.AlwaysTrue);
         }
 
         public PredicateTable(PredicateTable<TValue> other) : base()
         {
-            _table = new Dictionary<string, Func<TValue, bool>>(other._table);
-            _tableInverted = new Dictionary<Func<TValue, bool>, string>(other._tableInverted);
+            _table = new Dictionary<string, PredicateEdgeBase<TValue>>(other._table);
         }
         public virtual void AddPredicate(string name, Func<TValue, bool> predicate)
         {
@@ -31,34 +28,31 @@ namespace ORegex
             {
                 throw new ArgumentException("Such name already exist: " + name, "name");
             }
-            if (_tableInverted.ContainsKey(predicate))
-            {
-                throw new ArgumentException("Such predicate already exist for name: "+ _tableInverted[predicate], "predicate");
-            }
 
-            _table[name] = predicate;
-            _tableInverted[predicate] = name;
+            _table.Add(name, new FuncPredicateEdge<TValue>(predicate));
         }
 
-        public virtual string GetName(Func<TValue, bool> predicate)
+        public virtual void AddCompare(string name, TValue value, IEqualityComparer<TValue> comparer = null)
         {
-            if (!_tableInverted.ContainsKey(predicate))
+            name.ThrowIfEmpty();
+            if (_table.ContainsKey(name))
             {
-                throw new ArgumentException("No such predicate.");
+                throw new ArgumentException("Such name already exist: " + name, "name");
             }
-            return _tableInverted[predicate];
+            _table.Add(name, new ComparePredicateEdge<TValue>(value, comparer));
         }
 
-        public virtual Func<TValue, bool> GetPredicate(string name)
+        public virtual PredicateEdgeBase<TValue> GetPredicate(string name)
         {
-            if (!_table.ContainsKey(name))
+            PredicateEdgeBase<TValue> predicate;
+            if (!_table.TryGetValue(name, out  predicate))
             {
                 throw new ArgumentException("No predicate with such name: " + name);
             }
-            return _table[name];
+            return predicate;
         }
 
-        public virtual bool Contains(string name)
+        public bool Contains(string name)
         {
             return _table.ContainsKey(name);
         }

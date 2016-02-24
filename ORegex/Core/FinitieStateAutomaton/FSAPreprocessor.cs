@@ -24,7 +24,7 @@ namespace ORegex.Core.FinitieStateAutomaton
         private static FSA<TValue> Reverse(FSA<TValue> dfa)
         {
             return
-                new FSA<TValue>(dfa.Name, dfa.Transitions.Select(x => new FSATransition<TValue>(x.EndState, x.Info, x.StartState)),
+                new FSA<TValue>(dfa.Name, dfa.Transitions.Select(x => new FSATransition<TValue>(x.To, x.Condition, x.From)),
                     dfa.F, dfa.Q0);
         }
 
@@ -122,9 +122,9 @@ namespace ORegex.Core.FinitieStateAutomaton
                 // For each state u with an edge from t to u labeled Epsilon
                 foreach (var input in nfa.GetTransitionsFrom(t))
                 {
-                    if (FSAPredicateEdge<TValue>.IsEpsilonPredicate(input.Info))
+                    if (PredicateEdgeBase<TValue>.IsEpsilon(input.Condition))
                     {
-                        int u = input.EndState;
+                        int u = input.To;
 
                         // If u is not already in epsilonClosure, add it and push it onto stack
                         if (!epsilonClosure.Contains(u))

@@ -5,11 +5,11 @@ using ORegex.Core.Ast;
 
 namespace ORegex.Core.FinitieStateAutomaton
 {
-    public sealed class FSA<TValue>
+    public sealed class FSA<TValue> : IFSA<TValue>
     {
         #region Speedup
 
-        private readonly HashSet<FSAPredicateEdge<TValue>> _sigma = new HashSet<FSAPredicateEdge<TValue>>();
+        private readonly HashSet<PredicateEdgeBase<TValue>> _sigma = new HashSet<PredicateEdgeBase<TValue>>();
 
         private readonly Dictionary<int, List<FSATransition<TValue>>> _lookup = new Dictionary<int, List<FSATransition<TValue>>>();
 
@@ -17,14 +17,19 @@ namespace ORegex.Core.FinitieStateAutomaton
 
         public string Name { get; private set; }
 
-        public readonly HashSet<FSATransition<TValue>> Transitions;
+        private readonly HashSet<FSATransition<TValue>> _transitions;
+
+        public IEnumerable<IFSATransition<TValue>> Transitions
+        {
+            get { return _transitions; }
+        }
 
         public readonly HashSet<int> Q0;
 
         public readonly HashSet<int> F;
 
 
-        public IEnumerable<FSAPredicateEdge<TValue>> Sigma
+        public IEnumerable<PredicateEdgeBase<TValue>> Sigma
         {
             get
             {
@@ -37,8 +42,8 @@ namespace ORegex.Core.FinitieStateAutomaton
             get
             {
                 return
-                    Transitions.Select(x => x.StartState)
-                        .Concat(Transitions.Select(x => x.EndState))
+                    _transitions.Select(x => x.From)
+                        .Concat(_transitions.Select(x => x.To))
                         .Distinct()
                         .OrderBy(x => x);
             }
@@ -54,24 +59,24 @@ namespace ORegex.Core.FinitieStateAutomaton
         public FSA(string name, IEnumerable<FSATransition<TValue>> transitions, IEnumerable<int> q0, IEnumerable<int> f)
         {
             Name = name.ThrowIfEmpty();
-            Transitions = transitions.ToHashSet();
+            _transitions = transitions.ToHashSet();
             Q0 = q0.ToHashSet();
             F = f.ToHashSet();
             StateCount = Q.Count();
             #region Speedup
-            foreach(var t in Transitions)
+            foreach(var t in _transitions)
             {
                 List<FSATransition<TValue>> predics;
-                if (!_lookup.TryGetValue(t.StartState, out predics))
+                if (!_lookup.TryGetValue(t.From, out predics))
                 {
                     predics = new List<FSATransition<TValue>>();
-                    _lookup[t.StartState] = predics;
+                    _lookup[t.From] = predics;
                 }
                 predics.Add(t);
 
-                if (!FSAPredicateEdge<TValue>.IsEpsilonPredicate(t.Info))
+                if (!PredicateEdgeBase<TValue>.IsEpsilon(t.Condition))
                 {
-                    _sigma.Add(t.Info);
+                    _sigma.Add(t.Condition);
                 }
             }
             
@@ -82,25 +87,20 @@ namespace ORegex.Core.FinitieStateAutomaton
         public FSA(string name)
         {
             Name = name.ThrowIfEmpty();
-            Transitions = new HashSet<FSATransition<TValue>>();
+            _transitions = new HashSet<FSATransition<TValue>>();
             Q0 = new HashSet<int>();
             F = new HashSet<int>();
             StateCount = 0;
         }
 
-        public void AddTransition(int from, FSAPredicateEdge<TValue> condition, int to)
+        public void AddTransition(int from, PredicateEdgeBase<TValue> condition, int to)
         {
             AddTransition(new FSATransition<TValue>(from, condition, to));
         }
 
-        public void AddTransition(int from, Func<TValue, bool> condition, int to, int classGUID)
-        {
-            AddTransition(new FSATransition<TValue>(from, condition, to, classGUID));
-        }
-
         public void AddEpsilonTransition(int from, int to)
         {
-            AddTransition(from, PredicateConst<TValue>.Epsilon, to, -1);
+            AddTransition(from, FuncPredicateEdge<TValue>.Epsilon, to);
         }
 
         public void AddTransition(FSATransition<TValue> trans)
@@ -109,20 +109,20 @@ namespace ORegex.Core.FinitieStateAutomaton
             {
                 throw new ArgumentNullException("trans");
             }
-            Transitions.Add(trans);
+            _transitions.Add(trans);
             #region Speedup
             List<FSATransition<TValue>> predics;
-            if(!_lookup.TryGetValue(trans.StartState, out predics))
+            if(!_lookup.TryGetValue(trans.From, out predics))
             {
                 predics = new List<FSATransition<TValue>>();
-                _lookup[trans.StartState] = predics;
+                _lookup[trans.From] = predics;
             }
 
             predics.Add(trans);
 
-            if (!FSAPredicateEdge<TValue>.IsEpsilonPredicate(trans.Info))
+            if (!PredicateEdgeBase<TValue>.IsEpsilon(trans.Condition))
             {
-                _sigma.Add(trans.Info);
+                _sigma.Add(trans.Condition);
             }
             #endregion
         }
@@ -155,7 +155,7 @@ namespace ORegex.Core.FinitieStateAutomaton
         /// <param name="states"></param>
         /// <param name="inp"></param>
         /// <returns></returns>
-        public Set<int> Move(Set<int> states, FSAPredicateEdge<TValue> inp)
+        public Set<int> Move(Set<int> states, PredicateEdgeBase<TValue> inp)
         {
             var result = new Set<int>();
 
@@ -165,13 +165,24 @@ namespace ORegex.Core.FinitieStateAutomaton
                 foreach (var input in GetTransitionsFrom(state))
                 {
                     // If the transition is on input inp, add it to the resulting set
-                    if (FSAPredicateEdge<TValue>.IsEqualFast(input.Info, inp))
+                    if (PredicateEdgeBase<TValue>.IsEqual(input.Condition, inp))
                     {
-                        result.Add(input.EndState);
+                        result.Add(input.To);
                     }
                 }
             }
             return result;
+        }
+
+        public Range Run(TValue[] values, int startIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public bool IsFinal(int state)
+        {
+            return F.Contains(state);
         }
     }
 }
