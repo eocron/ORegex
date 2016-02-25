@@ -32,8 +32,8 @@ It will support:
 
 3) Replace - you will be able to change sequence based on retrieved match. For example:
 
-    input:    first_name last_name verb noun dot;             //Jhon Smith watching tv.
-    pattern:  (?<person>{first_name} {last_name}?);           //Jhon watching tv.        - possible form.
+    input:    first_name last_name verb noun dot;             //Sequence: [Jhon] [Smith] [watching] [tv].
+    pattern:  (?<person>{first_name} {last_name}?);
     replace:  $person;
     output:   person verb noun dot;
 
