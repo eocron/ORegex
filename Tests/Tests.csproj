@@ -57,7 +57,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="BasicTests.cs" />
     <Compile Include="Core\SingleFileTest.cs" />
     <Compile Include="Intergal\RegexLegacyTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using ORegex.Core.Ast;
 using ORegex.Core.Ast.GroupQuantifiers;
+using ORegex.Core.FinitieStateAutomaton.Predicates;
 
 namespace ORegex.Core.FinitieStateAutomaton
 {

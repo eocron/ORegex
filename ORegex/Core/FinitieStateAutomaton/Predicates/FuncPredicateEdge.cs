@@ -1,7 +1,7 @@
 ﻿using System;
 using ORegex.Core.Ast;
 
-namespace ORegex.Core.FinitieStateAutomaton
+namespace ORegex.Core.FinitieStateAutomaton.Predicates
 {
     public sealed class FuncPredicateEdge<TValue> : PredicateEdgeBase<TValue>
     {
@@ -31,8 +31,9 @@ namespace ORegex.Core.FinitieStateAutomaton
             get { return false; }
         }
 
-        public override Range Match(TValue[] sequence, int startIndex)
+        public override Range Match(TValue[] sequence, int startIndex, out CaptureTable<TValue> table)
         {
+            table = null;
             if (_condition(sequence[startIndex]))
             {
                 return new Range(startIndex, 1);

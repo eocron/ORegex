@@ -1,6 +1,6 @@
 ﻿using ORegex.Core.Ast;
 
-namespace ORegex.Core.FinitieStateAutomaton
+namespace ORegex.Core.FinitieStateAutomaton.Predicates
 {
     public abstract class PredicateEdgeBase<TValue>
     {
@@ -17,7 +17,7 @@ namespace ORegex.Core.FinitieStateAutomaton
 
         public abstract bool IsComplexPredicate { get; }
 
-        public abstract Range Match(TValue[] sequence, int startIndex);
+        public abstract Range Match(TValue[] sequence, int startIndex, out CaptureTable<TValue> table);
 
         public abstract bool IsMatch(TValue value);
 

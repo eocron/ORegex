@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ORegex.Core.Ast;
+using ORegex.Core.FinitieStateAutomaton.Predicates;
 
 namespace ORegex.Core.FinitieStateAutomaton
 {
@@ -9,9 +10,6 @@ namespace ORegex.Core.FinitieStateAutomaton
     /// </summary>
     public sealed class CFSA<TValue> : IFSA<TValue>
     {
-        public string[] CaptureGroupNames;
-
-
         public string Name { get; private set; }
 
         private readonly FSATransition<TValue>[][] _transitionMatrix;
@@ -59,17 +57,18 @@ namespace ORegex.Core.FinitieStateAutomaton
 
         private sealed class FSMState
         {
-            public int CurrentState;
+            public CaptureTable<TValue> Captures; 
             public int CurrentIndex;
             public int CurrentPredicateIndex;
             public FSATransition<TValue>[] Transitions;
             public bool IsFinal;
         }
 
-        public Range Run(TValue[] values, int startIndex)
+        public Range Run(TValue[] values, int startIndex, CaptureTable<TValue> table)
         {
             var stack = new Stack<FSMState>();
-            stack.Push(CreateState(_startState, startIndex));
+
+            stack.Push(CreateState(_startState, startIndex, null));
             FSMState state = null;
             while (stack.Count > 0)
             {
@@ -85,6 +84,7 @@ namespace ORegex.Core.FinitieStateAutomaton
                 {
                     if (state.IsFinal)
                     {
+                        stack.Push(state);
                         break;
                     }
                 }
@@ -92,7 +92,13 @@ namespace ORegex.Core.FinitieStateAutomaton
 
             if (state != null && state.IsFinal)
             {
-                return new Range(startIndex, state.CurrentIndex - startIndex);
+                foreach (var s in stack.Select(x=>x.Captures).Where(x=> x!= null))
+                {
+                    table.Add(s);
+                }
+                var result = new Range(startIndex, state.CurrentIndex - startIndex);
+                table.Add(Name, new ObjectCapture<TValue>(values, result));
+                return result;
             }
             return Range.Invalid;
         }
@@ -107,11 +113,11 @@ namespace ORegex.Core.FinitieStateAutomaton
             return _transitionMatrix[state];
         }
 
-        private FSMState CreateState(int state, int index)
+        private FSMState CreateState(int state, int index, CaptureTable<TValue> captures)
         {
             return new FSMState
             {
-                CurrentState = state,
+                Captures = captures,
                 CurrentIndex = index,
                 CurrentPredicateIndex = 0,
                 Transitions = GetTransitions(state),
@@ -130,10 +136,11 @@ namespace ORegex.Core.FinitieStateAutomaton
                 for (int i = current.CurrentPredicateIndex; i < current.Transitions.Length; i++)
                 {
                     current.CurrentPredicateIndex++;
-                    var capture = current.Transitions[i].Condition.Match(values, current.CurrentIndex);
+                    CaptureTable<TValue> captureTable;
+                    var capture = current.Transitions[i].Condition.Match(values, current.CurrentIndex, out captureTable);
                     if (capture.Index >= 0)
                     {
-                        nextState = CreateState(current.Transitions[i].To, current.CurrentIndex + capture.Length);
+                        nextState = CreateState(current.Transitions[i].To, current.CurrentIndex + capture.Length, captureTable);
                         return true;
                     }
                 }

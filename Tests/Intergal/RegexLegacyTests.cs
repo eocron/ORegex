@@ -103,7 +103,7 @@ namespace Tests.Intergal
 
         private static string ActualString(ObjectMatch<char> actual)
         {
-            return string.Format("Value: {0},\tindex: {1}, length: {2}", new string(actual.Value.ToArray()),
+            return string.Format("Value: {0},\tindex: {1}, length: {2}", new string(actual.Values.ToArray()),
                 actual.Index, actual.Length);
         }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ORegex.Core.Ast;
+using ORegex.Core.FinitieStateAutomaton.Predicates;
 
 namespace ORegex.Core.FinitieStateAutomaton
 {
@@ -174,7 +175,7 @@ namespace ORegex.Core.FinitieStateAutomaton
             return result;
         }
 
-        public Range Run(TValue[] values, int startIndex)
+        public Range Run(TValue[] values, int startIndex, CaptureTable<TValue> table)
         {
             throw new NotImplementedException();
         }

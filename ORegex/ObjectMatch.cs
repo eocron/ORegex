@@ -1,19 +1,14 @@
-﻿using System.Diagnostics;
-using System.Text.RegularExpressions;
-using ORegex.Core.Ast;
-using ORegex.Core.FinitieStateAutomaton;
-using ORegex.Core.Parse;
+﻿using ORegex.Core.Ast;
 
 namespace ORegex
 {
-    [DebuggerDisplay("index={Index}, length={Length};")]
-    public sealed class ObjectMatch<TValue> : ObjectGroup<TValue>
+    public sealed class ObjectMatch<TValue> : ObjectCapture<TValue>
     {
-        public ObjectGroupCollection<TValue> Groups { get; set; }
+        public readonly CaptureTable<TValue> Captures;
 
-        internal ObjectMatch(TValue[] collection, int index, int length)
-            : base(collection, index, length)
+        internal ObjectMatch(TValue[] collection, CaptureTable<TValue> table, Range range): base(collection, range)
         {
+            Captures = table;
         }
     }
 }

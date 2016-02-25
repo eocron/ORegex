@@ -1,4 +1,6 @@
-﻿namespace ORegex.Core.FinitieStateAutomaton
+﻿using ORegex.Core.FinitieStateAutomaton.Predicates;
+
+namespace ORegex.Core.FinitieStateAutomaton
 {
     public interface IFSATransition<TValue>
     {

@@ -7,7 +7,7 @@ namespace ORegex.Core.FinitieStateAutomaton
     {
         string Name { get; }
 
-        Range Run(TValue[] values, int startIndex);
+        Range Run(TValue[] values, int startIndex, CaptureTable<TValue> table);
 
         IEnumerable<IFSATransition<TValue>> Transitions { get; }
 

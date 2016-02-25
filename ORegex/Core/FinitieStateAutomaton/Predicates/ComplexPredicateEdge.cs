@@ -1,7 +1,7 @@
 ﻿using System;
 using ORegex.Core.Ast;
 
-namespace ORegex.Core.FinitieStateAutomaton
+namespace ORegex.Core.FinitieStateAutomaton.Predicates
 {
     public sealed class ComplexPredicateEdge<TValue> : PredicateEdgeBase<TValue>
     {
@@ -26,9 +26,10 @@ namespace ORegex.Core.FinitieStateAutomaton
             get { return true; }
         }
 
-        public override Range Match(TValue[] sequence, int startIndex)
+        public override Range Match(TValue[] sequence, int startIndex, out CaptureTable<TValue> table)
         {
-            return _fsa.Run(sequence, startIndex);
+            table = new CaptureTable<TValue>();
+            return _fsa.Run(sequence, startIndex, table);
         }
 
         public override int GetHashCode()

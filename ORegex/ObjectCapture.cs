@@ -1,52 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
+using ORegex.Core.Ast;
 
 namespace ORegex
 {
-    /// <summary>
-    /// Object capture
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    [DebuggerDisplay("index={Index}, length={Length};")]
-    public class ObjectCapture<TValue>: IEnumerable<TValue>
+    public class ObjectCapture<TValue> : IEnumerable<TValue>
     {
-        protected readonly TValue[] _collection;
+        private readonly TValue[] _collection;
 
-        /// <summary>
-        /// Start index
-        /// </summary>
-        public int Index { get; private set; }
+        public readonly int Index;
 
-        /// <summary>
-        /// Length of capture
-        /// </summary>
-        public int Length { get; private set; }
+        public readonly int Length;
 
-        /// <summary>
-        /// Value between end and start point
-        /// </summary>
-        public virtual IEnumerable<TValue> Value
+        public IEnumerable<TValue> Values
         {
             get
             {
-                for (int i = Index; i < Index + Length; i++)
+                var count = Index + Length;
+                for (int i = Index; i < count; i++)
                 {
                     yield return _collection[i];
                 }
             }
         }
 
-        internal ObjectCapture(TValue[] collection, int index, int length)
+        internal ObjectCapture(TValue[] collection, Range range)
         {
-            Index = index;
-            Length = length;
+            Index = range.Index;
+            Length = range.Length;
             _collection = collection;
         }
 
         public IEnumerator<TValue> GetEnumerator()
         {
-            return Value.GetEnumerator();
+            return Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

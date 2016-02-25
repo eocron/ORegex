@@ -41,12 +41,13 @@ namespace ORegex
 
         public IEnumerable<ObjectMatch<TValue>> Matches(TValue[] values)
         {
+            var captureTable = new CaptureTable<TValue>();
             for (int i = 0; i < values.Length; i++)
             {
-                var capture = _cfsa.Run(values, i);
+                var capture = _cfsa.Run(values, i, captureTable);
                 if (!capture.Equals(Range.Invalid))
                 {
-                    var match = new ObjectMatch<TValue>(values, capture.Index, capture.Length);
+                    var match = new ObjectMatch<TValue>(values, captureTable, capture);
                     i += capture.Length - 1;
                     yield return match;
                 }

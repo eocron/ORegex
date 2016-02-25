@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using ORegex.Core.FinitieStateAutomaton;
+﻿using System.Collections.Generic;
+using ORegex.Core.FinitieStateAutomaton.Predicates;
 
 namespace ORegex.Core.Ast
 {

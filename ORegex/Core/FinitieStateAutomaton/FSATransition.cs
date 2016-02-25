@@ -1,4 +1,5 @@
 ﻿using System;
+using ORegex.Core.FinitieStateAutomaton.Predicates;
 
 namespace ORegex.Core.FinitieStateAutomaton
 {

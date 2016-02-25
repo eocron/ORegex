@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ORegex.Core;
 using ORegex.Core.FinitieStateAutomaton;
+using ORegex.Core.FinitieStateAutomaton.Predicates;
 
 namespace ORegex
 {
