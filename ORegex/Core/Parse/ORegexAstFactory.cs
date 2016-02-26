@@ -17,27 +17,7 @@ namespace ORegex.Core.Parse
         public static AstRootNode CreateAstTree(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             var tree = CreateRoot(node, args);
-            int globalId = 0;
-            AssignClasses(tree, globalId, ref globalId);
             return tree;
-        }
-
-        private static void AssignClasses(AstNodeBase node, int classId, ref int globalId)
-        {
-            node.ClassGUID = classId;
-            foreach (var child in node.GetChildren())
-            {
-                var group = child as AstGroupNode;
-                if (group != null && group.Quantifier is CaptureQuantifier)
-                {
-                    globalId++;
-                    AssignClasses(group, globalId, ref globalId);
-                }
-                else
-                {
-                    AssignClasses(child, classId, ref globalId);
-                }
-            }
         }
 
         private static AstNodeBase Create(IParseTree node, ORegexAstFactoryArgs<TValue> args)
@@ -211,11 +191,11 @@ namespace ORegex.Core.Parse
             var arg = Create(node.GetChild(0), args);
             var oper = node.GetChild(1).ToString();
             int min = 0, max = 0;
-            bool isGreedy = false;
+            bool isLazy = false;
             var match = Regex.Match(oper,@"{(?<min>\d+),(?<max>\d+)?}(?<greed>\?)?");
             if (match.Success)
             {
-                isGreedy = match.Groups["greed"].Success;
+                isLazy = match.Groups["greed"].Success;
                 min = int.Parse(match.Groups["min"].Value);
                 max = match.Groups["max"].Success ? int.Parse(match.Groups["max"].Value) : int.MaxValue;
             }
@@ -230,7 +210,7 @@ namespace ORegex.Core.Parse
                     case "*?":
                         min = 0;
                         max = int.MaxValue;
-                        isGreedy = true;
+                        isLazy = true;
                         break;
                     case "+":
                         min = 1;
@@ -239,7 +219,7 @@ namespace ORegex.Core.Parse
                     case "+?":
                         min = 1;
                         max = int.MaxValue;
-                        isGreedy = true;
+                        isLazy = true;
                         break;
                     case "?":
                         min = 0;
@@ -248,14 +228,14 @@ namespace ORegex.Core.Parse
                     case "??":
                         min = 0;
                         max = 1;
-                        isGreedy = true;
+                        isLazy = true;
                         break;
                     default:
                         throw new NotImplementedException("Unsuported operator.");
                 }
             }
 
-            return new AstRepeatNode(arg, min, max, isGreedy, new Range(node));
+            return new AstRepeatNode(arg, min, max, isLazy, new Range(node));
         }
 
         private static AstOrNode CreateBinOper(IParseTree node, ORegexAstFactoryArgs<TValue> args)
@@ -263,10 +243,11 @@ namespace ORegex.Core.Parse
             List<AstNodeBase> children = new List<AstNodeBase>();
             for (int i = 0; i < node.ChildCount; i++)
             {
-                var child = node.GetChild(i);
-                if (child.GetText() != "|")
+                var childNode = node.GetChild(i);
+                if (childNode.GetText() != "|")
                 {
-                    children.Add(Create(child, args));
+                    var child = Create(childNode, args);
+                    children.Add(child);
                 }
             }
             return new AstOrNode(children, new Range(node));

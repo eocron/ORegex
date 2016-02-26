@@ -28,6 +28,11 @@ namespace ORegex.Core
             return new HashSet<TValue>(enumerable);
         }
 
+        public static SortedSet<TValue> ToSortedSet<TValue>(this IEnumerable<TValue> enumerable)
+        {
+            return new SortedSet<TValue>(enumerable);
+        }
+
         public static Set<TValue> ToSet<TValue>(this IEnumerable<TValue> enumerable)
         {
             return new Set<TValue>(enumerable);

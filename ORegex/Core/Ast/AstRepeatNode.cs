@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-namespace ORegex.Core.Ast
+﻿namespace ORegex.Core.Ast
 {
     public sealed class AstRepeatNode : AstNodeBase
     {
@@ -8,11 +6,11 @@ namespace ORegex.Core.Ast
 
         public readonly int MaxCount;
 
-        public readonly bool IsGreedy;
+        public readonly bool IsLazy;
 
         public AstNodeBase Argument;
 
-        public AstRepeatNode(AstNodeBase arg, int minCount, int maxCount, bool isGreedy, Range range)
+        public AstRepeatNode(AstNodeBase arg, int minCount, int maxCount, bool isLazy, Range range)
             : base(range)
         {
             if (minCount > maxCount)
@@ -21,7 +19,7 @@ namespace ORegex.Core.Ast
             }
             MinCount = minCount;
             MaxCount = maxCount;
-            IsGreedy = isGreedy;
+            IsLazy = isLazy;
             Argument = arg.ThrowIfNull();
         }
 
@@ -32,14 +30,11 @@ namespace ORegex.Core.Ast
 
         public override string ToString()
         {
-            if (IsGreedy)
+            if (IsLazy)
             {
-                return string.Format("Repeat[{0};{1}][greedy]", MinCount, MaxCount);
+                return string.Format("Repeat[{0};{1}][lazy]", MinCount, MaxCount);
             }
-            else
-            {
-                return string.Format("Repeat[{0};{1}]", MinCount, MaxCount);
-            }
+            return string.Format("Repeat[{0};{1}][greedy]", MinCount, MaxCount);
         }
     }
 }

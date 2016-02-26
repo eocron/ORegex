@@ -10,15 +10,15 @@ namespace ORegex.Core.FinitieStateAutomaton
     {
         #region Speedup
 
-        private readonly HashSet<PredicateEdgeBase<TValue>> _sigma = new HashSet<PredicateEdgeBase<TValue>>();
+        private readonly OrderedSet<PredicateEdgeBase<TValue>> _sigma = new OrderedSet<PredicateEdgeBase<TValue>>();
 
-        private readonly Dictionary<int, List<FSATransition<TValue>>> _lookup = new Dictionary<int, List<FSATransition<TValue>>>();
+        private readonly Dictionary<int, OrderedSet<FSATransition<TValue>>> _lookup = new Dictionary<int, OrderedSet<FSATransition<TValue>>>();
 
         #endregion
 
         public string Name { get; private set; }
 
-        private readonly HashSet<FSATransition<TValue>> _transitions;
+        private readonly OrderedSet<FSATransition<TValue>> _transitions;
 
         public IEnumerable<IFSATransition<TValue>> Transitions
         {
@@ -32,10 +32,7 @@ namespace ORegex.Core.FinitieStateAutomaton
 
         public IEnumerable<PredicateEdgeBase<TValue>> Sigma
         {
-            get
-            {
-                return _sigma;
-            }
+            get { return _sigma; }
         }
 
         public IEnumerable<int> Q
@@ -60,17 +57,17 @@ namespace ORegex.Core.FinitieStateAutomaton
         public FSA(string name, IEnumerable<FSATransition<TValue>> transitions, IEnumerable<int> q0, IEnumerable<int> f)
         {
             Name = name.ThrowIfEmpty();
-            _transitions = transitions.ToHashSet();
+            _transitions = new OrderedSet<FSATransition<TValue>>(transitions);
             Q0 = q0.ToHashSet();
             F = f.ToHashSet();
             StateCount = Q.Count();
             #region Speedup
             foreach(var t in _transitions)
             {
-                List<FSATransition<TValue>> predics;
+                OrderedSet<FSATransition<TValue>> predics;
                 if (!_lookup.TryGetValue(t.From, out predics))
                 {
-                    predics = new List<FSATransition<TValue>>();
+                    predics = new OrderedSet<FSATransition<TValue>>();
                     _lookup[t.From] = predics;
                 }
                 predics.Add(t);
@@ -88,7 +85,7 @@ namespace ORegex.Core.FinitieStateAutomaton
         public FSA(string name)
         {
             Name = name.ThrowIfEmpty();
-            _transitions = new HashSet<FSATransition<TValue>>();
+            _transitions = new OrderedSet<FSATransition<TValue>>();
             Q0 = new HashSet<int>();
             F = new HashSet<int>();
             StateCount = 0;
@@ -112,10 +109,10 @@ namespace ORegex.Core.FinitieStateAutomaton
             }
             _transitions.Add(trans);
             #region Speedup
-            List<FSATransition<TValue>> predics;
+            OrderedSet<FSATransition<TValue>> predics;
             if(!_lookup.TryGetValue(trans.From, out predics))
             {
-                predics = new List<FSATransition<TValue>>();
+                predics = new OrderedSet<FSATransition<TValue>>();
                 _lookup[trans.From] = predics;
             }
 
@@ -141,7 +138,7 @@ namespace ORegex.Core.FinitieStateAutomaton
         private readonly List<FSATransition<TValue>> EmptyList = new List<FSATransition<TValue>>();
         public IEnumerable<FSATransition<TValue>> GetTransitionsFrom(int state)
         {
-            List<FSATransition<TValue>> trans;
+            OrderedSet<FSATransition<TValue>> trans;
             if(_lookup.TryGetValue(state, out trans))
             {
                 return trans;

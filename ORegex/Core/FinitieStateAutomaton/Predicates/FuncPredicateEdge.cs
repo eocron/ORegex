@@ -11,7 +11,7 @@ namespace ORegex.Core.FinitieStateAutomaton.Predicates
 
         internal readonly Func<TValue, bool> _condition;
 
-        public FuncPredicateEdge(Func<TValue, bool> condition) : base(true)
+        public FuncPredicateEdge(Func<TValue, bool> condition)
         {
             _condition = condition;
         }

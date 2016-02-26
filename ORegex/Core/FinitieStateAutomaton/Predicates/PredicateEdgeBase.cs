@@ -4,12 +4,7 @@ namespace ORegex.Core.FinitieStateAutomaton.Predicates
 {
     public abstract class PredicateEdgeBase<TValue>
     {
-        public readonly bool IsGreedy;
-
-        protected PredicateEdgeBase(bool isGreedy = true)
-        {
-            IsGreedy = isGreedy;
-        }
+        public bool IsLazy { get; set; }
 
         public abstract bool IsFuncPredicate { get; }
 

@@ -8,7 +8,7 @@ namespace ORegex.Core.FinitieStateAutomaton.Predicates
         internal readonly IEqualityComparer<TValue> _comparer;
         internal readonly TValue _value;
         
-        public ComparePredicateEdge(TValue value, IEqualityComparer<TValue> comparer = null) : base(true)
+        public ComparePredicateEdge(TValue value, IEqualityComparer<TValue> comparer = null)
         {
             _comparer = comparer ?? EqualityComparer<TValue>.Default;
             _value = value;

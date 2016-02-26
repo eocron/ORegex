@@ -7,7 +7,7 @@ namespace ORegex.Core.FinitieStateAutomaton.Predicates
     {
         internal readonly IFSA<TValue> _fsa;
 
-        public ComplexPredicateEdge(IFSA<TValue> fsa) : base(true)
+        public ComplexPredicateEdge(IFSA<TValue> fsa)
         {
             _fsa = fsa;
         }

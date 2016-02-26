@@ -73,6 +73,7 @@
     <Compile Include="Core\FinitieStateAutomaton\IFSA.cs" />
     <Compile Include="Core\FinitieStateAutomaton\IFSATransition.cs" />
     <Compile Include="Core\FinitieStateAutomaton\Predicates\PredicateEdgeBase.cs" />
+    <Compile Include="Core\OrderedSet.cs" />
     <Compile Include="Core\ORegexException.cs" />
     <Compile Include="Core\ORegexSyntaxException.cs" />
     <Compile Include="Core\Parse\ORegexAstFactory.cs" />
