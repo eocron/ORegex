@@ -22,6 +22,11 @@ namespace ORegex
             list.Add(capture);
         }
 
+        internal void Remove(string name)
+        {
+            _captures.Remove(name);
+        }
+
         internal void Add(CaptureTable<TValue> table)
         {
             foreach (var c in table._captures)

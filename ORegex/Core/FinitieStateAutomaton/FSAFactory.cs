@@ -13,7 +13,7 @@ namespace ORegex.Core.FinitieStateAutomaton
             var result = new FSA<TValue>(name);
             var start = result.NewState();
             var end = result.NewState();
-            Evaluate(start, end, result, root, false);
+            Evaluate(start, end, result, root);
             result.AddFinal(end);
             result.AddStart(start);
 
@@ -22,27 +22,27 @@ namespace ORegex.Core.FinitieStateAutomaton
             return result;
         }
 
-        public void Evaluate(int start, int end, FSA<TValue> fsa, AstNodeBase node, bool isLazy)
+        public void Evaluate(int start, int end, FSA<TValue> fsa, AstNodeBase node)
         {
             if (node is AstAtomNode<TValue>)
             {
-                EvaluateAtom(start,end, fsa,(AstAtomNode<TValue>)node, isLazy);
+                EvaluateAtom(start, end, fsa, (AstAtomNode<TValue>)node);
             }
             else if(node is AstConcatNode)
             {
-                EvaluateConcat(start, end, fsa, (AstConcatNode)node, isLazy);
+                EvaluateConcat(start, end, fsa, (AstConcatNode)node);
             }
             else if(node is AstOrNode)
             {
-                EvaluateOr(start, end, fsa, (AstOrNode)node, isLazy);
+                EvaluateOr(start, end, fsa, (AstOrNode)node);
             }
             else if(node is AstRepeatNode)
             {
-                EvaluateRepeat(start, end, fsa, (AstRepeatNode)node, isLazy);
+                EvaluateRepeat(start, end, fsa, (AstRepeatNode)node);
             }
             else if(node is AstRootNode)
             {
-                EvaluateRoot(start, end, fsa, (AstRootNode)node, isLazy);
+                EvaluateRoot(start, end, fsa, (AstRootNode)node);
             }
             else
             {
@@ -50,58 +50,101 @@ namespace ORegex.Core.FinitieStateAutomaton
             }
         }
 
-        private void EvaluateRoot(int start, int end, FSA<TValue> fsa, AstRootNode astRootNode, bool isLazy)
+        private void EvaluateRoot(int start, int end, FSA<TValue> fsa, AstRootNode astRootNode)
         {
-            Evaluate(start, end, fsa, astRootNode.Regex, isLazy);
+            Evaluate(start, end, fsa, astRootNode.Regex);
         }
 
-        private void EvaluateRepeat(int start, int end, FSA<TValue> fsa, AstRepeatNode astRepeatNode, bool isLazy)
+        private void EvaluateRepeat(int start, int end, FSA<TValue> fsa, AstRepeatNode astRepeatNode)
         {
-            var prev = start;
-            for (int i = 0; i < astRepeatNode.MinCount; i++)
+            if (astRepeatNode.IsLazy)
             {
-                var next = CreateNewState(fsa);
-                Evaluate(prev, next, fsa, astRepeatNode.Argument, isLazy);
-                prev = next;
-            }
+                var lazyFsa = Create(astRepeatNode.Argument, Guid.NewGuid().ToString());
+                var edge = new ComplexPredicateEdge<TValue>(lazyFsa);
+                edge.IsLazyPredicate = true;
 
-            fsa.AddEpsilonTransition(prev, end);
+                var prev = start;
+                for (int i = 0; i < astRepeatNode.MinCount; i++)
+                {
+                    var next = CreateNewState(fsa);
+                    EvaluateCondition(prev, next, fsa, edge);
+                    prev = next;
+                }
 
-            if (astRepeatNode.MaxCount == int.MaxValue)
-            {
-                RepeatZeroOrInfinite(prev, end, fsa, astRepeatNode.Argument, isLazy);
+                fsa.AddEpsilonTransition(prev, end);
+
+                if (astRepeatNode.MaxCount == int.MaxValue)
+                {
+                    RepeatZeroOrInfinite(prev, end, fsa, edge);
+                }
+                else
+                {
+                    int count = astRepeatNode.MaxCount - astRepeatNode.MinCount;
+                    for (int i = 0; i < count; i++)
+                    {
+                        var next = CreateNewState(fsa);
+                        EvaluateCondition(prev, next, fsa, edge);
+                        fsa.AddEpsilonTransition(next, end);
+                        prev = next;
+                    }
+                }
             }
             else
             {
-                int count = astRepeatNode.MaxCount - astRepeatNode.MinCount;
-                for (int i = 0; i < count; i++)
+                var prev = start;
+                for (int i = 0; i < astRepeatNode.MinCount; i++)
                 {
                     var next = CreateNewState(fsa);
-                    Evaluate(prev, next, fsa, astRepeatNode.Argument, isLazy);
-                    fsa.AddEpsilonTransition(next, end);
+                    Evaluate(prev, next, fsa, astRepeatNode.Argument);
                     prev = next;
+                }
+
+                fsa.AddEpsilonTransition(prev, end);
+
+                if (astRepeatNode.MaxCount == int.MaxValue)
+                {
+                    RepeatZeroOrInfinite(prev, end, fsa, astRepeatNode.Argument);
+                }
+                else
+                {
+                    int count = astRepeatNode.MaxCount - astRepeatNode.MinCount;
+                    for (int i = 0; i < count; i++)
+                    {
+                        var next = CreateNewState(fsa);
+                        Evaluate(prev, next, fsa, astRepeatNode.Argument);
+                        fsa.AddEpsilonTransition(next, end);
+                        prev = next;
+                    }
                 }
             }
         }
 
-        private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, AstNodeBase node, bool isLazy)
+        private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, AstNodeBase node)
         {
             var tmp = CreateNewState(fsa);
-            Evaluate(tmp, tmp, fsa, node, isLazy);
+            Evaluate(tmp, tmp, fsa, node);
+            fsa.AddEpsilonTransition(start, tmp);
+            fsa.AddEpsilonTransition(tmp, end);
+            fsa.AddEpsilonTransition(start, end);
+        }
+        private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, PredicateEdgeBase<TValue> predicate)
+        {
+            var tmp = CreateNewState(fsa);
+            fsa.AddTransition(tmp,predicate,tmp);
             fsa.AddEpsilonTransition(start, tmp);
             fsa.AddEpsilonTransition(tmp, end);
             fsa.AddEpsilonTransition(start, end);
         }
 
-        private void EvaluateOr(int start, int end, FSA<TValue> fsa, AstOrNode node, bool isLazy)
+        private void EvaluateOr(int start, int end, FSA<TValue> fsa, AstOrNode node)
         {
             foreach (var child in node.GetChildren())
             {
-                EvaluateCondition(start, end, fsa, child, isLazy);
+                EvaluateCondition(start, end, fsa, child);
             }
         }
 
-        private void EvaluateConcat(int start, int end, FSA<TValue> fsa, AstConcatNode node, bool isLazy)
+        private void EvaluateConcat(int start, int end, FSA<TValue> fsa, AstConcatNode node)
         {
             if (node is AstGroupNode)
             {
@@ -113,7 +156,7 @@ namespace ORegex.Core.FinitieStateAutomaton
                     {
                         var captureFsa = Create(group, groupName);
                         var edge = new ComplexPredicateEdge<TValue>(captureFsa);
-                        edge.IsLazy = isLazy;
+                        edge.IsCapturePredicate = true;
                         EvaluateCondition(start, end, fsa, edge);
                         return;
                     }
@@ -124,15 +167,14 @@ namespace ORegex.Core.FinitieStateAutomaton
             foreach (var child in node.GetChildren())
             {
                 var next = CreateNewState(fsa);
-                Evaluate(prev, next, fsa, child, isLazy);
+                Evaluate(prev, next, fsa, child);
                 prev = next;
             }
             fsa.AddEpsilonTransition(prev, end);
         }
 
-        private void EvaluateAtom(int start, int end, FSA<TValue> fsa, AstAtomNode<TValue> node, bool isLazy)
+        private void EvaluateAtom(int start, int end, FSA<TValue> fsa, AstAtomNode<TValue> node)
         {
-            node.Condition.IsLazy = isLazy;
             EvaluateCondition(start, end, fsa, node.Condition);
         }
 
@@ -146,13 +188,13 @@ namespace ORegex.Core.FinitieStateAutomaton
             fsa.AddEpsilonTransition(tmp2, end);
         }
 
-        private void EvaluateCondition(int start, int end, FSA<TValue> fsa, AstNodeBase node, bool isLazy)
+        private void EvaluateCondition(int start, int end, FSA<TValue> fsa, AstNodeBase node)
         {
             var tmp1 = CreateNewState(fsa);
             var tmp2 = CreateNewState(fsa);
 
             fsa.AddEpsilonTransition(start, tmp1);
-            Evaluate(tmp1, tmp2, fsa, node, isLazy);
+            Evaluate(tmp1, tmp2, fsa, node);
             fsa.AddEpsilonTransition(tmp2, end);
         }
 

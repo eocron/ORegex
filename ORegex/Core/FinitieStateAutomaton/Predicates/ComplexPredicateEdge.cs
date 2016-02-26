@@ -7,10 +7,19 @@ namespace ORegex.Core.FinitieStateAutomaton.Predicates
     {
         internal readonly IFSA<TValue> _fsa;
 
+        public bool IsCapturePredicate { get; set; }
+
         public ComplexPredicateEdge(IFSA<TValue> fsa)
         {
             _fsa = fsa;
         }
+
+        public ComplexPredicateEdge(IFSA<TValue> fsa, ComplexPredicateEdge<TValue> other) : this(fsa)
+        {
+            IsCapturePredicate = other.IsCapturePredicate;
+            IsLazyPredicate = other.IsLazyPredicate;
+        }
+
         public override bool IsFuncPredicate
         {
             get { return false; }
@@ -29,7 +38,12 @@ namespace ORegex.Core.FinitieStateAutomaton.Predicates
         public override Range Match(TValue[] sequence, int startIndex, out CaptureTable<TValue> table)
         {
             table = new CaptureTable<TValue>();
-            return _fsa.Run(sequence, startIndex, table);
+            var result = _fsa.Run(sequence, startIndex, table);
+            if (!IsCapturePredicate)
+            {
+                table.Remove(_fsa.Name);
+            }
+            return result;
         }
 
         public override int GetHashCode()

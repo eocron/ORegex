@@ -24,7 +24,7 @@ namespace TestUtility
         {
             foreach (var t in fsa.Transitions)
             {
-                Edge edge = graph.AddEdge("q" + t.From, t.Condition.IsComplexPredicate? "complex" : "func", "q" + t.To);
+                Edge edge = graph.AddEdge("q" + t.From, (t.Condition.IsComplexPredicate? "complex" : "func"), "q" + t.To);
 
                 if (fsa.IsFinal(t.To))
                 {

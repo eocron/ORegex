@@ -4,7 +4,7 @@ namespace ORegex.Core.FinitieStateAutomaton.Predicates
 {
     public abstract class PredicateEdgeBase<TValue>
     {
-        public bool IsLazy { get; set; }
+        public bool IsLazyPredicate { get; set; }
 
         public abstract bool IsFuncPredicate { get; }
 

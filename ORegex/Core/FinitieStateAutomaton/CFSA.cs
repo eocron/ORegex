@@ -47,8 +47,9 @@ namespace ORegex.Core.FinitieStateAutomaton
                 PredicateEdgeBase<TValue> predicate = null;
                 if (t.Condition.IsComplexPredicate)
                 {
-                    var fsa = new CFSA<TValue>((FSA<TValue>) ((ComplexPredicateEdge<TValue>) t.Condition)._fsa);
-                    predicate = new ComplexPredicateEdge<TValue>(fsa);
+                    var other = (ComplexPredicateEdge<TValue>) t.Condition;
+                    var fsa = new CFSA<TValue>((FSA<TValue>) other._fsa);
+                    predicate = new ComplexPredicateEdge<TValue>(fsa, other);
                 }
 
                 yield return new FSATransition<TValue>(t.From, predicate?? t.Condition, t.To);
