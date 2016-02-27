@@ -6,7 +6,9 @@ namespace Eocron
 {
     public sealed class CaptureTable<TValue> : IEnumerable<KeyValuePair<string, List<OCapture<TValue>>>>
     {
-        private static readonly Dictionary<string, List<OCapture<TValue>>> Empty = new Dictionary<string, List<OCapture<TValue>>>();
+        private static readonly OCapture<TValue>[] EmptyArray = new OCapture<TValue>[0];
+        private static readonly Dictionary<string, List<OCapture<TValue>>> EmptyCaptures = new Dictionary<string, List<OCapture<TValue>>>();
+
         private Dictionary<string, List<OCapture<TValue>>> _captures;
 
         public int Count
@@ -19,7 +21,7 @@ namespace Eocron
             {
                 if (_captures == null)
                 {
-                    return Empty[name];
+                    return EmptyArray;
                 }
                 return _captures[name];
             }
@@ -67,7 +69,7 @@ namespace Eocron
         {
             if (_captures == null)
             {
-                return Empty.GetEnumerator();
+                return EmptyCaptures.GetEnumerator();
             }
             return _captures.GetEnumerator();
         }

@@ -57,7 +57,7 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         private void EvaluateRepeat(int start, int end, FSA<TValue> fsa, AstRepeatNode astRepeatNode)
         {
-            var lazyFsa = Create(astRepeatNode.Argument, Guid.NewGuid().ToString());
+            var lazyFsa = Create(astRepeatNode.Argument, "#repeat#");
             var edge = new ComplexPredicateEdge<TValue>(lazyFsa);
             if (astRepeatNode.IsLazy)
             {

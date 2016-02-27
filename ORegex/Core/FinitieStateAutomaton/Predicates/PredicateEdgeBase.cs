@@ -1,4 +1,5 @@
 ﻿using Eocron.Core.Ast;
+using Eocron.Core.Objects;
 
 namespace Eocron.Core.FinitieStateAutomaton.Predicates
 {
@@ -47,7 +48,7 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
             {
                 var aa = (ComplexPredicateEdge<TValue>) a;
                 var bb = (ComplexPredicateEdge<TValue>) b;
-                return ReferenceEquals(aa._fsa, bb._fsa);
+                return ComparisonExtensions.DeepEquals(aa._fsa, bb._fsa);
             }
             if (a.IsFuncPredicate && b.IsFuncPredicate)
             {

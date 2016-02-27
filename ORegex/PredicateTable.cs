@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Eocron.Core;
 using Eocron.Core.FinitieStateAutomaton.Predicates;
 
@@ -27,6 +28,11 @@ namespace Eocron
             if (_table.ContainsKey(name))
             {
                 throw new ArgumentException("Such name already exist: " + name, "name");
+            }
+
+            if (_table.Values.Cast<FuncPredicateEdge<TValue>>().Select(x=>x._condition).Contains(predicate))
+            {
+                
             }
 
             _table.Add(name, new FuncPredicateEdge<TValue>(predicate));

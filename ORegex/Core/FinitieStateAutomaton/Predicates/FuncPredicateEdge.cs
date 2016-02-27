@@ -11,7 +11,7 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
 
         public static readonly FuncPredicateEdge<TValue> AlwaysTrue = new FuncPredicateEdge<TValue>(x => true);
 
-        internal readonly Func<TValue, bool> _condition;
+        internal Func<TValue, bool> _condition { get;private set; }
 
         public FuncPredicateEdge(Func<TValue, bool> condition)
         {

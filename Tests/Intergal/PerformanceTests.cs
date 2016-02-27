@@ -35,7 +35,7 @@ namespace Tests.Intergal
             for (int i = 30; i <= 80; i += 10)
             {
                 var str = string.Join("",Enumerable.Repeat("x",i));
-                PerformanceTest("{x}+{x}+{y}+", "x+x+y+", str, 1);
+                PerformanceTest("{x}+{x}+{y}+", "x+x+y+", str, 2);
                 Trace.WriteLine("############################################");
             }
         }

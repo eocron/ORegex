@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Reflection;
 
 namespace Eocron.Core.Objects
 {
@@ -19,7 +20,7 @@ namespace Eocron.Core.Objects
             if (obj1 == null || obj2 == null)
                 return false;
             var type = obj1.GetType();
-            if (type.IsValueType || type == typeof (string))
+            if (type.IsValueType || type == typeof(string) || typeof(Delegate).IsAssignableFrom(type))
                 return obj1.Equals(obj2);
             if (obj1 is IEnumerable && obj2 is IEnumerable)
             {
@@ -47,12 +48,11 @@ namespace Eocron.Core.Objects
             }
             else
             {
-                foreach (var propertyInfo in type.GetProperties())
+                var properties = type.GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetField);
+                foreach (var propertyInfo in properties)
                 {
-                    if (propertyInfo.CanRead && propertyInfo.CanWrite &&
-                        (CollectionExtensions.IsNullOrEmpty(propertyInfo.GetIndexParameters()) &&
-                         !DeepEqualsUnsafe(propertyInfo.GetValue(obj1, null), propertyInfo.GetValue(obj2, null),
-                             orderedCollectionComparison, orderedArrayComparison)))
+                    if (propertyInfo.CanRead &&
+                        !DeepEqualsUnsafe(propertyInfo.GetValue(obj1, null), propertyInfo.GetValue(obj2, null), orderedCollectionComparison, orderedArrayComparison))
                         return false;
                 }
             }

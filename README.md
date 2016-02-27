@@ -19,7 +19,7 @@ Each lambda or value should have unique name inside pattern.
     var input = new T[] { ... };
     var matches = regex.Matches(input);
     var match = regex.Match(input);
-    var someGroup = match.Captures["someGroup"].Value;
+    var someGroup = match.Captures["someGroup"];
     if(regex.IsMatch(input))
     {
       ...
@@ -31,7 +31,7 @@ Also, you can find there test utility and see how things work inside engine.
 #Performance
 
 - Compared to real life cases performance is 2-3 times slower than .NET Regex engine on character sequences.
-- Greedy exhausting test ('x+x+y+' pattern on a 'xxxxxxxxxxxxxxxxxxxx' string) is ~20 times slower.
+- Greedy exhausting test ('x+x+y+' pattern on a 'xxxxxxxxxxxxxxxxxxxx' string) is ~10 times faster than Regex engine. This result achieved due internal ORegex optimizations so pattern x+x+x+ becomes xxx+.
 
 #Future
 
