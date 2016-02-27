@@ -15,18 +15,35 @@ Each lambda or value should have unique name inside pattern.
 Currently it is less functional than analogs (no lookahead, conditions, etc), but much understandable and faster.
 #Example
 
-            var oregex = new ORegex<int>("{0}(.{0})*", ORegexOptions.None, IsPrime);
+        public static bool IsPrime(int number)
+        {
+            int boundary = (int)Math.Floor(Math.Sqrt(number));
+
+            if (number == 1) return false;
+            if (number == 2) return true;
+
+            for (int i = 2; i <= boundary; ++i)
+            {
+                if (number % i == 0) return false;
+            }
+
+            return true;
+        }
+
+        public void PrimeTest()
+        {
+            var oregex = new ORegex<int>("{0}(.{0})*", IsPrime);
 
             var input = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
             foreach (var match in oregex.Matches(input))
             {
                 Trace.WriteLine(string.Join(",", match.Values));
             }
-
-            //OUTPUT:
-            //2
-            //3,4,5,6,7
-            //11,12,13
+        }
+        //OUTPUT:
+        //2
+        //3,4,5,6,7
+        //11,12,13
 
 You can start from viewing Unit Test project to see how you can use it, by time there will be more examples. 
 Also, you can find there test utility and see how things work inside engine.

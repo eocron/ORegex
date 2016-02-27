@@ -13,7 +13,7 @@ namespace Tests.Intergal
         [Test]
         public void PrimeTest()
         {
-            var oregex = new ORegex<int>("{0}(.{0})*", ORegexOptions.None, IsPrime);
+            var oregex = new ORegex<int>("{0}(.{0})*", IsPrime);
 
             var input = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
             foreach (var match in oregex.Matches(input))

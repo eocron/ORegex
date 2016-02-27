@@ -22,9 +22,13 @@ namespace Eocron
         private readonly ORegexCompiler<TValue> _compiler = new ORegexCompiler<TValue>();
         private readonly CFSA<TValue> _cfsa;
         private readonly ORegexOptions _options;
-        public ORegex(string pattern, ORegexOptions options, params Func<TValue, bool>[] predicates) : this(pattern, options, CreatePredicateTable(predicates))
-        {
-        }
+
+        public ORegex(string pattern, params Func<TValue,bool>[] predicates) : this(pattern, ORegexOptions.None, predicates){}
+
+        public ORegex(string pattern, PredicateTable<TValue> table) : this(pattern, ORegexOptions.None, table) { }
+
+
+        public ORegex(string pattern, ORegexOptions options, params Func<TValue, bool>[] predicates) : this(pattern, options, CreatePredicateTable(predicates)) { }
 
         public ORegex(string pattern, ORegexOptions options, PredicateTable<TValue> table)
         {
