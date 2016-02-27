@@ -1,25 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using Tests.Core;
-using NUnit.Framework.Compatibility;
+using Stopwatch = NUnit.Framework.Compatibility.Stopwatch;
 
 namespace Tests.Intergal
 {
     [TestFixture]
     public sealed class PerformanceTests
     {
-        private readonly DebugPredicateTable _table = new DebugPredicateTable();
-        
         [Test]
-        public void PerformanceTest()
+        public void BuildTest()
         {
-            var str = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-            var input = str.ToCharArray();
-            var Eocron = new DebugORegex("({x}+{x}+){y}+");
-            Console.WriteLine("Input string: {0}",str);
+            const string pattern = "({x}+{x}+){y}+{x}|{x}|{x}|{x}|{y}|{x}[^{x}][^{y}]?|(?<g1>{x}+?|(?<g2>{x}?)?)";
+            Trace.WriteLine(string.Format("Input pattern: {0}", pattern));
             const int iterCount = 10;
             const int repeatCount = 10;
             for (int j = 0; j < iterCount; j++)
@@ -27,10 +24,31 @@ namespace Tests.Intergal
                 var sw = Stopwatch.StartNew();
                 for (int i = 0; i < repeatCount; i++)
                 {
-                    var array = Eocron.Matches(input).ToArray();
+                    var oregex = new DebugORegex(pattern);
                 }
                 sw.Stop();
-                Console.WriteLine("Done {0} and string length {1} in {2}",repeatCount,input.Length, sw.Elapsed);
+                Trace.WriteLine(string.Format("Done {0} in {1}", repeatCount, sw.Elapsed));
+            }
+        }
+
+        [Test]
+        public void RunTest()
+        {
+            var str = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+            var input = str.ToCharArray();
+            var oregex = new DebugORegex("({x}+{x}+){y}+");
+            Trace.WriteLine(string.Format("Input string: {0}",str));
+            const int iterCount = 10;
+            const int repeatCount = 10;
+            for (int j = 0; j < iterCount; j++)
+            {
+                var sw = Stopwatch.StartNew();
+                for (int i = 0; i < repeatCount; i++)
+                {
+                    var array = oregex.Matches(input).ToArray();
+                }
+                sw.Stop();
+                Trace.WriteLine(string.Format("Done {0} and string length {1} in {2}",repeatCount,input.Length, sw.Elapsed));
             }
         }
     }
