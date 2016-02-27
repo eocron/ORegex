@@ -15,7 +15,7 @@ namespace TestUtility
 {
     public partial class MainWindow : Form
     {
-        private readonly EocronCompiler<char> _compiler = new EocronCompiler<char>();
+        private readonly ORegexCompiler<char> _compiler = new ORegexCompiler<char>();
         private readonly DebugPredicateTable _table = new DebugPredicateTable();
         private readonly ORegexParser<char> _parser = new ORegexParser<char>(); 
         private readonly GleeGraphCreator _graphCreator = new GleeGraphCreator();
@@ -128,8 +128,8 @@ namespace TestUtility
             try
             {
                 var sw = Stopwatch.StartNew();
-                var test = new PerformanceTest((int)IterationsCountBox.Value);
-                test.Run();
+                var test = new PerformanceTest();
+                test.BuildTest((int)IterationsCountBoxBuild.Value);
                 sw.Stop();
                 label2.Text = "Elapsed " + sw.Elapsed;
             }
@@ -142,7 +142,7 @@ namespace TestUtility
         private void TestRegexEqualityButton_Click(object sender, EventArgs e)
         {
             var regex = new Regex(RegexPatternBox.Text);
-            var Eocron = new ORegex<char>(ORegexPatternBox.Text, EocronOptions.None, _table);
+            var Eocron = new ORegex<char>(ORegexPatternBox.Text, ORegexOptions.None, _table);
             var matches = regex.Matches(InputTextBox.Text).Cast<Match>().ToArray();
             var omatches = Eocron.Matches(InputTextBox.Text.ToCharArray()).ToArray();
 
@@ -163,6 +163,22 @@ namespace TestUtility
                 }
             }
             MessageBox.Show("All good.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                var sw = Stopwatch.StartNew();
+                var test = new PerformanceTest();
+                test.RunTest((int)IterationsCountBoxRun.Value);
+                sw.Stop();
+                label7.Text = "Elapsed " + sw.Elapsed;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

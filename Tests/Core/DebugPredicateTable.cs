@@ -1,4 +1,5 @@
-﻿using Eocron;
+﻿using System.Collections.Specialized;
+using Eocron;
 
 namespace Tests.Core
 {
@@ -11,12 +12,27 @@ namespace Tests.Core
                 var tmp = c;
                 AddPredicate(c.ToString(), x => x == tmp);
             }
-
+            for (char c = 'A'; c <= 'Z'; c++)
+            {
+                var tmp = c;
+                AddPredicate(c.ToString(), x => x == tmp);
+            }
+            for (char c = 'а'; c <= 'я'; c++)
+            {
+                var tmp = c;
+                AddPredicate(c.ToString(), x => x == tmp);
+            }
+            for (char c = 'А'; c <= 'Я'; c++)
+            {
+                var tmp = c;
+                AddPredicate(c.ToString(), x => x == tmp);
+            }
             for (char c = '0'; c <= '9'; c++)
             {
                 var tmp = c;
                 AddPredicate(c.ToString(), x => x == tmp);
             }
+            AddPredicate("WS", char.IsWhiteSpace);
         }
     }
 }

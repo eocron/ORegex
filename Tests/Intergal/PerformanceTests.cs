@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Tests.Core;
 using Stopwatch = NUnit.Framework.Compatibility.Stopwatch;
@@ -29,23 +30,53 @@ namespace Tests.Intergal
         }
 
         [Test]
-        public void RunTest()
+        public void ExhaustingRunTest()
         {
-            var str = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-            var input = str.ToCharArray();
-            var oregex = new DebugORegex("({x}+{x}+){y}+");
-            Trace.WriteLine(string.Format("Input string: {0}",str));
-            const int iterCount = 10;
-            const int repeatCount = 10;
+            for (int i = 30; i <= 80; i += 10)
+            {
+                var str = string.Join("",Enumerable.Repeat("x",i));
+                PerformanceTest("{x}+{x}+{y}+", "x+x+y+", str, 1);
+                Trace.WriteLine("############################################");
+            }
+        }
+
+        [Test]
+        public void SimpleRunTest()
+        {
+            var str = "asdfffffffffffffffffweage" +
+                      "rgerxxxxxxxxxxffffffffff" +
+                      "aasdfgargaergerg" +
+                      "fffffweagergerxxxxxxxxxxxxxxxxx" +
+                      "xxxxxxxyyyyxxxxxxxxfffffffyffffffffweagerge" +
+                      "rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+                      "ywfffffffffffffffweagergerxxxxxxxxxxxxxxxxxx" +
+                      "xxxxxxefwefwefadxxxxxxxxxxxxffffffff" +
+                      "fffffffweagerge" +
+                      "rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+
+            PerformanceTest("{x}+{x}+{y}+", "x+x+y+", str, 5);
+            Trace.WriteLine("############################################");
+        }
+
+        private static void PerformanceTest(string oregexPattern, string regexPattern, string inputText, int iterCount)
+        {
+            var input = inputText.ToCharArray();
+            var oregex = new DebugORegex(oregexPattern);
+            var regex = new Regex(regexPattern, RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.Compiled);
+            Trace.WriteLine(string.Format("Input string: {0}", inputText));
+
             for (int j = 0; j < iterCount; j++)
             {
                 var sw = Stopwatch.StartNew();
-                for (int i = 0; i < repeatCount; i++)
-                {
-                    var array = oregex.Matches(input).ToArray();
-                }
+                var array1 = oregex.Matches(input).ToArray();
                 sw.Stop();
-                Trace.WriteLine(string.Format("Done {0} and string length {1} in {2}",repeatCount,input.Length, sw.Elapsed));
+                long last = sw.ElapsedTicks;
+                Trace.WriteLine(string.Format("ORegex done in {0}", sw.Elapsed));
+
+                sw = Stopwatch.StartNew();
+                var array2 = regex.Matches(inputText).Cast<Match>().ToArray();
+                sw.Stop();
+                Trace.WriteLine(string.Format("Regex done in {0}", sw.Elapsed));
             }
         }
     }

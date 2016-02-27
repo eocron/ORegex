@@ -18,6 +18,7 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         private readonly bool[] _finalsLookup;
 
+        private readonly int _stateCount;
         public IEnumerable<IFSATransition<TValue>> Transitions
         {
             get { return _transitionMatrix.Where(x=> x!= null).SelectMany(x => x); }
@@ -38,6 +39,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             {
                 _finalsLookup[f] = true;
             }
+            _stateCount = _transitionMatrix.Length;
         }
 
         private static IEnumerable<FSATransition<TValue>> CompileTransitions(IEnumerable<IFSATransition<TValue>> transitions)
@@ -65,29 +67,28 @@ namespace Eocron.Core.FinitieStateAutomaton
             public bool IsFinal;
         }
 
-        public Range Run(TValue[] values, int startIndex, CaptureTable<TValue> table)
+        public Range Run(TValue[] values, int startIndex, CaptureTable<TValue> table, bool captureSelf)
         {
-            var stack = new Stack<FSMState>();
+            var stack = new Stack<FSMState>(_stateCount);
 
             stack.Push(CreateState(_startState, startIndex, null));
             FSMState state = null;
             while (stack.Count > 0)
             {
-                state = stack.Pop();
+                state = stack.Peek();
 
                 FSMState next;
-                if (TryGetNextState(state, values, out next))
+                if (TryGetNextState(state, values, table, out next))
                 {
-                    stack.Push(state);
                     stack.Push(next);
+                }
+                else if (state.IsFinal)
+                {
+                    break;
                 }
                 else
                 {
-                    if (state.IsFinal)
-                    {
-                        stack.Push(state);
-                        break;
-                    }
+                    state = stack.Pop();
                 }
             }
 
@@ -96,11 +97,17 @@ namespace Eocron.Core.FinitieStateAutomaton
                 var result = new Range(startIndex, state.CurrentIndex - startIndex);
                 if (table != null)
                 {
-                    foreach (var s in stack.Select(x => x.Captures).Where(x => x != null))
+                    foreach(var s in stack)
                     {
-                        table.Add(s);
+                        if (s.Captures != null)
+                        {
+                            table.Add(s.Captures);
+                        }
                     }
-                    table.Add(Name, new OCapture<TValue>(values, result));
+                    if (captureSelf)
+                    {
+                        table.Add(Name, new OCapture<TValue>(values, result));
+                    }
                 }
                 return result;
             }
@@ -129,7 +136,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             };
         }
 
-        private bool TryGetNextState(FSMState current, TValue[] values, out FSMState nextState)
+        private bool TryGetNextState(FSMState current, TValue[] values, CaptureTable<TValue> table, out FSMState nextState)
         {
             nextState = default(FSMState);
             if (current.Transitions != null && 

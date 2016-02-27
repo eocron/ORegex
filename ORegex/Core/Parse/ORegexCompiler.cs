@@ -2,11 +2,11 @@
 
 namespace Eocron.Core.Parse
 {
-    public sealed class EocronCompiler<TValue>
+    public sealed class ORegexCompiler<TValue>
     {
         private readonly ORegexParser<TValue> _parser;
         private readonly FSAFactory<TValue> _stb;
-        public EocronCompiler()
+        public ORegexCompiler()
         {
             _parser = new ORegexParser<TValue>();
             _stb = new FSAFactory<TValue>();

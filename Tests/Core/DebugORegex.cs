@@ -8,7 +8,7 @@ namespace Tests.Core
 {
     public class DebugORegex : ORegex<char>
     {
-        public DebugORegex(string pattern, EocronOptions options = EocronOptions.None) : base(pattern,options, new DebugPredicateTable())
+        public DebugORegex(string pattern, ORegexOptions options = ORegexOptions.None) : base(pattern,options, new DebugPredicateTable())
         {
 
         }

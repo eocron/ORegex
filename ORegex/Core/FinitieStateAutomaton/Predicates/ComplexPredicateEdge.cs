@@ -40,10 +40,10 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
         public override Range Match(TValue[] sequence, int startIndex, out CaptureTable<TValue> table)
         {
             table = new CaptureTable<TValue>();
-            var result = _fsa.Run(sequence, startIndex, table);
-            if (!IsCapturePredicate)
+            var result = _fsa.Run(sequence, startIndex, table, IsCapturePredicate);
+            if (table.Count == 0)
             {
-                table.Remove(_fsa.Name);
+                table = null;
             }
             return result;
         }

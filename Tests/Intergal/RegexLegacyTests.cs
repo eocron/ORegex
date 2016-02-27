@@ -26,7 +26,7 @@ namespace Tests.Intergal
 
             var text = test.GetRoot().Element("TEXT").Value;
 
-            var regex = new Regex(regexPattern, RegexOptions.ExplicitCapture | RegexOptions.Singleline);
+            var regex = new Regex(regexPattern, RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.Compiled);
             var oregex = new DebugORegex(oregexPattern);
 
             var regexMatches = regex.Matches(text).Cast<Match>().Where(x=>x.Index != text.Length).ToArray();

@@ -19,14 +19,14 @@ namespace Eocron
     /// <typeparam name="TValue"></typeparam>
     public class ORegex<TValue>
     {
-        private readonly EocronCompiler<TValue> _compiler = new EocronCompiler<TValue>();
+        private readonly ORegexCompiler<TValue> _compiler = new ORegexCompiler<TValue>();
         private readonly CFSA<TValue> _cfsa;
 
-        public ORegex(string pattern, EocronOptions options, params Func<TValue, bool>[] predicates) : this(pattern, options, CreatePredicateTable(predicates))
+        public ORegex(string pattern, ORegexOptions options, params Func<TValue, bool>[] predicates) : this(pattern, options, CreatePredicateTable(predicates))
         {
         }
 
-        public ORegex(string pattern, EocronOptions options, PredicateTable<TValue> table)
+        public ORegex(string pattern, ORegexOptions options, PredicateTable<TValue> table)
         {
             _cfsa = _compiler.Build(pattern, table);
         }
@@ -46,7 +46,7 @@ namespace Eocron
             var captureTable = new CaptureTable<TValue>();
             for (int i = startIndex; i < values.Length; i++)
             {
-                var capture = _cfsa.Run(values, i, captureTable);
+                var capture = _cfsa.Run(values, i, captureTable, true);
                 if (!capture.Equals(Range.Invalid))
                 {
                     var match = new OMatch<TValue>(values, captureTable, capture);
@@ -64,7 +64,7 @@ namespace Eocron
 
         public bool IsMatch(TValue[] values, int startIndex = 0)
         {
-            return !_cfsa.Run(values, startIndex, null).Equals(Range.Invalid);
+            return !_cfsa.Run(values, startIndex, null, false).Equals(Range.Invalid);
         }
     }
 }
