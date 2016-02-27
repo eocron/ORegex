@@ -57,64 +57,40 @@ namespace ORegex.Core.FinitieStateAutomaton
 
         private void EvaluateRepeat(int start, int end, FSA<TValue> fsa, AstRepeatNode astRepeatNode)
         {
+            var lazyFsa = Create(astRepeatNode.Argument, Guid.NewGuid().ToString());
+            var edge = new ComplexPredicateEdge<TValue>(lazyFsa);
             if (astRepeatNode.IsLazy)
             {
-                var lazyFsa = Create(astRepeatNode.Argument, Guid.NewGuid().ToString());
-                var edge = new ComplexPredicateEdge<TValue>(lazyFsa);
-                edge.IsLazyPredicate = true;
-
-                var prev = start;
-                for (int i = 0; i < astRepeatNode.MinCount; i++)
-                {
-                    var next = CreateNewState(fsa);
-                    EvaluateCondition(prev, next, fsa, edge);
-                    prev = next;
-                }
-
-                fsa.AddEpsilonTransition(prev, end);
-
-                if (astRepeatNode.MaxCount == int.MaxValue)
-                {
-                    RepeatZeroOrInfinite(prev, end, fsa, edge);
-                }
-                else
-                {
-                    int count = astRepeatNode.MaxCount - astRepeatNode.MinCount;
-                    for (int i = 0; i < count; i++)
-                    {
-                        var next = CreateNewState(fsa);
-                        EvaluateCondition(prev, next, fsa, edge);
-                        fsa.AddEpsilonTransition(next, end);
-                        prev = next;
-                    }
-                }
+                edge.Priority = -1;
             }
             else
             {
-                var prev = start;
-                for (int i = 0; i < astRepeatNode.MinCount; i++)
+                edge.Priority = 1;
+            }
+
+            var prev = start;
+            for (int i = 0; i < astRepeatNode.MinCount; i++)
+            {
+                var next = CreateNewState(fsa);
+                EvaluateCondition(prev, next, fsa, edge);
+                prev = next;
+            }
+
+            fsa.AddEpsilonTransition(prev, end);
+
+            if (astRepeatNode.MaxCount == int.MaxValue)
+            {
+                RepeatZeroOrInfinite(prev, end, fsa, edge);
+            }
+            else
+            {
+                int count = astRepeatNode.MaxCount - astRepeatNode.MinCount;
+                for (int i = 0; i < count; i++)
                 {
                     var next = CreateNewState(fsa);
-                    Evaluate(prev, next, fsa, astRepeatNode.Argument);
+                    EvaluateCondition(prev, next, fsa, edge);
+                    fsa.AddEpsilonTransition(next, end);
                     prev = next;
-                }
-
-                fsa.AddEpsilonTransition(prev, end);
-
-                if (astRepeatNode.MaxCount == int.MaxValue)
-                {
-                    RepeatZeroOrInfinite(prev, end, fsa, astRepeatNode.Argument);
-                }
-                else
-                {
-                    int count = astRepeatNode.MaxCount - astRepeatNode.MinCount;
-                    for (int i = 0; i < count; i++)
-                    {
-                        var next = CreateNewState(fsa);
-                        Evaluate(prev, next, fsa, astRepeatNode.Argument);
-                        fsa.AddEpsilonTransition(next, end);
-                        prev = next;
-                    }
                 }
             }
         }

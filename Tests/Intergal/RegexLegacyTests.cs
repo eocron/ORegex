@@ -13,7 +13,7 @@ namespace Tests.Intergal
     [TestFixture]
     public sealed class RegexLegacyTests
     {
-        private static readonly PredicateTable<char> _table = new PredicateTable<char>();
+        private static readonly DebugPredicateTable _table = new DebugPredicateTable();
 
         private static IEnumerable<SingleFileTest> GetTests()
         {
@@ -22,17 +22,6 @@ namespace Tests.Intergal
 
         static RegexLegacyTests()
         {
-            _table.AddPredicate("a", x => x == 'a');
-            _table.AddPredicate("b", x => x == 'b');
-            _table.AddPredicate("c", x => x == 'c');
-            _table.AddPredicate("d", x => x == 'd');
-            _table.AddPredicate("e", x => x == 'e');
-            _table.AddPredicate("f", x => x == 'f');
-
-            _table.AddPredicate("0", x => x == '0');
-            _table.AddPredicate("1", x => x == '1');
-            _table.AddPredicate("2", x => x == '2');
-            _table.AddPredicate("3", x => x == '3');
         }
 
         [Test, TestCaseSource(typeof(RegexLegacyTests), "GetTests")]

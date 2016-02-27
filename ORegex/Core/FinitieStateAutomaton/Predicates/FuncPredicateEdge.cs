@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using ORegex.Core.Ast;
 
 namespace ORegex.Core.FinitieStateAutomaton.Predicates
 {
+    [DebuggerDisplay("(Predicate, {_condition.GetHashCode()})")]
     public sealed class FuncPredicateEdge<TValue> : PredicateEdgeBase<TValue>
     {
         public static readonly FuncPredicateEdge<TValue> Epsilon = new FuncPredicateEdge<TValue>(x => { throw new NotImplementedException("Epsilon condition."); });

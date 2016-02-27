@@ -1,5 +1,6 @@
 ﻿using System;
 using ORegex.Core.Parse;
+using Tests.Core;
 
 namespace TestUtility
 {

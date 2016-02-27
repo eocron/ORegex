@@ -9,6 +9,7 @@ using ORegex;
 using ORegex.Core.Ast;
 using ORegex.Core.FinitieStateAutomaton;
 using ORegex.Core.Parse;
+using Tests.Core;
 
 namespace TestUtility
 {
@@ -26,14 +27,7 @@ namespace TestUtility
             HighLightSyntax();
         }
 
-        private void DrawGraph(FSA<char> fsm)
-        {
-            var graph = _graphCreator.Create(fsm, _table);
-            gViewer1.Graph = graph;
-            gViewer1.Refresh();
-        }
-
-        private void DrawGraph(CFSA<char> fsm)
+        private void DrawGraph(IFSA<char> fsm)
         {
             var graph = _graphCreator.Create(fsm, _table);
             gViewer1.Graph = graph;

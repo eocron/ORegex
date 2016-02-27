@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using ORegex.Core.Ast;
 
 namespace ORegex.Core.FinitieStateAutomaton.Predicates
 {
+    [DebuggerDisplay("(Complex, {_fsa.GetHashCode()})")]
     public sealed class ComplexPredicateEdge<TValue> : PredicateEdgeBase<TValue>
     {
         internal readonly IFSA<TValue> _fsa;
@@ -17,7 +19,7 @@ namespace ORegex.Core.FinitieStateAutomaton.Predicates
         public ComplexPredicateEdge(IFSA<TValue> fsa, ComplexPredicateEdge<TValue> other) : this(fsa)
         {
             IsCapturePredicate = other.IsCapturePredicate;
-            IsLazyPredicate = other.IsLazyPredicate;
+            Priority = other.Priority;
         }
 
         public override bool IsFuncPredicate

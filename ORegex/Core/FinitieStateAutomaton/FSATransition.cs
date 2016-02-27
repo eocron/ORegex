@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using ORegex.Core.FinitieStateAutomaton.Predicates;
 
 namespace ORegex.Core.FinitieStateAutomaton
 {
+    [DebuggerDisplay("{From}->{To}")]
     public sealed class FSATransition<TValue> : IFSATransition<TValue>
     {
         public int From { get; private set; }

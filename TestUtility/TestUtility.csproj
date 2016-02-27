@@ -55,7 +55,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DebugPredicateTable.cs" />
     <Compile Include="GleeGraphCreator.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
@@ -95,6 +94,10 @@
     <ProjectReference Include="..\ORegex\ORegex.csproj">
       <Project>{8fdbea09-300d-4e58-91fd-214049c533b9}</Project>
       <Name>ORegex</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tests\Tests.csproj">
+      <Project>{7b0bed03-946a-4d0c-ac86-de295fa971e3}</Project>
+      <Name>Tests</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

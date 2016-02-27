@@ -57,6 +57,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Core\DebugPredicateTable.cs" />
     <Compile Include="Core\SingleFileTest.cs" />
     <Compile Include="Intergal\RegexLegacyTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

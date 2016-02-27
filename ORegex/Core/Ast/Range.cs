@@ -1,8 +1,10 @@
-﻿using Antlr4.Runtime;
+﻿using System.Diagnostics;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 
 namespace ORegex.Core.Ast
 {
+    [DebuggerDisplay("({Index},{Length})")]
     public struct Range
     {
         public readonly int Index;

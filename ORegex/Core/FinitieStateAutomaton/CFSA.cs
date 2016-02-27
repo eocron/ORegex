@@ -29,7 +29,7 @@ namespace ORegex.Core.FinitieStateAutomaton
             _transitionMatrix = new FSATransition<TValue>[fsa.StateCount][];
             foreach (var look in fsa.Transitions.ToLookup(x => x.From, x => x))
             {
-                _transitionMatrix[look.Key] = CompileTransitions(look).ToArray();
+                _transitionMatrix[look.Key] = CompileTransitions(look).OrderByDescending(x=>x.Condition.Priority).ToArray();
             }
 
             _startState = fsa.Q0.First();

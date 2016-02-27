@@ -6,14 +6,7 @@ namespace TestUtility
 {
     public sealed class GleeGraphCreator
     {
-        public Graph Create<TValue>(FSA<TValue> fsa, PredicateTable<TValue> table)
-        {
-            var graph = new Graph(fsa.Name);
-            FillGraph(graph, fsa, table);
-            return graph;
-        }
-
-        public Graph Create<TValue>(CFSA<TValue> fsa, PredicateTable<TValue> table)
+        public Graph Create<TValue>(IFSA<TValue> fsa, PredicateTable<TValue> table)
         {
             var graph = new Graph(fsa.Name);
             FillGraph(graph, fsa, table);

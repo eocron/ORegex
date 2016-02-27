@@ -135,7 +135,7 @@ namespace ORegex.Core.FinitieStateAutomaton
             Q0.Add(state);
         }
 
-        private readonly List<FSATransition<TValue>> EmptyList = new List<FSATransition<TValue>>();
+        private static readonly List<FSATransition<TValue>> EmptyList = new List<FSATransition<TValue>>();
         public IEnumerable<FSATransition<TValue>> GetTransitionsFrom(int state)
         {
             OrderedSet<FSATransition<TValue>> trans;
