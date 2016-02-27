@@ -20,21 +20,14 @@ Each lambda or value should have unique name inside pattern.
       ...
     }
     
-You can start from viewing Unit Test project to see how you can use it (Example with number sequence), by time there will be more examples.
+You can start from viewing Unit Test project to see how you can use it, by time there will be more examples. 
+Also, you can find there test utility and see how things work inside engine.
+
+#Performance
+
+- Compared to real life cases performance is 2-3 times slower than .NET Regex engine on character sequences.
+- Greedy exhausting test ('x+x+y+' pattern on a 'xxxxxxxxxxxxxxxxxxxx' string) is ~20 times slower.
 
 #Future
 
-It will support:
-
-1) Capture - this is very important for NLP sphere and many others where sequence is object itself. 
-
-2) It will cure 'static calculation' bug which creates incorrect captures because of invalid mapping Object State to char symbols. It can't be cured without reimplementation of regex engine.
-
-3) Replace - you will be able to change sequence based on retrieved match. For example:
-
-    input:    first_name last_name verb noun dot;             //Sequence: [Jhon] [Smith] [watching] [tv].
-    pattern:  (?<person>{first_name} {last_name}?);
-    replace:  $person;
-    output:   person verb noun dot;
-
-4) Lookahead and Greedy search.
+- Lookahead support.
