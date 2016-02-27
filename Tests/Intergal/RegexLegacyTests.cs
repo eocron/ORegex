@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Eocron;
 using NUnit.Framework;
-using Eocron;
 using Tests.Core;
 
 namespace Tests.Intergal
@@ -16,7 +15,7 @@ namespace Tests.Intergal
     {
         private static IEnumerable<SingleFileTest> GetTests()
         {
-            return SingleFileTestFactory.GetTests("Legacy", "004");
+            return SingleFileTestFactory.GetTests("Legacy");
         }
 
         [Test, TestCaseSource(typeof(RegexLegacyTests), "GetTests")]
@@ -30,7 +29,7 @@ namespace Tests.Intergal
             var regex = new Regex(regexPattern, RegexOptions.ExplicitCapture | RegexOptions.Singleline);
             var oregex = new DebugORegex(oregexPattern);
 
-            var regexMatches = regex.Matches(text).Cast<Match>().ToArray();
+            var regexMatches = regex.Matches(text).Cast<Match>().Where(x=>x.Index != text.Length).ToArray();
             var oregexMatches = oregex.Matches(text.ToCharArray()).ToArray();
 
             Trace.TraceInformation("Text length: "+ text.Length + "\n");
@@ -77,6 +76,24 @@ namespace Tests.Intergal
         {
             Assert.AreEqual(expected.Index, actual.Index);
             Assert.AreEqual(expected.Length, actual.Length);
+            CompareCaptures(expected, actual);
+        }
+
+        private static void CompareCaptures(Match expected, OMatch<char> actual)
+        {
+            var groups = expected.Groups.Cast<Group>().Where(x => x.Success).ToArray();
+            Assert.AreEqual(groups.Length, actual.Captures.Count);
+            foreach (var group in actual.Captures)
+            {
+                var captured = expected.Groups[group.Key].Captures.Cast<Capture>().ToArray();
+                foreach (var capt in group.Value)
+                {
+                    if (!captured.Any(x => x.Index == capt.Index && x.Length == capt.Length))
+                    {
+                        Assert.Fail("Captures not equal." + capt);
+                    }
+                }
+            }
         }
 
         private static string ExpectedString(Match expected)

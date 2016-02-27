@@ -19,7 +19,7 @@ namespace Eocron
         {
             _table = new Dictionary<string, PredicateEdgeBase<TValue>>(other._table);
         }
-        public virtual void AddPredicate(string name, Func<TValue, bool> predicate)
+        public void AddPredicate(string name, Func<TValue, bool> predicate)
         {
             name.ThrowIfEmpty();
             predicate.ThrowIfNull();
@@ -32,7 +32,7 @@ namespace Eocron
             _table.Add(name, new FuncPredicateEdge<TValue>(predicate));
         }
 
-        public virtual void AddCompare(string name, TValue value, IEqualityComparer<TValue> comparer = null)
+        public void AddCompare(string name, TValue value, IEqualityComparer<TValue> comparer = null)
         {
             name.ThrowIfEmpty();
             if (_table.ContainsKey(name))
@@ -42,7 +42,7 @@ namespace Eocron
             _table.Add(name, new ComparePredicateEdge<TValue>(value, comparer));
         }
 
-        public virtual PredicateEdgeBase<TValue> GetPredicate(string name)
+        public PredicateEdgeBase<TValue> GetPredicate(string name)
         {
             PredicateEdgeBase<TValue> predicate;
             if (!_table.TryGetValue(name, out  predicate))

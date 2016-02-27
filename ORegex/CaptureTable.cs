@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace Eocron
 {
-    public sealed class CaptureTable<TValue>
+    public sealed class CaptureTable<TValue> : IEnumerable<KeyValuePair<string, List<OCapture<TValue>>>>
     {
         private readonly Dictionary<string, List<OCapture<TValue>>> _captures = new Dictionary<string, List<OCapture<TValue>>>();
 
+        public int Count
+        {
+            get { return _captures.Count; }
+        }
         public IEnumerable<OCapture<TValue>> this[string name]
         {
             get { return _captures[name]; }
@@ -36,6 +41,16 @@ namespace Eocron
                     Add(c.Key, v);
                 }
             }
+        }
+
+        public IEnumerator<KeyValuePair<string, List<OCapture<TValue>>>> GetEnumerator()
+        {
+            return _captures.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

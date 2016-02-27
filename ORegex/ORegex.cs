@@ -50,6 +50,7 @@ namespace Eocron
                 if (!capture.Equals(Range.Invalid))
                 {
                     var match = new OMatch<TValue>(values, captureTable, capture);
+                    captureTable = new CaptureTable<TValue>();
                     i += capture.Length - 1;
                     yield return match;
                 }

@@ -11,7 +11,7 @@ namespace Eocron.Core.Parse
 {
     public sealed class ORegexAstFactory<TValue>
     {
-        public const string MainCaptureName = "#0";
+        public const string MainCaptureName = "0";
 
         public static AstRootNode CreateAstTree(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
