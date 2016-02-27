@@ -1,0 +1,5 @@
+﻿<TEST>
+	<REGEX>b+b+</REGEX>
+	<OREGEX>{b}+{b}+</OREGEX>
+	<TEXT>bbbbbabbbbbabbbbb</TEXT>
+</TEST>

@@ -1,0 +1,5 @@
+﻿<TEST>
+	<REGEX>[abc][^abc]</REGEX>
+	<OREGEX>[{a}{b}{c}][^{a}{b}{c}]</OREGEX>
+	<TEXT>bbbbbabbbbbabbbbb</TEXT>
+</TEST>
