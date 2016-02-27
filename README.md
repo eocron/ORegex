@@ -1,10 +1,15 @@
-# Eocron
+# ORegex
 Object oriented Regular Expressions implementation.
-This is algorithm from pattern matching category.
 
-This implementation based on original Microsoft Regular Expression Engine and will persist similar syntax and usage as much, as possible.
-To declare predicate match in pattern you type {myPredicateName} and feed ObjectRegex<T> table with predicates.
-Predicate tables can accept lambdas and comparers (IEqualityComparer<>) with values.
+This implementation based on original Microsoft Regular Expression Syntax and will follow it as much as possible.
+To declare predicate in pattern you type:
+
+    {myPredicateName}
+
+...and feed ORegex<T> predicate table. 
+
+PredicateTable<T> is simple key value dictionary for predicates.
+Predicate tables can accept lambda's and comparer's (IEqualityComparer<T>) with values.
 Each lambda or value should have unique name inside pattern.
 
 #Example
@@ -14,7 +19,7 @@ Each lambda or value should have unique name inside pattern.
     var input = new T[] { ... };
     var matches = regex.Matches(input);
     var match = regex.Match(input);
-    var someGroup = match.Groups["someGroup"].Value;
+    var someGroup = match.Captures["someGroup"].Value;
     if(regex.IsMatch(input))
     {
       ...
