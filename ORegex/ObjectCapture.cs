@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using ORegex.Core.Ast;
+using Eocron.Core.Ast;
 
-namespace ORegex
+namespace Eocron
 {
-    public class ObjectCapture<TValue> : IEnumerable<TValue>
+    public class OCapture<TValue> : IEnumerable<TValue>
     {
         private readonly TValue[] _collection;
 
@@ -24,7 +24,7 @@ namespace ORegex
             }
         }
 
-        internal ObjectCapture(TValue[] collection, Range range)
+        internal OCapture(TValue[] collection, Range range)
         {
             Index = range.Index;
             Length = range.Length;

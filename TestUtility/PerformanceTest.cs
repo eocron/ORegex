@@ -1,12 +1,12 @@
 ﻿using System;
-using ORegex.Core.Parse;
+using Eocron.Core.Parse;
 using Tests.Core;
 
 namespace TestUtility
 {
     public sealed class PerformanceTest
     {
-        private readonly ORegexCompiler<char> _compiler = new ORegexCompiler<char>();
+        private readonly EocronCompiler<char> _compiler = new EocronCompiler<char>();
         private readonly DebugPredicateTable _table = new DebugPredicateTable();
         public readonly int IterCount;
         public PerformanceTest(int iterCount = 100)

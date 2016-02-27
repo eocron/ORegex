@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Eocron;
 using NUnit.Framework;
-using ORegex;
+using Eocron;
 using Tests.Core;
 
 namespace Tests.Intergal
@@ -13,15 +14,9 @@ namespace Tests.Intergal
     [TestFixture]
     public sealed class RegexLegacyTests
     {
-        private static readonly DebugPredicateTable _table = new DebugPredicateTable();
-
         private static IEnumerable<SingleFileTest> GetTests()
         {
-            return SingleFileTestFactory.GetTests("Legacy");//, "004");
-        } 
-
-        static RegexLegacyTests()
-        {
+            return SingleFileTestFactory.GetTests("Legacy", "004");
         }
 
         [Test, TestCaseSource(typeof(RegexLegacyTests), "GetTests")]
@@ -33,7 +28,7 @@ namespace Tests.Intergal
             var text = test.GetRoot().Element("TEXT").Value;
 
             var regex = new Regex(regexPattern, RegexOptions.ExplicitCapture | RegexOptions.Singleline);
-            var oregex = new ObjectRegex<char>(oregexPattern, ORegexOptions.None, _table);
+            var oregex = new DebugORegex(oregexPattern);
 
             var regexMatches = regex.Matches(text).Cast<Match>().ToArray();
             var oregexMatches = oregex.Matches(text.ToCharArray()).ToArray();
@@ -78,7 +73,7 @@ namespace Tests.Intergal
 
         }
 
-        private static void Compare(Match expected, ObjectMatch<char> actual)
+        private static void Compare(Match expected, OMatch<char> actual)
         {
             Assert.AreEqual(expected.Index, actual.Index);
             Assert.AreEqual(expected.Length, actual.Length);
@@ -90,7 +85,7 @@ namespace Tests.Intergal
                 expected.Index, expected.Length);
         }
 
-        private static string ActualString(ObjectMatch<char> actual)
+        private static string ActualString(OMatch<char> actual)
         {
             return string.Format("Value: {0},\tindex: {1}, length: {2}", new string(actual.Values.ToArray()),
                 actual.Index, actual.Length);

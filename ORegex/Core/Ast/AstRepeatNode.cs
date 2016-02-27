@@ -1,4 +1,4 @@
-﻿namespace ORegex.Core.Ast
+﻿namespace Eocron.Core.Ast
 {
     public sealed class AstRepeatNode : AstNodeBase
     {

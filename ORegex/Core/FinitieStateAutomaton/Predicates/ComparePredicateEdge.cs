@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using ORegex.Core.Ast;
+using Eocron.Core.Ast;
 
-namespace ORegex.Core.FinitieStateAutomaton.Predicates
+namespace Eocron.Core.FinitieStateAutomaton.Predicates
 {
     [DebuggerDisplay("(Compare, {_value.ToString()})")]
     public sealed class ComparePredicateEdge<TValue> : PredicateEdgeBase<TValue>

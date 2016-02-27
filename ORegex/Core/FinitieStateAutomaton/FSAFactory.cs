@@ -1,9 +1,9 @@
 ﻿using System;
-using ORegex.Core.Ast;
-using ORegex.Core.Ast.GroupQuantifiers;
-using ORegex.Core.FinitieStateAutomaton.Predicates;
+using Eocron.Core.Ast;
+using Eocron.Core.Ast.GroupQuantifiers;
+using Eocron.Core.FinitieStateAutomaton.Predicates;
 
-namespace ORegex.Core.FinitieStateAutomaton
+namespace Eocron.Core.FinitieStateAutomaton
 {
     public sealed class FSAFactory<TValue>
     {

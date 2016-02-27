@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-namespace ORegex.Core.Ast
+namespace Eocron.Core.Ast
 {
     public abstract class AstNodeBase: IEnumerable<AstNodeBase>
     {

@@ -269,7 +269,7 @@
             this.label5.TabIndex = 3;
             this.label5.Text = "ORegex pattern";
             // 
-            // ORegexPatternBox
+            // EocronPatternBox
             // 
             this.ORegexPatternBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));

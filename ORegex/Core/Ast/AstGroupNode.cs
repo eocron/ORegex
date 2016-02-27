@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using ORegex.Core.Ast.GroupQuantifiers;
+using Eocron.Core.Ast.GroupQuantifiers;
 
-namespace ORegex.Core.Ast
+namespace Eocron.Core.Ast
 {
     public sealed class AstGroupNode : AstConcatNode
     {

@@ -57,8 +57,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Core\DebugORegex.cs" />
     <Compile Include="Core\DebugPredicateTable.cs" />
     <Compile Include="Core\SingleFileTest.cs" />
+    <Compile Include="Intergal\PerformanceTests.cs" />
     <Compile Include="Intergal\RegexLegacyTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\SingleFileTestFactory.cs" />
@@ -115,12 +117,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestData\Legacy\001.test">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\Parser\002.test">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\Parser\001.test">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

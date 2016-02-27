@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace ORegex
+namespace Eocron
 {
     [Flags]
-    public enum ORegexOptions
+    public enum EocronOptions
     {
         None = 0,
         /// <summary>

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ORegex.Core
+namespace Eocron.Core
 {
     /// <summary>
     /// This is hashSet implemantiton with GetHashCode and Equals overriden.

@@ -1,12 +1,12 @@
-﻿using ORegex.Core.FinitieStateAutomaton;
+﻿using Eocron.Core.FinitieStateAutomaton;
 
-namespace ORegex.Core.Parse
+namespace Eocron.Core.Parse
 {
-    public sealed class ORegexCompiler<TValue>
+    public sealed class EocronCompiler<TValue>
     {
         private readonly ORegexParser<TValue> _parser;
         private readonly FSAFactory<TValue> _stb;
-        public ORegexCompiler()
+        public EocronCompiler()
         {
             _parser = new ORegexParser<TValue>();
             _stb = new FSAFactory<TValue>();

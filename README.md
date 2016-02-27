@@ -1,4 +1,4 @@
-# ORegex
+# Eocron
 Object oriented Regular Expressions implementation.
 This is algorithm from pattern matching category.
 

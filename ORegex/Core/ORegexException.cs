@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace ORegex.Core
+namespace Eocron.Core
 {
     [Serializable]
     public class ORegexException : Exception

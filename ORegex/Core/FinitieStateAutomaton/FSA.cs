@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ORegex.Core.Ast;
-using ORegex.Core.FinitieStateAutomaton.Predicates;
+using Eocron.Core.Ast;
+using Eocron.Core.FinitieStateAutomaton.Predicates;
 
-namespace ORegex.Core.FinitieStateAutomaton
+namespace Eocron.Core.FinitieStateAutomaton
 {
     public sealed class FSA<TValue> : IFSA<TValue>
     {

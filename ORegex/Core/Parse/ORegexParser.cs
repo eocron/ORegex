@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using ORegex.Core.Ast;
+﻿using Antlr4.Runtime;
+using Eocron.Core.Ast;
 
-namespace ORegex.Core.Parse
+namespace Eocron.Core.Parse
 {
     public sealed class ORegexParser<TValue>
     {

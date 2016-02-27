@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Antlr4.Runtime.Tree;
-using ORegex.Core.Ast;
-using ORegex.Core.Ast.GroupQuantifiers;
-using ORegex.Core.FinitieStateAutomaton;
-using ORegex.Core.FinitieStateAutomaton.Predicates;
+using Eocron.Core.Ast;
+using Eocron.Core.Ast.GroupQuantifiers;
+using Eocron.Core.FinitieStateAutomaton.Predicates;
 
-namespace ORegex.Core.Parse
+namespace Eocron.Core.Parse
 {
     public sealed class ORegexAstFactory<TValue>
     {

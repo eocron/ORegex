@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ORegex
+namespace Eocron
 {
     /// <summary>
     /// Responsible for object mapping to string for Regex engine to process it.

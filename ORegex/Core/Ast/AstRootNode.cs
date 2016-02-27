@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 
-namespace ORegex.Core.Ast
+namespace Eocron.Core.Ast
 {
     public sealed class AstRootNode : AstNodeBase
     {

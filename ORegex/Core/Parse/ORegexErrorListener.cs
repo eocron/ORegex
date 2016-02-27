@@ -1,6 +1,6 @@
 ﻿using Antlr4.Runtime;
 
-namespace ORegex.Core.Parse
+namespace Eocron.Core.Parse
 {
     public class ORegexErrorListener : BaseErrorListener
     {

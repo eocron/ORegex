@@ -1,11 +1,13 @@
-﻿using ORegex.Core.Parse;
+﻿using Eocron.Core.Parse;
 using System;
 using System.Collections.Generic;
-using ORegex.Core;
-using ORegex.Core.Ast;
-using ORegex.Core.FinitieStateAutomaton;
+using System.Linq;
+using Eocron;
+using Eocron.Core;
+using Eocron.Core.Ast;
+using Eocron.Core.FinitieStateAutomaton;
 
-namespace ORegex
+namespace Eocron
 {
     /// <summary>
     /// Objected regex.  Very useful for simple tasks with a little amount of predicates.
@@ -15,16 +17,16 @@ namespace ORegex
     /// Syntax to write patterns is RegularExpressions.
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
-    public sealed class ObjectRegex<TValue>
+    public class ORegex<TValue>
     {
-        private readonly ORegexCompiler<TValue> _compiler = new ORegexCompiler<TValue>();
+        private readonly EocronCompiler<TValue> _compiler = new EocronCompiler<TValue>();
         private readonly CFSA<TValue> _cfsa;
 
-        public ObjectRegex(string pattern, ORegexOptions options, params Func<TValue, bool>[] predicates) : this(pattern, options, CreatePredicateTable(predicates))
+        public ORegex(string pattern, EocronOptions options, params Func<TValue, bool>[] predicates) : this(pattern, options, CreatePredicateTable(predicates))
         {
         }
 
-        public ObjectRegex(string pattern, ORegexOptions options, PredicateTable<TValue> table)
+        public ORegex(string pattern, EocronOptions options, PredicateTable<TValue> table)
         {
             _cfsa = _compiler.Build(pattern, table);
         }
@@ -39,19 +41,29 @@ namespace ORegex
             return table;
         }
 
-        public IEnumerable<ObjectMatch<TValue>> Matches(TValue[] values)
+        public IEnumerable<OMatch<TValue>> Matches(TValue[] values, int startIndex = 0)
         {
             var captureTable = new CaptureTable<TValue>();
-            for (int i = 0; i < values.Length; i++)
+            for (int i = startIndex; i < values.Length; i++)
             {
                 var capture = _cfsa.Run(values, i, captureTable);
                 if (!capture.Equals(Range.Invalid))
                 {
-                    var match = new ObjectMatch<TValue>(values, captureTable, capture);
+                    var match = new OMatch<TValue>(values, captureTable, capture);
                     i += capture.Length - 1;
                     yield return match;
                 }
             }
+        }
+
+        public OMatch<TValue> Match(TValue[] values, int startIndex = 0)
+        {
+            return Matches(values, startIndex).FirstOrDefault();
+        }
+
+        public bool IsMatch(TValue[] values, int startIndex = 0)
+        {
+            return !_cfsa.Run(values, startIndex, null).Equals(Range.Invalid);
         }
     }
 }

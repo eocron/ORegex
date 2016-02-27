@@ -1,6 +1,6 @@
 ﻿using Microsoft.Glee.Drawing;
-using ORegex;
-using ORegex.Core.FinitieStateAutomaton;
+using Eocron;
+using Eocron.Core.FinitieStateAutomaton;
 
 namespace TestUtility
 {

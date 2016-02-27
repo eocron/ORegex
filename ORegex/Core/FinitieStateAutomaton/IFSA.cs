@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using ORegex.Core.Ast;
+using Eocron.Core.Ast;
 
-namespace ORegex.Core.FinitieStateAutomaton
+namespace Eocron.Core.FinitieStateAutomaton
 {
     public interface IFSA<TValue>
     {

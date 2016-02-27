@@ -1,4 +1,4 @@
-﻿namespace ORegex.Core.Ast.GroupQuantifiers
+﻿namespace Eocron.Core.Ast.GroupQuantifiers
 {
     public abstract class QuantifierBase
     {

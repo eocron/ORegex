@@ -1,6 +1,6 @@
 ﻿using Antlr4.Runtime;
 
-namespace ORegex.Core
+namespace Eocron.Core
 {
     public sealed class ORegexSyntaxException : ORegexException
     {

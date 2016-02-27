@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using ORegex.Core;
-using ORegex.Core.FinitieStateAutomaton.Predicates;
+using Eocron.Core;
+using Eocron.Core.FinitieStateAutomaton.Predicates;
 
-namespace ORegex
+namespace Eocron
 {
     public class PredicateTable<TValue>
     {

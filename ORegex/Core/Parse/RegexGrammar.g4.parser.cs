@@ -1,6 +1,6 @@
-﻿namespace ORegex.Core.Parse
+﻿namespace Eocron.Core.Parse
 {
-    public partial class RegexGrammarParser
+    partial class RegexGrammarParser
     {
     }
 }

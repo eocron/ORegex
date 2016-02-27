@@ -1,6 +1,6 @@
-﻿using ORegex.Core.Ast;
+﻿using Eocron.Core.Ast;
 
-namespace ORegex.Core.FinitieStateAutomaton.Predicates
+namespace Eocron.Core.FinitieStateAutomaton.Predicates
 {
     public abstract class PredicateEdgeBase<TValue>
     {
@@ -30,6 +30,11 @@ namespace ORegex.Core.FinitieStateAutomaton.Predicates
             if (ReferenceEquals(a, b))
             {
                 return true;
+            }
+
+            if (a.Priority != b.Priority)
+            {
+                return false;
             }
 
             if (a.IsComparePredicate && b.IsComparePredicate)

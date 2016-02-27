@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace ORegex.Core
+namespace Eocron.Core
 {
     public sealed class OrderedSet<TValue> : List<TValue>
     {

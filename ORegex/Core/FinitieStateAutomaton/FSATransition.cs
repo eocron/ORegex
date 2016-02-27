@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using ORegex.Core.FinitieStateAutomaton.Predicates;
+using Eocron.Core.FinitieStateAutomaton.Predicates;
 
-namespace ORegex.Core.FinitieStateAutomaton
+namespace Eocron.Core.FinitieStateAutomaton
 {
     [DebuggerDisplay("{From}->{To}")]
     public sealed class FSATransition<TValue> : IFSATransition<TValue>

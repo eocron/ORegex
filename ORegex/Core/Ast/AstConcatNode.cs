@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace ORegex.Core.Ast
+namespace Eocron.Core.Ast
 {
     public class AstConcatNode : AstCollectionNodeBase
     {

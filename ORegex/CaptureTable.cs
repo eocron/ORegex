@@ -1,22 +1,22 @@
 ﻿using System.Collections.Generic;
 
-namespace ORegex
+namespace Eocron
 {
     public sealed class CaptureTable<TValue>
     {
-        private readonly Dictionary<string, List<ObjectCapture<TValue>>> _captures = new Dictionary<string, List<ObjectCapture<TValue>>>();
+        private readonly Dictionary<string, List<OCapture<TValue>>> _captures = new Dictionary<string, List<OCapture<TValue>>>();
 
-        public IEnumerable<ObjectCapture<TValue>> this[string name]
+        public IEnumerable<OCapture<TValue>> this[string name]
         {
             get { return _captures[name]; }
         }
 
-        internal void Add(string name, ObjectCapture<TValue> capture)
+        internal void Add(string name, OCapture<TValue> capture)
         {
-            List<ObjectCapture<TValue>> list;
+            List<OCapture<TValue>> list;
             if (!_captures.TryGetValue(name, out list))
             {
-                list = new List<ObjectCapture<TValue>>();
+                list = new List<OCapture<TValue>>();
                 _captures.Add(name,list);
             }
             list.Add(capture);

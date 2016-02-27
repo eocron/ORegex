@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using ORegex.Core.Ast;
+using Eocron.Core.Ast;
 
-namespace ORegex.Core.FinitieStateAutomaton.Predicates
+namespace Eocron.Core.FinitieStateAutomaton.Predicates
 {
     [DebuggerDisplay("(Complex, {_fsa.GetHashCode()})")]
     public sealed class ComplexPredicateEdge<TValue> : PredicateEdgeBase<TValue>

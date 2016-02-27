@@ -1,4 +1,4 @@
-﻿using ORegex;
+﻿using Eocron;
 
 namespace Tests.Core
 {

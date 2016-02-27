@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using ORegex.Core.FinitieStateAutomaton;
-using ORegex.Core.FinitieStateAutomaton.Predicates;
+using Eocron.Core.FinitieStateAutomaton.Predicates;
 
-namespace ORegex.Core.Parse
+namespace Eocron.Core.Parse
 {
     public sealed class ORegexAstFactoryArgs<TValue>
     {

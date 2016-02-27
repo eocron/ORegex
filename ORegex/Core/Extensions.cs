@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ORegex.Core
+namespace Eocron.Core
 {
     internal static class Extensions
     {

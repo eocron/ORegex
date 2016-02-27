@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using ORegex.Core.FinitieStateAutomaton.Predicates;
+using Eocron.Core.FinitieStateAutomaton.Predicates;
 
-namespace ORegex.Core.Ast
+namespace Eocron.Core.Ast
 {
     public sealed class AstAtomNode<TValue> : AstNodeBase
     {

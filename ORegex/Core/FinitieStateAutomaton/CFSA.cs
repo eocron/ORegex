@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ORegex.Core.Ast;
-using ORegex.Core.FinitieStateAutomaton.Predicates;
+using Eocron.Core.Ast;
+using Eocron.Core.FinitieStateAutomaton.Predicates;
 
-namespace ORegex.Core.FinitieStateAutomaton
+namespace Eocron.Core.FinitieStateAutomaton
 {
     /// <summary>
     /// Compiled FSA
@@ -93,12 +93,15 @@ namespace ORegex.Core.FinitieStateAutomaton
 
             if (state != null && state.IsFinal)
             {
-                foreach (var s in stack.Select(x=>x.Captures).Where(x=> x!= null))
-                {
-                    table.Add(s);
-                }
                 var result = new Range(startIndex, state.CurrentIndex - startIndex);
-                table.Add(Name, new ObjectCapture<TValue>(values, result));
+                if (table != null)
+                {
+                    foreach (var s in stack.Select(x => x.Captures).Where(x => x != null))
+                    {
+                        table.Add(s);
+                    }
+                    table.Add(Name, new OCapture<TValue>(values, result));
+                }
                 return result;
             }
             return Range.Invalid;

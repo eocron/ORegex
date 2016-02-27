@@ -12,10 +12,13 @@ namespace Tests.Core
 
         public bool Ignored { get; set; }
 
+        public string IgnoreReason { get; set; }
+
         private readonly Lazy<XElement> _getRoot; 
-        public SingleFileTest(string filePath, bool isIgnored)
+        public SingleFileTest(string filePath, bool isIgnored, string ignoreReason = null)
         {
             Ignored = isIgnored;
+            IgnoreReason = ignoreReason;
             Name = Path.GetFileNameWithoutExtension(filePath);
             _getRoot = new Lazy<XElement>(() => ReadFile(filePath));
         }
@@ -39,7 +42,7 @@ namespace Tests.Core
         {
             if (Ignored)
             {
-                Assert.Ignore("Ignored test.");
+                Assert.Ignore(IgnoreReason ?? "Ignored test.");
             }
             return _getRoot.Value;
         }

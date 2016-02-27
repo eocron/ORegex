@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ORegex.Core.FinitieStateAutomaton.Predicates;
+using Eocron.Core.FinitieStateAutomaton.Predicates;
 
-namespace ORegex.Core.FinitieStateAutomaton
+namespace Eocron.Core.FinitieStateAutomaton
 {
     public sealed class FSAPreprocessor<TValue>
     {

@@ -5,17 +5,17 @@ using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using ORegex;
-using ORegex.Core.Ast;
-using ORegex.Core.FinitieStateAutomaton;
-using ORegex.Core.Parse;
+using Eocron;
+using Eocron.Core.Ast;
+using Eocron.Core.FinitieStateAutomaton;
+using Eocron.Core.Parse;
 using Tests.Core;
 
 namespace TestUtility
 {
     public partial class MainWindow : Form
     {
-        private readonly ORegexCompiler<char> _compiler = new ORegexCompiler<char>();
+        private readonly EocronCompiler<char> _compiler = new EocronCompiler<char>();
         private readonly DebugPredicateTable _table = new DebugPredicateTable();
         private readonly ORegexParser<char> _parser = new ORegexParser<char>(); 
         private readonly GleeGraphCreator _graphCreator = new GleeGraphCreator();
@@ -142,9 +142,9 @@ namespace TestUtility
         private void TestRegexEqualityButton_Click(object sender, EventArgs e)
         {
             var regex = new Regex(RegexPatternBox.Text);
-            var oregex = new ObjectRegex<char>(ORegexPatternBox.Text, ORegexOptions.None, _table);
+            var Eocron = new ORegex<char>(ORegexPatternBox.Text, EocronOptions.None, _table);
             var matches = regex.Matches(InputTextBox.Text).Cast<Match>().ToArray();
-            var omatches = oregex.Matches(InputTextBox.Text.ToCharArray()).ToArray();
+            var omatches = Eocron.Matches(InputTextBox.Text.ToCharArray()).ToArray();
 
             if (matches.Length != omatches.Length)
             {

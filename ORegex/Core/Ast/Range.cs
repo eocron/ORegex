@@ -2,7 +2,7 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 
-namespace ORegex.Core.Ast
+namespace Eocron.Core.Ast
 {
     [DebuggerDisplay("({Index},{Length})")]
     public struct Range
