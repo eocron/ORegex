@@ -21,7 +21,7 @@ namespace Eocron
     {
         private readonly ORegexCompiler<TValue> _compiler = new ORegexCompiler<TValue>();
         private readonly CFSA<TValue> _cfsa;
-
+        private readonly ORegexOptions _options;
         public ORegex(string pattern, ORegexOptions options, params Func<TValue, bool>[] predicates) : this(pattern, options, CreatePredicateTable(predicates))
         {
         }
@@ -29,6 +29,7 @@ namespace Eocron
         public ORegex(string pattern, ORegexOptions options, PredicateTable<TValue> table)
         {
             _cfsa = _compiler.Build(pattern, table);
+            _options = options;
         }
 
         private static PredicateTable<TValue> CreatePredicateTable(Func<TValue, bool>[] predicates)

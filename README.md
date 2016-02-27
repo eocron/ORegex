@@ -12,19 +12,22 @@ PredicateTable<T> is simple key value dictionary for predicates.
 Predicate tables can accept lambda's and comparer's (IEqualityComparer<T>) with values.
 Each lambda or value should have unique name inside pattern.
 
+Currently it is less functional than analogs (no lookahead, conditions, etc), but much understandable and faster.
 #Example
 
-    var pattern = "{0}.{0}+{1}(?<someGroup>{0}{3}){2,}";
-    ObjectRegex<T> regex = new ObjectRegex<T>(pattern,IsPred0, IsPred1, IsPred2, IsPred3, ...);
-    var input = new T[] { ... };
-    var matches = regex.Matches(input);
-    var match = regex.Match(input);
-    var someGroup = match.Captures["someGroup"];
-    if(regex.IsMatch(input))
-    {
-      ...
-    }
-    
+            var oregex = new ORegex<int>("{0}(.{0})*", ORegexOptions.None, IsPrime);
+
+            var input = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+            foreach (var match in oregex.Matches(input))
+            {
+                Trace.WriteLine(string.Join(",", match.Values));
+            }
+
+            //OUTPUT:
+            //2
+            //3,4,5,6,7
+            //11,12,13
+
 You can start from viewing Unit Test project to see how you can use it, by time there will be more examples. 
 Also, you can find there test utility and see how things work inside engine.
 
