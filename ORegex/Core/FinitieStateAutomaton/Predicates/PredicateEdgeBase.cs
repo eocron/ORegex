@@ -18,11 +18,7 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
 
         public override bool Equals(object obj)
         {
-            if (obj is PredicateEdgeBase<TValue>)
-            {
-                return IsEqual((PredicateEdgeBase<TValue>) obj, this);
-            }
-            return false;
+            return IsEqual((PredicateEdgeBase<TValue>) obj, this);
         }
 
         public static bool IsEqual(PredicateEdgeBase<TValue> a, PredicateEdgeBase<TValue> b)
@@ -47,7 +43,7 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
             {
                 var aa = (ComplexPredicateEdge<TValue>) a;
                 var bb = (ComplexPredicateEdge<TValue>) b;
-                return aa._fsa.DeepEquals(bb._fsa);
+                return ReferenceEquals(aa._fsa, bb._fsa) || aa._fsa.DeepEquals(bb._fsa);
             }
             if (a.IsFuncPredicate && b.IsFuncPredicate)
             {

@@ -7,7 +7,7 @@ namespace Eocron.Core
     /// It will remain all functionality but also provide mathematical set equality.
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
-    public sealed class Set<TValue> : HashSet<TValue>
+    internal sealed class Set<TValue> : HashSet<TValue>
     {
         public Set()
         {

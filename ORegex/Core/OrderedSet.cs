@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Eocron.Core
 {
-    public sealed class OrderedSet<TValue> : List<TValue>
+    internal sealed class OrderedSet<TValue> : List<TValue>
     {
         public OrderedSet()
         {

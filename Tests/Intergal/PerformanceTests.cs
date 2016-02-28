@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
@@ -35,7 +36,7 @@ namespace Tests.Intergal
             for (int i = 30; i <= 80; i += 10)
             {
                 var str = string.Join("",Enumerable.Repeat("x",i));
-                PerformanceTest("{x}+{x}+{y}+", "x+x+y+", str, 2);
+                PerformanceTest("{x}+{x}+{y}+", "x+x+y+", str, 1, false);
                 Trace.WriteLine("############################################");
             }
         }
@@ -54,29 +55,40 @@ namespace Tests.Intergal
                       "fffffffweagerge" +
                       "rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
-            PerformanceTest("{x}+{x}+{y}+", "x+x+y+", str, 5);
+            PerformanceTest("{x}+{x}+{y}+", "x+x+y+", str, 20, true);
             Trace.WriteLine("############################################");
         }
 
-        private static void PerformanceTest(string oregexPattern, string regexPattern, string inputText, int iterCount)
+        private static void PerformanceTest(string oregexPattern, string regexPattern, string inputText, int iterCount, bool outputTotal = false)
         {
             var input = inputText.ToCharArray();
             var oregex = new DebugORegex(oregexPattern);
             var regex = new Regex(regexPattern, RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.Compiled);
             Trace.WriteLine(string.Format("Input string: {0}", inputText));
 
+            var regexCount = new TimeSpan();
+            var oregexCount = new TimeSpan();
             for (int j = 0; j < iterCount; j++)
             {
                 var sw = Stopwatch.StartNew();
                 var array1 = oregex.Matches(input).ToArray();
                 sw.Stop();
+                oregexCount += sw.Elapsed;
                 long last = sw.ElapsedTicks;
-                Trace.WriteLine(string.Format("ORegex done in {0}", sw.Elapsed));
+                Trace.WriteLine(string.Format("ORegex done in\t{0}", sw.Elapsed));
 
                 sw = Stopwatch.StartNew();
                 var array2 = regex.Matches(inputText).Cast<Match>().ToArray();
                 sw.Stop();
-                Trace.WriteLine(string.Format("Regex done in {0}", sw.Elapsed));
+                regexCount += sw.Elapsed;
+                Trace.WriteLine(string.Format("Regex done in\t{0}", sw.Elapsed));
+            }
+
+            if (outputTotal)
+            {
+                Trace.WriteLine("############################################");
+                Trace.WriteLine(string.Format("ORegex total\t{0}", oregexCount));
+                Trace.WriteLine(string.Format("Regex total\t{0}", regexCount));
             }
         }
     }

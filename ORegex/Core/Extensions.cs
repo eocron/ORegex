@@ -6,7 +6,7 @@ using System.Reflection;
 namespace Eocron.Core
 {
     [Flags]
-    public enum ComparisonOptions
+    internal enum ComparisonOptions
     {
         None = 0,
         CheckArraysOrder = 1,
@@ -146,11 +146,6 @@ namespace Eocron.Core
         public static HashSet<TValue> ToHashSet<TValue>(this IEnumerable<TValue> enumerable)
         {
             return new HashSet<TValue>(enumerable);
-        }
-
-        public static SortedSet<TValue> ToSortedSet<TValue>(this IEnumerable<TValue> enumerable)
-        {
-            return new SortedSet<TValue>(enumerable);
         }
 
         public static Set<TValue> ToSet<TValue>(this IEnumerable<TValue> enumerable)

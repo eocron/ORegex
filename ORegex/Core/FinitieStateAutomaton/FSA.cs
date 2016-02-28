@@ -153,7 +153,7 @@ namespace Eocron.Core.FinitieStateAutomaton
         /// <param name="states"></param>
         /// <param name="inp"></param>
         /// <returns></returns>
-        public Set<int> Move(Set<int> states, PredicateEdgeBase<TValue> inp)
+        internal Set<int> Move(Set<int> states, PredicateEdgeBase<TValue> inp)
         {
             var result = new Set<int>();
 
