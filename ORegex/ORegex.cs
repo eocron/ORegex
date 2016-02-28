@@ -1,11 +1,9 @@
-﻿using Eocron.Core.Parse;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Eocron;
-using Eocron.Core;
 using Eocron.Core.Ast;
 using Eocron.Core.FinitieStateAutomaton;
+using Eocron.Core.Parse;
 
 namespace Eocron
 {
@@ -22,6 +20,7 @@ namespace Eocron
         private readonly ORegexCompiler<TValue> _compiler = new ORegexCompiler<TValue>();
         private readonly CFSA<TValue> _cfsa;
         private readonly ORegexOptions _options;
+        public readonly string Pattern;
 
         public ORegex(string pattern, params Func<TValue,bool>[] predicates) : this(pattern, ORegexOptions.None, predicates){}
 
@@ -34,6 +33,7 @@ namespace Eocron
         {
             _cfsa = _compiler.Build(pattern, table);
             _options = options;
+            Pattern = pattern;
         }
 
         private static PredicateTable<TValue> CreatePredicateTable(Func<TValue, bool>[] predicates)
@@ -57,7 +57,19 @@ namespace Eocron
                     var match = new OMatch<TValue>(values, captureTable, capture);
                     captureTable = new OCaptureTable<TValue>();
                     i += capture.Length - 1;
-                    yield return match;
+
+                    bool beginMatched = match.Index == startIndex;
+                    bool endMatched = (match.Index + match.Length) == values.Length;
+
+                    if (!_cfsa.ExactBegin && !_cfsa.ExactEnd ||
+                        !(beginMatched ^ _cfsa.ExactBegin) && !(endMatched ^ _cfsa.ExactEnd))
+                    {
+                        yield return match;
+                    }
+                }
+                if (_cfsa.ExactBegin)
+                {
+                    break;
                 }
             }
         }
@@ -70,6 +82,17 @@ namespace Eocron
         public bool IsMatch(TValue[] values, int startIndex = 0)
         {
             return !_cfsa.Run(values, startIndex, null, false).Equals(Range.Invalid);
+        }
+
+        public TValue[] Replace(TValue[] values, int startIndex = 0)
+        {
+            var matches = Matches(values, startIndex);
+            throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            return Pattern;
         }
     }
 }

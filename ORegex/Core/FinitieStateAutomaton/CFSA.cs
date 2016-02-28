@@ -10,6 +10,9 @@ namespace Eocron.Core.FinitieStateAutomaton
     /// </summary>
     public sealed class CFSA<TValue> : IFSA<TValue>
     {
+        public bool ExactBegin { get; set; }
+        public bool ExactEnd { get; set; }
+
         public string Name { get; private set; }
 
         private readonly FSATransition<TValue>[][] _transitionMatrix;
@@ -26,6 +29,8 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         public CFSA(FSA<TValue> fsa)
         {
+            ExactBegin = fsa.ExactBegin;
+            ExactEnd = fsa.ExactEnd;
             Name = fsa.Name;
             _transitionMatrix = new FSATransition<TValue>[fsa.StateCount][];
             foreach (var look in fsa.Transitions.ToLookup(x => x.From, x => x))

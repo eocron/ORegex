@@ -4,6 +4,8 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
 {
     public abstract class PredicateEdgeBase<TValue>
     {
+        public bool ShouldMemorize { get; set; }
+
         public int Priority { get; set; }
 
         public abstract bool IsFuncPredicate { get; }

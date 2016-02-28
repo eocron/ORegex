@@ -52,6 +52,8 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         private void EvaluateRoot(int start, int end, FSA<TValue> fsa, AstRootNode astRootNode)
         {
+            fsa.ExactBegin = astRootNode.MatchBegin;
+            fsa.ExactEnd = astRootNode.MatchEnd;
             Evaluate(start, end, fsa, astRootNode.Regex);
         }
 

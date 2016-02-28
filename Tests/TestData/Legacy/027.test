@@ -1,10 +1,5 @@
 ﻿<TEST>
-  <REGEX>a(?&lt;g1&gt;b(?&lt;g2&gt;c)*)+</REGEX>
-  <OREGEX>{a}(?&lt;g1&gt;{b}(?&lt;g2&gt;{c})*)+</OREGEX>
-  <TEXT>abcabcc
-  
-  /*capture inside capture*/
-  abcbccbc
-
-  </TEXT>
+  <REGEX>^a+</REGEX>
+  <OREGEX>^{a}+</OREGEX>
+  <TEXT>aaabaaabaaa</TEXT>
 </TEST>

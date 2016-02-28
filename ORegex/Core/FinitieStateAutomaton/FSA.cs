@@ -8,6 +8,10 @@ namespace Eocron.Core.FinitieStateAutomaton
 {
     public sealed class FSA<TValue> : IFSA<TValue>
     {
+        public bool ExactBegin { get; set; }
+
+        public bool ExactEnd { get; set; }
+
         #region Speedup
 
         private readonly OrderedSet<PredicateEdgeBase<TValue>> _sigma = new OrderedSet<PredicateEdgeBase<TValue>>();

@@ -25,8 +25,13 @@ namespace Eocron.Core.FinitieStateAutomaton
         private static FSA<TValue> Reverse(FSA<TValue> dfa)
         {
             return
-                new FSA<TValue>(dfa.Name, dfa.Transitions.Select(x => new FSATransition<TValue>(x.To, x.Condition, x.From)),
-                    dfa.F, dfa.Q0);
+                new FSA<TValue>(dfa.Name,
+                    dfa.Transitions.Select(x => new FSATransition<TValue>(x.To, x.Condition, x.From)),
+                    dfa.F, dfa.Q0)
+                {
+                    ExactBegin = dfa.ExactBegin,
+                    ExactEnd = dfa.ExactEnd
+                };
         }
 
         /// <summary>
@@ -35,7 +40,11 @@ namespace Eocron.Core.FinitieStateAutomaton
         /// </summary>
         public static FSA<TValue> NfaToDfa(FSA<TValue> nfa)
         {
-            FSA<TValue> dfa = new FSA<TValue>(nfa.Name);
+            FSA<TValue> dfa = new FSA<TValue>(nfa.Name)
+            {
+                ExactBegin = nfa.ExactBegin, 
+                ExactEnd = nfa.ExactEnd
+            };
 
             // Sets of NFA states which is represented by some DFA state
             var markedStates = new HashSet<Set<int>>();

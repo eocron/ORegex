@@ -15,8 +15,9 @@ Each lambda or value should have unique name inside pattern.
 ### Features
 - Default regex engine support;
 - Capture groups support;
-- Greedy and Lazy support;
+- Greedy/Lazy support;
 - Backtracking DFA reduce support.
+- Exact begin/end match support.
 
 ### Example
         public static bool IsPrime(int number)
@@ -55,4 +56,4 @@ Also, you can find there test utility and see how things work inside engine.
 
 ### Future
 - Lookahead support;
-- Function result memorize support.
+- Memorize option removed by me. One should memorize function result themeself, if they decided that recalculation of predicate is too expensive.
