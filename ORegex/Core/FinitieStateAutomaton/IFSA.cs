@@ -7,7 +7,7 @@ namespace Eocron.Core.FinitieStateAutomaton
     {
         string Name { get; }
 
-        Range Run(TValue[] values, int startIndex, CaptureTable<TValue> table, bool captureSelf);
+        Range Run(TValue[] values, int startIndex, OCaptureTable<TValue> table, bool captureSelf);
 
         IEnumerable<IFSATransition<TValue>> Transitions { get; }
 

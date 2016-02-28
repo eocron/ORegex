@@ -65,9 +65,8 @@
     <Compile Include="Core\Ast\GroupQuantifiers\LookAheadQuantifier.cs" />
     <Compile Include="Core\Ast\GroupQuantifiers\QuantifierBase.cs" />
     <Compile Include="Core\Ast\Range.cs" />
-    <Compile Include="Core\Objects\ComparisonOptions.cs" />
     <Compile Include="Core\Extensions.cs" />
-    <Compile Include="CaptureTable.cs" />
+    <Compile Include="OCaptureTable.cs" />
     <Compile Include="Core\FinitieStateAutomaton\CFSA.cs" />
     <Compile Include="Core\FinitieStateAutomaton\Predicates\ComparePredicateEdge.cs" />
     <Compile Include="Core\FinitieStateAutomaton\Predicates\ComplexPredicateEdge.cs" />
@@ -75,10 +74,6 @@
     <Compile Include="Core\FinitieStateAutomaton\IFSA.cs" />
     <Compile Include="Core\FinitieStateAutomaton\IFSATransition.cs" />
     <Compile Include="Core\FinitieStateAutomaton\Predicates\PredicateEdgeBase.cs" />
-    <Compile Include="Core\Objects\CollectionExtensions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\Objects\ComparisonExtensions.cs" />
     <Compile Include="Core\OrderedSet.cs" />
     <Compile Include="Core\ORegexException.cs" />
     <Compile Include="Core\ORegexSyntaxException.cs" />
@@ -98,13 +93,12 @@
     </Compile>
     <Compile Include="Core\Set.cs" />
     <Compile Include="Core\FinitieStateAutomaton\FSAFactory.cs" />
-    <Compile Include="ObjectCapture.cs" />
+    <Compile Include="OCapture.cs" />
     <Compile Include="OMatch.cs" />
     <Compile Include="ORegex.cs" />
     <Compile Include="ORegexOptions.cs" />
     <Compile Include="PredicateTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegexObjectMapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Antlr4 Include="Core\Parse\RegexGrammar.g4">

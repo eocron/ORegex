@@ -172,7 +172,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             return result;
         }
 
-        public Range Run(TValue[] values, int startIndex, CaptureTable<TValue> table, bool captureSelf)
+        public Range Run(TValue[] values, int startIndex, OCaptureTable<TValue> table, bool captureSelf)
         {
             throw new NotImplementedException();
         }

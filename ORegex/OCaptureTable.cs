@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace Eocron
 {
-    public sealed class CaptureTable<TValue> : IEnumerable<KeyValuePair<string, List<OCapture<TValue>>>>
+    public sealed class OCaptureTable<TValue> : IEnumerable<KeyValuePair<string, List<OCapture<TValue>>>>
     {
         private static readonly OCapture<TValue>[] EmptyArray = new OCapture<TValue>[0];
         private static readonly Dictionary<string, List<OCapture<TValue>>> EmptyCaptures = new Dictionary<string, List<OCapture<TValue>>>();
@@ -51,7 +50,7 @@ namespace Eocron
             _captures.Remove(name);
         }
 
-        internal void Add(CaptureTable<TValue> table)
+        internal void Add(OCaptureTable<TValue> table)
         {
             if (table._captures != null)
             {

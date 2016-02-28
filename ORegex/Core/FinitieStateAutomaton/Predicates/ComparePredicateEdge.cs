@@ -31,7 +31,7 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
             get { return false; }
         }
 
-        public override Range Match(TValue[] sequence, int startIndex, out CaptureTable<TValue> table)
+        public override Range Match(TValue[] sequence, int startIndex, out OCaptureTable<TValue> table)
         {
             table = null;
             if (_comparer.Equals(_value, sequence[startIndex]))

@@ -37,9 +37,9 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
             get { return true; }
         }
 
-        public override Range Match(TValue[] sequence, int startIndex, out CaptureTable<TValue> table)
+        public override Range Match(TValue[] sequence, int startIndex, out OCaptureTable<TValue> table)
         {
-            table = new CaptureTable<TValue>();
+            table = new OCaptureTable<TValue>();
             var result = _fsa.Run(sequence, startIndex, table, IsCapturePredicate);
             if (table.Count == 0)
             {

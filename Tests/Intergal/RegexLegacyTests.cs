@@ -82,8 +82,8 @@ namespace Tests.Intergal
         private static void CompareCaptures(Match expected, OMatch<char> actual)
         {
             var groups = expected.Groups.Cast<Group>().Where(x => x.Success).ToArray();
-            Assert.AreEqual(groups.Length, actual.Captures.Count);
-            foreach (var group in actual.Captures)
+            Assert.AreEqual(groups.Length, actual.OCaptures.Count);
+            foreach (var group in actual.OCaptures)
             {
                 var captured = expected.Groups[group.Key].Captures.Cast<Capture>().ToArray();
                 foreach (var capt in group.Value)

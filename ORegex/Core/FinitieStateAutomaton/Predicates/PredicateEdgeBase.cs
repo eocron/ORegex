@@ -1,5 +1,4 @@
 ﻿using Eocron.Core.Ast;
-using Eocron.Core.Objects;
 
 namespace Eocron.Core.FinitieStateAutomaton.Predicates
 {
@@ -13,7 +12,7 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
 
         public abstract bool IsComplexPredicate { get; }
 
-        public abstract Range Match(TValue[] sequence, int startIndex, out CaptureTable<TValue> table);
+        public abstract Range Match(TValue[] sequence, int startIndex, out OCaptureTable<TValue> table);
 
         public abstract bool IsMatch(TValue value);
 
@@ -48,7 +47,7 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
             {
                 var aa = (ComplexPredicateEdge<TValue>) a;
                 var bb = (ComplexPredicateEdge<TValue>) b;
-                return ComparisonExtensions.DeepEquals(aa._fsa, bb._fsa);
+                return aa._fsa.DeepEquals(bb._fsa);
             }
             if (a.IsFuncPredicate && b.IsFuncPredicate)
             {

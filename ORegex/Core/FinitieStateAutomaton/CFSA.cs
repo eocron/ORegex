@@ -60,14 +60,14 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         private sealed class FSMState
         {
-            public CaptureTable<TValue> Captures; 
+            public OCaptureTable<TValue> OCaptures; 
             public int CurrentIndex;
             public int CurrentPredicateIndex;
             public FSATransition<TValue>[] Transitions;
             public bool IsFinal;
         }
 
-        public Range Run(TValue[] values, int startIndex, CaptureTable<TValue> table, bool captureSelf)
+        public Range Run(TValue[] values, int startIndex, OCaptureTable<TValue> table, bool captureSelf)
         {
             var stack = new Stack<FSMState>(_stateCount);
 
@@ -99,9 +99,9 @@ namespace Eocron.Core.FinitieStateAutomaton
                 {
                     foreach(var s in stack)
                     {
-                        if (s.Captures != null)
+                        if (s.OCaptures != null)
                         {
-                            table.Add(s.Captures);
+                            table.Add(s.OCaptures);
                         }
                     }
                     if (captureSelf)
@@ -124,11 +124,11 @@ namespace Eocron.Core.FinitieStateAutomaton
             return _transitionMatrix[state];
         }
 
-        private FSMState CreateState(int state, int index, CaptureTable<TValue> captures)
+        private FSMState CreateState(int state, int index, OCaptureTable<TValue> oCaptures)
         {
             return new FSMState
             {
-                Captures = captures,
+                OCaptures = oCaptures,
                 CurrentIndex = index,
                 CurrentPredicateIndex = 0,
                 Transitions = GetTransitions(state),
@@ -136,7 +136,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             };
         }
 
-        private bool TryGetNextState(FSMState current, TValue[] values, CaptureTable<TValue> table, out FSMState nextState)
+        private bool TryGetNextState(FSMState current, TValue[] values, OCaptureTable<TValue> table, out FSMState nextState)
         {
             nextState = default(FSMState);
             if (current.Transitions != null && 
@@ -147,11 +147,11 @@ namespace Eocron.Core.FinitieStateAutomaton
                 for (int i = current.CurrentPredicateIndex; i < current.Transitions.Length; i++)
                 {
                     current.CurrentPredicateIndex++;
-                    CaptureTable<TValue> captureTable;
-                    var capture = current.Transitions[i].Condition.Match(values, current.CurrentIndex, out captureTable);
+                    OCaptureTable<TValue> oCaptureTable;
+                    var capture = current.Transitions[i].Condition.Match(values, current.CurrentIndex, out oCaptureTable);
                     if (capture.Index >= 0)
                     {
-                        nextState = CreateState(current.Transitions[i].To, current.CurrentIndex + capture.Length, captureTable);
+                        nextState = CreateState(current.Transitions[i].To, current.CurrentIndex + capture.Length, oCaptureTable);
                         return true;
                     }
                 }
