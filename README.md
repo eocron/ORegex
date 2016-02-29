@@ -6,9 +6,9 @@ To declare predicate in pattern you type:
 
     {myPredicateName}
 
-...and feed ORegex<T> predicate table. 
+...and feed ORegex predicate table. 
 
-PredicateTable<T> is simple key value dictionary for predicates.
+PredicateTable is simple key value dictionary for predicates.
 Predicate tables can accept lambda's and comparer's (IEqualityComparer<T>) with values.
 Each lambda or value should have unique name inside pattern.
 
