@@ -58,4 +58,4 @@ Also, you can find there test utility and see how things work inside engine.
 - Reverse search support;
 - C/C++ macros definition support;
 - Overlap capture support;
-- Lookahead support;
+- [{Positive}{Negative}] Look[{ahead}{behind}] support;
