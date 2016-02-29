@@ -20,6 +20,11 @@ namespace Tests.Intergal
             {
                 Trace.WriteLine(string.Join(",", match.Values));
             }
+
+            //OUTPUT:
+            //2
+            //3,4,5,6,7
+            //11,12,13
         }
 
         private static bool IsPrime(int number)
