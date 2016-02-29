@@ -81,7 +81,7 @@ Or more complex test from NLP field:
             pTable.AddPredicate("Инициал", x => IsInitial(x.Value));                    //Complex check if Value is Inital character.
 
             var oregex = new ORegex<Word>(@"
-                {Фамилия}(?<name>{Имя})                     //Comments can written inside pattern...
+                {Фамилия}(?<name>{Имя})                     //Comments can be written inside pattern...
                 |
                 (?<name>{Имя})({Фамилия}|{Инициал}{1,2})?  /*...even complex ones.*/
             ", pTable);
