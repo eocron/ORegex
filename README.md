@@ -54,32 +54,32 @@ Or more complex test from NLP field:
 
         public void PersonSelectionTest()
         {
-            //INPUT_TEXT: Ïÿòî÷êîâà Òàìàðà ðåøèëà âûãóëÿòü Äæåêà è âñòðåòèëàñü ñ Ìèõàèëîì À.Ì.
+            //INPUT_TEXT: Пяточкова Тамара решила выгулять Джека и встретилась с Михаилом А.М.
             var sentence = new Word[]
             {
-                new Word("Ïÿòî÷êîâà", SemanticType.FamilyName),
-                new Word("Òàìàðà", SemanticType.Name),
-                new Word("ðåøèëà", SemanticType.Other),
-                new Word("âûãóëÿòü", SemanticType.Other),
-                new Word("Äæåêà", SemanticType.Name),
-                new Word("è", SemanticType.Other),
-                new Word("âñòðåòèëàñü", SemanticType.Other),
-                new Word("ñ", SemanticType.Other),
-                new Word("Ìèõàèëîì", SemanticType.Name),
-                new Word("À.", SemanticType.Other),
-                new Word("Ì", SemanticType.Other),
+                new Word("Пяточкова", SemanticType.FamilyName),
+                new Word("Тамара", SemanticType.Name),
+                new Word("решила", SemanticType.Other),
+                new Word("выгулять", SemanticType.Other),
+                new Word("Джека", SemanticType.Name),
+                new Word("и", SemanticType.Other),
+                new Word("встретилась", SemanticType.Other),
+                new Word("с", SemanticType.Other),
+                new Word("Михаилом", SemanticType.Name),
+                new Word("А.", SemanticType.Other),
+                new Word("М", SemanticType.Other),
             };
 
             //Creating table which will contain our predicates.
             var pTable = new PredicateTable<Word>();
-            pTable.AddPredicate("Ôàìèëèÿ", x => x.SemType == SemanticType.FamilyName);  //Check if word is FamilyName.
-            pTable.AddPredicate("Èìÿ", x => x.SemType == SemanticType.Name);            //Check if word is simple Name.
-            pTable.AddPredicate("Èíèöèàë", x => IsInitial(x.Value));                    //Complex check if Value is Inital character.
+            pTable.AddPredicate("Фамилия", x => x.SemType == SemanticType.FamilyName);  //Check if word is FamilyName.
+            pTable.AddPredicate("Имя", x => x.SemType == SemanticType.Name);            //Check if word is simple Name.
+            pTable.AddPredicate("Инициал", x => IsInitial(x.Value));                    //Complex check if Value is Inital character.
 
             var oregex = new ORegex<Word>(@"
-                {Ôàìèëèÿ}(?<name>{Èìÿ})                     //Comments can written inside pattern...
+                {Фамилия}(?<name>{Имя})                     //Comments can written inside pattern...
                 |
-                (?<name>{Èìÿ})({Ôàìèëèÿ}|{Èíèöèàë}{1,2})?  /*...even complex ones.*/
+                (?<name>{Имя})({Фамилия}|{Инициал}{1,2})?  /*...even complex ones.*/
             ", pTable);
 
             var persons = oregex.Matches(sentence).Select(x => new Person(x)).ToArray();
@@ -90,9 +90,9 @@ Or more complex test from NLP field:
             }
 
             //OUTPUT:
-            //Person found: Òàìàðà, length: 2
-            //Person found: Äæåêà, length: 1
-            //Person found: Ìèõàèëîì, length: 3
+            //Person found: Тамара, length: 2
+            //Person found: Джека, length: 1
+            //Person found: Михаилом, length: 3
         }
 
         public enum SemanticType
