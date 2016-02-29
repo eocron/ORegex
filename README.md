@@ -1,4 +1,4 @@
-# ORegex
+﻿# ORegex
 Object oriented Regular Expressions implementation.
 
 This implementation based on original Microsoft Regular Expression Syntax and will follow it as much as possible.
