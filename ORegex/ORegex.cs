@@ -38,6 +38,10 @@ namespace Eocron
 
         private static PredicateTable<TValue> CreatePredicateTable(Func<TValue, bool>[] predicates)
         {
+            if (predicates == null || predicates.Length == 0)
+            {
+                throw new ArgumentException("No predicates provided.");
+            }
             var table = new PredicateTable<TValue>();
             for (int i = 0; i < predicates.Length; i++)
             {
