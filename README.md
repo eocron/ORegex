@@ -55,5 +55,7 @@ Also, you can find there test utility and see how things work inside engine.
 - Greedy exhausting test (x+x+y+ pattern on a 'xxxxxxxxxxxxxxxxxxxx' string) is ~10 times faster than Regex engine. This result achieved due internal ORegex optimizations so pattern x+x+x+ becomes xxx+ and unnecessary backtrack avoided.
 
 ### Future
+- Reverse search support;
+- C/C++ macros definition support;
+- Overlap capture support;
 - Lookahead support;
-- Memorize option removed by me. One should memorize function result themeself, if they decided that recalculation of predicate is too expensive.
