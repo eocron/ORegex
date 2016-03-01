@@ -7,6 +7,9 @@ namespace Eocron.Core.FinitieStateAutomaton
 {
     public sealed class FSAFactory<TValue>
     {
+        public const string RepeatFsaName = "#repeat";
+        public const string OrFsaName = "#or";
+
         private readonly FSAPreprocessor<TValue> _preprocessor = new FSAPreprocessor<TValue>(); 
         public FSA<TValue> Create(AstNodeBase root, string name)
         {
@@ -97,14 +100,6 @@ namespace Eocron.Core.FinitieStateAutomaton
             }
         }
 
-        private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, AstNodeBase node)
-        {
-            var tmp = CreateNewState(fsa);
-            Evaluate(tmp, tmp, fsa, node);
-            fsa.AddEpsilonTransition(start, tmp);
-            fsa.AddEpsilonTransition(tmp, end);
-            fsa.AddEpsilonTransition(start, end);
-        }
         private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, PredicateEdgeBase<TValue> predicate)
         {
             var tmp = CreateNewState(fsa);

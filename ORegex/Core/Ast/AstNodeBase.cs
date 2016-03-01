@@ -11,10 +11,11 @@ namespace Eocron.Core.Ast
 
         public readonly Range Range;
 
-        public AstNodeBase(Range range)
+        protected AstNodeBase(Range range)
         {
             Range = range;
         }
+
         public static void Print(AstNodeBase node, int depth = 0)
         {
             if (depth == 0)

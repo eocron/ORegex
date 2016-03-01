@@ -1,0 +1,5 @@
+﻿<TEST>
+  <REGEX>(?&lt;g1&gt;a+)b</REGEX>
+  <OREGEX>(?&lt;g1&gt;{a}+){b}</OREGEX>
+  <TEXT>aaaaaaab</TEXT>
+</TEST>

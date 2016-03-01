@@ -1,0 +1,5 @@
+﻿<TEST>
+  <REGEX>(?&lt;g1&gt;a+)|.+?</REGEX>
+  <OREGEX>(?&lt;g1&gt;{a}+)|.+?</OREGEX>
+  <TEXT>aaaaaaa</TEXT>
+</TEST>

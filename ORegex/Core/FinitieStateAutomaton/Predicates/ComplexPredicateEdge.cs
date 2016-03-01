@@ -9,8 +9,6 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
     {
         internal readonly IFSA<TValue> _fsa;
 
-        public bool IsCapturePredicate { get; set; }
-
         public ComplexPredicateEdge(IFSA<TValue> fsa)
         {
             _fsa = fsa;

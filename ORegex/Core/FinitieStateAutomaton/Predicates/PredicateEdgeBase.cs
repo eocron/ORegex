@@ -14,6 +14,8 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
 
         public abstract bool IsComplexPredicate { get; }
 
+        public bool IsCapturePredicate { get; set; }
+
         public abstract Range Match(TValue[] sequence, int startIndex, out OCaptureTable<TValue> table);
 
         public abstract bool IsMatch(TValue value);
