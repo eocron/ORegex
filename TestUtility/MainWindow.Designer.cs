@@ -51,6 +51,7 @@
             this.RegexPatternBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.InputTextBox = new System.Windows.Forms.RichTextBox();
+            this.gViewer2 = new Microsoft.Glee.GraphViewerGdi.GViewer();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -70,13 +71,13 @@
             this.gViewer1.BackwardEnabled = false;
             this.gViewer1.ForwardEnabled = false;
             this.gViewer1.Graph = null;
-            this.gViewer1.Location = new System.Drawing.Point(299, 6);
+            this.gViewer1.Location = new System.Drawing.Point(604, 6);
             this.gViewer1.MouseHitDistance = 0.05D;
             this.gViewer1.Name = "gViewer1";
             this.gViewer1.NavigationVisible = false;
             this.gViewer1.PanButtonPressed = false;
             this.gViewer1.SaveButtonVisible = false;
-            this.gViewer1.Size = new System.Drawing.Size(583, 352);
+            this.gViewer1.Size = new System.Drawing.Size(278, 352);
             this.gViewer1.TabIndex = 0;
             this.gViewer1.ZoomF = 1D;
             this.gViewer1.ZoomFraction = 0.5D;
@@ -144,6 +145,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.gViewer2);
             this.tabPage1.Controls.Add(this.richTextBox1);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.button1);
@@ -348,6 +350,29 @@
             this.InputTextBox.TabIndex = 0;
             this.InputTextBox.Text = "abbbbabbbbbb";
             // 
+            // gViewer2
+            // 
+            this.gViewer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gViewer2.AsyncLayout = false;
+            this.gViewer2.AutoScroll = true;
+            this.gViewer2.BackColor = System.Drawing.Color.White;
+            this.gViewer2.BackwardEnabled = false;
+            this.gViewer2.ForwardEnabled = false;
+            this.gViewer2.Graph = null;
+            this.gViewer2.Location = new System.Drawing.Point(320, 6);
+            this.gViewer2.MouseHitDistance = 0.05D;
+            this.gViewer2.Name = "gViewer2";
+            this.gViewer2.NavigationVisible = false;
+            this.gViewer2.PanButtonPressed = false;
+            this.gViewer2.SaveButtonVisible = false;
+            this.gViewer2.Size = new System.Drawing.Size(278, 352);
+            this.gViewer2.TabIndex = 5;
+            this.gViewer2.ZoomF = 1D;
+            this.gViewer2.ZoomFraction = 0.5D;
+            this.gViewer2.ZoomWindowThreshold = 0.05D;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -395,6 +420,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.NumericUpDown IterationsCountBoxRun;
         private System.Windows.Forms.Label label7;
+        private Microsoft.Glee.GraphViewerGdi.GViewer gViewer2;
     }
 }
 

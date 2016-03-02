@@ -32,6 +32,10 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
 
         public override bool IsMatch(TValue[] values, int index)
         {
+            if (index >= values.Length)
+            {
+                return false;
+            }
             return _comparer.Equals(values[index], _value);
         }
 

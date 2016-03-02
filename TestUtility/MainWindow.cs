@@ -27,20 +27,29 @@ namespace TestUtility
             HighLightSyntax();
         }
 
-        private void DrawGraph(IFSA<char> fsm)
+        private void DrawGraphAfter(IFSA<char> fsm)
         {
             var graph = _graphCreator.Create(fsm, _table);
             gViewer1.Graph = graph;
             gViewer1.Refresh();
         }
 
+        private void DrawGraphBefore(IFSA<char> fsm)
+        {
+            var graph = _graphCreator.Create(fsm, _table);
+            gViewer2.Graph = graph;
+            gViewer2.Refresh();
+        }
+
         private void ProcessORegex(string oregex)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            var dfa = _compiler.Build(oregex, _table);
+            IFSA<char> dfa = _compiler.Build(oregex, _table);
             var elapsed = sw.Elapsed;
             label1.Text = "Compiled in: " + elapsed;
-            DrawGraph(dfa);
+            DrawGraphAfter(dfa);
+            dfa = _compiler.BuildInitialFsa(oregex, _table);
+            DrawGraphBefore(dfa);
         }
 
         private void HighLightSyntax()

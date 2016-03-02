@@ -38,7 +38,7 @@ namespace Eocron.Core.FinitieStateAutomaton
         /// Subset machine that employs the powerset construction or subset construction algorithm.
         /// It creates a DFA that recognizes the same language as the given NFA.
         /// </summary>
-        public static FSA<TValue> NfaToDfa(FSA<TValue> nfa)
+        private static FSA<TValue> NfaToDfa(FSA<TValue> nfa)
         {
             FSA<TValue> dfa = new FSA<TValue>(nfa.Name)
             {

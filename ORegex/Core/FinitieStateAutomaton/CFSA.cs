@@ -114,7 +114,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             if (current.Transitions != null && 
                 current.Transitions.Length > 0 &&
                 current.CurrentPredicateIndex != current.Transitions.Length &&
-                current.CurrentIndex != values.Length)
+                current.CurrentIndex <= values.Length)
             {
                 for (int i = current.CurrentPredicateIndex; i < current.Transitions.Length; i++)
                 {

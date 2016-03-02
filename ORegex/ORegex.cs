@@ -53,7 +53,7 @@ namespace Eocron
         public IEnumerable<OMatch<TValue>> Matches(TValue[] values, int startIndex = 0)
         {
             var captureTable = new OCaptureTable<TValue>();
-            for (int i = startIndex; i < values.Length; i++)
+            for (int i = startIndex; i <= values.Length; i++)
             {
                 var capture = _cfsa.Run(values, i);
                 if (!capture.Equals(Range.Invalid))

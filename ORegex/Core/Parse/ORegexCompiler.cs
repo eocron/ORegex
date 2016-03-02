@@ -19,5 +19,12 @@ namespace Eocron.Core.Parse
             var cfsa = new CFSA<TValue>(dfa);
             return cfsa;
         }
+
+        public FSA<TValue> BuildInitialFsa(string input, PredicateTable<TValue> predicateTable)
+        {
+            var ast = _parser.Parse(input, predicateTable);
+            var dfa = _stb.Create(ast, ast.CaptureGroupNames[0]);
+            return dfa;
+        }
     }
 }

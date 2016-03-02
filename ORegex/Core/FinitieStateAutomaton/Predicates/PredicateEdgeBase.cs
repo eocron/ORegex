@@ -50,6 +50,10 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
 
             if (a.IsSystemPredicate && b.IsSystemPredicate)
             {
+                if (ReferenceEquals(a, b))
+                {
+                    return true;
+                }
                 var aa = (SystemPredicateEdge<TValue>)a;
                 var bb = (SystemPredicateEdge<TValue>)b;
                 return !aa.IsUnique && !bb.IsUnique && aa.Name == bb.Name;

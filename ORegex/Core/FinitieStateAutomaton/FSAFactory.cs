@@ -7,9 +7,9 @@ namespace Eocron.Core.FinitieStateAutomaton
 {
     public sealed class FSAFactory<TValue>
     {
-        private readonly FSAPreprocessor<TValue> _preprocessor = new FSAPreprocessor<TValue>(); 
+        private readonly FSAPreprocessor<TValue> _preprocessor = new FSAPreprocessor<TValue>();
 
-        public FSA<TValue> Create(AstNodeBase root, string name)
+        public FSA<TValue> CreateRawFsa(AstNodeBase root, string name)
         {
             var result = new FSA<TValue>(name);
             var start = result.NewState();
@@ -17,9 +17,12 @@ namespace Eocron.Core.FinitieStateAutomaton
             Evaluate(start, end, result, root);
             result.AddFinal(end);
             result.AddStart(start);
-
+            return result;
+        }
+        public FSA<TValue> Create(AstNodeBase root, string name)
+        {
+            var result = CreateRawFsa(root, name);
             result = _preprocessor.Preprocess(result);
-
             return result;
         }
 
@@ -88,36 +91,38 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         private void RepeatZeroOrOne(int start, int end, FSA<TValue> fsa, AstNodeBase node, bool isLasy)
         {
+            var lazyEdge = new SystemPredicateEdge<TValue>("#lazyEps", true);
             if (isLasy)
             {
-                fsa.AddTransition(start, new SystemPredicateEdge<TValue>("#lazyEps", true), end);
+                fsa.AddTransition(start, lazyEdge, end);
                 Evaluate(start, end, fsa, node);
             }
             else
             {
                 Evaluate(start, end, fsa, node);
-                fsa.AddTransition(start, new SystemPredicateEdge<TValue>("#lazyEps", true), end);
+                fsa.AddTransition(start, lazyEdge, end);
             }
         }
 
         private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, AstNodeBase predicate, bool isLasy)
         {
+            var lazyEdge = new SystemPredicateEdge<TValue>("#lazyEps", true);
             var tmp = CreateNewState(fsa);
             if (isLasy)
             {
+                fsa.AddTransition(tmp, lazyEdge, end);
                 Evaluate(tmp, tmp, fsa, predicate);
-                fsa.AddEpsilonTransition(tmp, end);
 
-                fsa.AddTransition(start, new SystemPredicateEdge<TValue>("#lazyEps", true), end);
+                fsa.AddTransition(start, lazyEdge, end);
                 fsa.AddEpsilonTransition(start, tmp);
             }
             else
             {
                 Evaluate(tmp, tmp, fsa, predicate);
-                fsa.AddEpsilonTransition(tmp, end);
+                fsa.AddTransition(tmp, lazyEdge, end);
 
                 fsa.AddEpsilonTransition(start, tmp);
-                fsa.AddTransition(start, new SystemPredicateEdge<TValue>("#lazyEps", true), end);
+                fsa.AddTransition(start, lazyEdge, end);
             }
         }
 
@@ -174,7 +179,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             fsa.AddEpsilonTransition(tmp2, end);
         }
 
-        public int CreateNewState(FSA<TValue> fsa)
+        private int CreateNewState(FSA<TValue> fsa)
         {
             return fsa.NewState();
         }
