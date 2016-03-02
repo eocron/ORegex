@@ -22,11 +22,9 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         public string Name { get; private set; }
 
-        private readonly OrderedSet<FSATransition<TValue>> _transitions;
-
         public IEnumerable<IFSATransition<TValue>> Transitions
         {
-            get { return _transitions; }
+            get { return _lookup.Values.SelectMany(x=>x); }
         }
 
         public readonly HashSet<int> Q0;
@@ -44,8 +42,8 @@ namespace Eocron.Core.FinitieStateAutomaton
             get
             {
                 return
-                    _transitions.Select(x => x.From)
-                        .Concat(_transitions.Select(x => x.To))
+                    Transitions.Select(x => x.From)
+                        .Concat(Transitions.Select(x => x.To))
                         .Distinct()
                         .OrderBy(x => x);
             }
@@ -61,12 +59,11 @@ namespace Eocron.Core.FinitieStateAutomaton
         public FSA(string name, IEnumerable<FSATransition<TValue>> transitions, IEnumerable<int> q0, IEnumerable<int> f)
         {
             Name = name.ThrowIfEmpty();
-            _transitions = new OrderedSet<FSATransition<TValue>>(transitions);
             Q0 = q0.ToHashSet();
             F = f.ToHashSet();
             StateCount = Q.Count();
             #region Speedup
-            foreach(var t in _transitions)
+            foreach(var t in transitions)
             {
                 OrderedSet<FSATransition<TValue>> predics;
                 if (!_lookup.TryGetValue(t.From, out predics))
@@ -89,7 +86,6 @@ namespace Eocron.Core.FinitieStateAutomaton
         public FSA(string name)
         {
             Name = name.ThrowIfEmpty();
-            _transitions = new OrderedSet<FSATransition<TValue>>();
             Q0 = new HashSet<int>();
             F = new HashSet<int>();
             StateCount = 0;
@@ -105,13 +101,17 @@ namespace Eocron.Core.FinitieStateAutomaton
             AddTransition(from, FuncPredicateEdge<TValue>.Epsilon, to);
         }
 
-        public void AddTransition(FSATransition<TValue> trans)
+        public void AddSystemTransition(int from, string name, int to)
+        {
+            AddTransition(from, new SystemPredicateEdge<TValue>(name), to);
+        }
+
+        private void AddTransition(FSATransition<TValue> trans)
         {
             if (trans == null)
             {
                 throw new ArgumentNullException("trans");
             }
-            _transitions.Add(trans);
             #region Speedup
             OrderedSet<FSATransition<TValue>> predics;
             if(!_lookup.TryGetValue(trans.From, out predics))

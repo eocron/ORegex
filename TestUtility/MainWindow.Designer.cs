@@ -36,6 +36,7 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.IterationsCountBoxRun = new System.Windows.Forms.NumericUpDown();
             this.button2 = new System.Windows.Forms.Button();
@@ -50,7 +51,6 @@
             this.RegexPatternBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.InputTextBox = new System.Windows.Forms.RichTextBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -86,7 +86,7 @@
             // 
             this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.richTextBox1.Font = new System.Drawing.Font("Arial Black", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.richTextBox1.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.richTextBox1.ForeColor = System.Drawing.Color.Black;
             this.richTextBox1.Location = new System.Drawing.Point(6, 134);
             this.richTextBox1.Name = "richTextBox1";
@@ -174,6 +174,14 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Performance Tests";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(11, 206);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(0, 13);
+            this.label7.TabIndex = 7;
             // 
             // label6
             // 
@@ -339,14 +347,6 @@
             this.InputTextBox.Size = new System.Drawing.Size(457, 355);
             this.InputTextBox.TabIndex = 0;
             this.InputTextBox.Text = "abbbbabbbbbb";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(11, 206);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(0, 13);
-            this.label7.TabIndex = 7;
             // 
             // MainWindow
             // 

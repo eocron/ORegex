@@ -41,7 +41,7 @@ namespace Eocron.Core.Parse
         public void GetInvertedPredicate(IEnumerable<string> names, out PredicateEdgeBase<TValue> predicate, out string invertedName)
         {
             names = names.Distinct().OrderByDescending(x => x);
-            invertedName = string.Format("inverted: {0}",string.Join(",", names));
+            invertedName = string.Format("#not in: {0}",string.Join(",", names));
             if (!_predicateTable.Contains(invertedName))
             {
                 var predicates = names.Select(GetPredicate).Distinct().ToArray();

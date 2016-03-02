@@ -61,8 +61,6 @@ namespace Eocron
                     var match = new OMatch<TValue>(values, captureTable, capture);
                     captureTable.Add(_cfsa.Name, match);
                     captureTable = new OCaptureTable<TValue>();
-                    
-                    i += capture.Length - 1;
 
                     bool beginMatched = match.Index == startIndex;
                     bool endMatched = (match.Index + match.Length) == values.Length;
@@ -72,6 +70,8 @@ namespace Eocron
                     {
                         yield return match;
                     }
+
+                    i += capture.Length == 0 ? 0 : capture.Length - 1;
                 }
                 if (_cfsa.ExactBegin)
                 {

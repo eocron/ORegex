@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 namespace Eocron.Core.FinitieStateAutomaton.Predicates
 {
-    [DebuggerDisplay("(Predicate, {_condition.GetHashCode()})")]
+    [DebuggerDisplay("(Predicate, {Name})")]
     public sealed class FuncPredicateEdge<TValue> : PredicateEdgeBase<TValue>
     {
         internal Func<TValue[], int, bool> _condition { get;private set; }
 
-        public FuncPredicateEdge(Func<TValue[], int, bool> condition)
+        public FuncPredicateEdge(string name, Func<TValue[], int, bool> condition) : base(name)
         {
             _condition = condition;
         }
@@ -23,6 +23,10 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
             get { return false; }
         }
 
+        public override bool IsSystemPredicate
+        {
+            get { return false; }
+        }
         public override int GetHashCode()
         {
             return _condition.GetHashCode();
@@ -31,11 +35,6 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
         public override bool IsMatch(TValue[] values, int index)
         {
             return _condition(values, index);
-        }
-
-        public override string ToString()
-        {
-            return _condition.Target.ToString();
         }
     }
 }

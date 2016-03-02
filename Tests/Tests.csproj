@@ -75,6 +75,15 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="TestData\Legacy\042.test">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\Legacy\040.test">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\Legacy\041.test">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestData\Legacy\039.test">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

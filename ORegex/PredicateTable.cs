@@ -31,7 +31,7 @@ namespace Eocron
                 throw new ArgumentException("Such name already exist: " + name, "name");
             }
 
-            _table.Add(name, new FuncPredicateEdge<TValue>(predicate));
+            _table.Add(name, new FuncPredicateEdge<TValue>(name, predicate));
         }
 
         public void AddPredicate(string name, Func<TValue, bool> predicate)
@@ -48,7 +48,7 @@ namespace Eocron
             {
                 throw new ArgumentException("Such name already exist: " + name, "name");
             }
-            _table.Add(name, new ComparePredicateEdge<TValue>(value, comparer));
+            _table.Add(name, new ComparePredicateEdge<TValue>(name, value, comparer));
         }
 
         public PredicateEdgeBase<TValue> GetPredicate(string name)

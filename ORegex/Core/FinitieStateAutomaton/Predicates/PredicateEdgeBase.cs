@@ -1,18 +1,26 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Eocron.Core.FinitieStateAutomaton.Predicates
 {
-#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
+    [DebuggerDisplay("{Name}")]
     public abstract class PredicateEdgeBase<TValue>
-#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
-        public static readonly FuncPredicateEdge<TValue> Epsilon = new FuncPredicateEdge<TValue>((v,i) => { throw new NotImplementedException("Epsilon condition."); });
+        public static readonly FuncPredicateEdge<TValue> Epsilon = new FuncPredicateEdge<TValue>("#eps",(v,i) => { throw new NotImplementedException("Epsilon condition."); });
 
-        public static readonly FuncPredicateEdge<TValue> AlwaysTrue = new FuncPredicateEdge<TValue>((v,i) => true);
+        public static readonly FuncPredicateEdge<TValue> AlwaysTrue = new FuncPredicateEdge<TValue>("#any",(v,i) => true);
 
+        public readonly string Name;
         public abstract bool IsFuncPredicate { get; }
 
         public abstract bool IsComparePredicate { get; }
+
+        public abstract bool IsSystemPredicate { get; }
+
+        protected PredicateEdgeBase(string name)
+        {
+            Name = name.ThrowIfEmpty();
+        }
 
         public override bool Equals(object obj)
         {
@@ -28,17 +36,23 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
                 return true;
             }
 
-            if (a.IsComparePredicate && b.IsComparePredicate)
-            {
-                var aa = (ComparePredicateEdge<TValue>) a;
-                var bb = (ComparePredicateEdge<TValue>) b;
-                return ReferenceEquals(aa._comparer, bb._comparer) && aa._comparer.Equals(aa._value, bb._value);
-            }
             if (a.IsFuncPredicate && b.IsFuncPredicate)
             {
-                var aa = (FuncPredicateEdge<TValue>) a;
-                var bb = (FuncPredicateEdge<TValue>) b;
+                var aa = (FuncPredicateEdge<TValue>)a;
+                var bb = (FuncPredicateEdge<TValue>)b;
                 return ReferenceEquals(aa._condition, bb._condition);
+            }
+
+            if (a.IsComparePredicate && b.IsComparePredicate)
+            {
+                return a.Name == b.Name;
+            }
+
+            if (a.IsSystemPredicate && b.IsSystemPredicate)
+            {
+                var aa = (SystemPredicateEdge<TValue>)a;
+                var bb = (SystemPredicateEdge<TValue>)b;
+                return !aa.IsUnique && !bb.IsUnique && aa.Name == bb.Name;
             }
             return false;
         }
@@ -46,6 +60,11 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
         public static bool IsEpsilon(PredicateEdgeBase<TValue> a)
         {
             return a.IsFuncPredicate && IsEqual(a, FuncPredicateEdge<TValue>.Epsilon);
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

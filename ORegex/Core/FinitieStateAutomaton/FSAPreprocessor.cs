@@ -9,7 +9,7 @@ namespace Eocron.Core.FinitieStateAutomaton
         public FSA<TValue> Preprocess(FSA<TValue> fsa)
         {
             var dfa = NfaToDfa(fsa);
-            dfa = Minimize(dfa);
+            //dfa = Minimize(dfa);
             return dfa;
         }
 

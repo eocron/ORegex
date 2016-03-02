@@ -118,12 +118,13 @@ namespace Eocron.Core.FinitieStateAutomaton
             {
                 for (int i = current.CurrentPredicateIndex; i < current.Transitions.Length; i++)
                 {
+                    var trans = current.Transitions[i];
                     current.CurrentPredicateIndex++;
 
-                    var isMatch = current.Transitions[i].Condition.IsMatch(values, current.CurrentIndex);
+                    var isMatch = trans.Condition.IsMatch(values, current.CurrentIndex);
                     if (isMatch)
                     {
-                        nextState = CreateState(current.Transitions[i].To, current.CurrentIndex + 1);
+                        nextState = CreateState(trans.To, current.CurrentIndex + (trans.Condition.IsSystemPredicate ? 0 : 1));
                         return true;
                     }
                 }

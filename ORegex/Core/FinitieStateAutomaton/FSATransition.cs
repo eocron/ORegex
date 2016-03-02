@@ -4,7 +4,7 @@ using Eocron.Core.FinitieStateAutomaton.Predicates;
 
 namespace Eocron.Core.FinitieStateAutomaton
 {
-    [DebuggerDisplay("{From}->{To}")]
+    [DebuggerDisplay("{From}-{Condition}->{To}")]
     public sealed class FSATransition<TValue> : IFSATransition<TValue>
     {
         public int From { get; private set; }

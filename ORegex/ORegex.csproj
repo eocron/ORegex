@@ -66,6 +66,7 @@
     <Compile Include="Core\Ast\GroupQuantifiers\QuantifierBase.cs" />
     <Compile Include="Core\Ast\Range.cs" />
     <Compile Include="Core\Extensions.cs" />
+    <Compile Include="Core\FinitieStateAutomaton\Predicates\SystemPredicateEdge.cs" />
     <Compile Include="OCaptureTable.cs" />
     <Compile Include="Core\FinitieStateAutomaton\CFSA.cs" />
     <Compile Include="Core\FinitieStateAutomaton\Predicates\ComparePredicateEdge.cs" />

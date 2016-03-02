@@ -1,4 +1,5 @@
-﻿using Microsoft.Glee.Drawing;
+﻿using System.Linq;
+using Microsoft.Glee.Drawing;
 using Eocron;
 using Eocron.Core.FinitieStateAutomaton;
 
@@ -15,14 +16,18 @@ namespace TestUtility
 
         private static void FillGraph<TValue>(Graph graph, IFSA<TValue> fsa, PredicateTable<TValue> table)
         {
-            foreach (var t in fsa.Transitions)
+            foreach (var look in fsa.Transitions.ToLookup(x=>x.From,x=>x))
             {
-                Edge edge = graph.AddEdge("q" + t.From, t.Condition.ToString(), "q" + t.To);
-
-                if (fsa.IsFinal(t.To))
+                int i = 1;
+                foreach (var t in look)
                 {
-                    edge.TargetNode.Attr.Fillcolor = Color.Gray;
-                    edge.TargetNode.Attr.Shape = Shape.DoubleCircle;
+                    Edge edge = graph.AddEdge("q" + t.From, string.Format("[{0}]{1}",i++,t.Condition), "q" + t.To);
+
+                    if (fsa.IsFinal(t.To))
+                    {
+                        edge.TargetNode.Attr.Fillcolor = Color.Gray;
+                        edge.TargetNode.Attr.Shape = Shape.DoubleCircle;
+                    }
                 }
             }
         }
