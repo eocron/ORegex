@@ -117,7 +117,7 @@ namespace Eocron.Core.FinitieStateAutomaton
                     var groupName = ((CaptureQuantifier) group.Quantifier).CaptureName;
                     if (groupName != fsa.Name)
                     {
-                        throw new NotImplementedException("Capturing");
+                        //throw new NotImplementedException("Capturing");
                     }
                 }
             }
