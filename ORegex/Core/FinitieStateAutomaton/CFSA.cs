@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Eocron.Core.Ast;
-using Eocron.Core.FinitieStateAutomaton.Predicates;
 
 namespace Eocron.Core.FinitieStateAutomaton
 {
@@ -15,7 +14,7 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         public string Name { get; private set; }
 
-        private readonly FSATransition<TValue>[][] _transitionMatrix;
+        private readonly IFSATransition<TValue>[][] _transitionMatrix;
 
         private readonly int _startState;
 
@@ -32,10 +31,10 @@ namespace Eocron.Core.FinitieStateAutomaton
             ExactBegin = fsa.ExactBegin;
             ExactEnd = fsa.ExactEnd;
             Name = fsa.Name;
-            _transitionMatrix = new FSATransition<TValue>[fsa.StateCount][];
+            _transitionMatrix = new IFSATransition<TValue>[fsa.StateCount][];
             foreach (var look in fsa.Transitions.ToLookup(x => x.From, x => x))
             {
-                _transitionMatrix[look.Key] = CompileTransitions(look).OrderByDescending(x=>x.Condition.Priority).ToArray();
+                _transitionMatrix[look.Key] = look.ToArray();
             }
 
             _startState = fsa.Q0.First();
@@ -47,43 +46,26 @@ namespace Eocron.Core.FinitieStateAutomaton
             _stateCount = _transitionMatrix.Length;
         }
 
-        private static IEnumerable<FSATransition<TValue>> CompileTransitions(IEnumerable<IFSATransition<TValue>> transitions)
-        {
-            foreach (var t in transitions)
-            {
-                PredicateEdgeBase<TValue> predicate = null;
-                if (t.Condition.IsComplexPredicate)
-                {
-                    var other = (ComplexPredicateEdge<TValue>) t.Condition;
-                    var fsa = new CFSA<TValue>((FSA<TValue>) other._fsa);
-                    predicate = new ComplexPredicateEdge<TValue>(fsa, other);
-                }
-
-                yield return new FSATransition<TValue>(t.From, predicate?? t.Condition, t.To);
-            }
-        }
-
         private sealed class FSMState
         {
-            public OCaptureTable<TValue> OCaptures; 
             public int CurrentIndex;
             public int CurrentPredicateIndex;
-            public FSATransition<TValue>[] Transitions;
+            public IFSATransition<TValue>[] Transitions;
             public bool IsFinal;
         }
 
-        public Range Run(TValue[] values, int startIndex, OCaptureTable<TValue> table, bool captureSelf)
+        public Range Run(TValue[] values, int startIndex)
         {
             var stack = new Stack<FSMState>(_stateCount);
 
-            stack.Push(CreateState(_startState, startIndex, null));
+            stack.Push(CreateState(_startState, startIndex));
             FSMState state = null;
             while (stack.Count > 0)
             {
                 state = stack.Peek();
 
                 FSMState next;
-                if (TryGetNextState(state, values, table, out next))
+                if (TryGetNextState(state, values, out next))
                 {
                     stack.Push(next);
                 }
@@ -100,20 +82,6 @@ namespace Eocron.Core.FinitieStateAutomaton
             if (state != null && state.IsFinal)
             {
                 var result = new Range(startIndex, state.CurrentIndex - startIndex);
-                if (table != null)
-                {
-                    foreach(var s in stack)
-                    {
-                        if (s.OCaptures != null)
-                        {
-                            table.Add(s.OCaptures);
-                        }
-                    }
-                    if (captureSelf)
-                    {
-                        table.Add(Name, new OCapture<TValue>(values, result));
-                    }
-                }
                 return result;
             }
             return Range.Invalid;
@@ -124,16 +92,15 @@ namespace Eocron.Core.FinitieStateAutomaton
             return _finalsLookup[state];
         }
 
-        private FSATransition<TValue>[] GetTransitions(int state)
+        private IFSATransition<TValue>[] GetTransitions(int state)
         {
             return _transitionMatrix[state];
         }
 
-        private FSMState CreateState(int state, int index, OCaptureTable<TValue> oCaptures)
+        private FSMState CreateState(int state, int index)
         {
             return new FSMState
             {
-                OCaptures = oCaptures,
                 CurrentIndex = index,
                 CurrentPredicateIndex = 0,
                 Transitions = GetTransitions(state),
@@ -141,7 +108,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             };
         }
 
-        private bool TryGetNextState(FSMState current, TValue[] values, OCaptureTable<TValue> table, out FSMState nextState)
+        private bool TryGetNextState(FSMState current, TValue[] values, out FSMState nextState)
         {
             nextState = default(FSMState);
             if (current.Transitions != null && 
@@ -152,11 +119,11 @@ namespace Eocron.Core.FinitieStateAutomaton
                 for (int i = current.CurrentPredicateIndex; i < current.Transitions.Length; i++)
                 {
                     current.CurrentPredicateIndex++;
-                    OCaptureTable<TValue> oCaptureTable;
-                    var capture = current.Transitions[i].Condition.Match(values, current.CurrentIndex, out oCaptureTable);
-                    if (capture.Index >= 0)
+
+                    var isMatch = current.Transitions[i].Condition.IsMatch(values, current.CurrentIndex);
+                    if (isMatch)
                     {
-                        nextState = CreateState(current.Transitions[i].To, current.CurrentIndex + capture.Length, oCaptureTable);
+                        nextState = CreateState(current.Transitions[i].To, current.CurrentIndex + 1);
                         return true;
                     }
                 }

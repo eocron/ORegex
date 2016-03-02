@@ -62,22 +62,12 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         private void EvaluateRepeat(int start, int end, FSA<TValue> fsa, AstRepeatNode astRepeatNode)
         {
-            var lazyFsa = Create(astRepeatNode.Argument, "#repeat#");
-            var edge = new ComplexPredicateEdge<TValue>(lazyFsa);
-            if (astRepeatNode.IsLazy)
-            {
-                edge.Priority = -1;
-            }
-            else
-            {
-                edge.Priority = 1;
-            }
-
+            var toRepeat = astRepeatNode.Argument;
             var prev = start;
             for (int i = 0; i < astRepeatNode.MinCount; i++)
             {
                 var next = CreateNewState(fsa);
-                EvaluateCondition(prev, next, fsa, edge);
+                EvaluateCondition(prev, next, fsa, toRepeat);
                 prev = next;
             }
 
@@ -85,7 +75,7 @@ namespace Eocron.Core.FinitieStateAutomaton
 
             if (astRepeatNode.MaxCount == int.MaxValue)
             {
-                RepeatZeroOrInfinite(prev, end, fsa, edge);
+                RepeatZeroOrInfinite(prev, end, fsa, toRepeat);
             }
             else
             {
@@ -93,17 +83,17 @@ namespace Eocron.Core.FinitieStateAutomaton
                 for (int i = 0; i < count; i++)
                 {
                     var next = CreateNewState(fsa);
-                    EvaluateCondition(prev, next, fsa, edge);
+                    EvaluateCondition(prev, next, fsa, toRepeat);
                     fsa.AddEpsilonTransition(next, end);
                     prev = next;
                 }
             }
         }
 
-        private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, PredicateEdgeBase<TValue> predicate)
+        private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, AstNodeBase predicate)
         {
             var tmp = CreateNewState(fsa);
-            fsa.AddTransition(tmp,predicate,tmp);
+            Evaluate(tmp, tmp, fsa, predicate);
             fsa.AddEpsilonTransition(start, tmp);
             fsa.AddEpsilonTransition(tmp, end);
             fsa.AddEpsilonTransition(start, end);
@@ -127,11 +117,7 @@ namespace Eocron.Core.FinitieStateAutomaton
                     var groupName = ((CaptureQuantifier) group.Quantifier).CaptureName;
                     if (groupName != fsa.Name)
                     {
-                        var captureFsa = Create(group, groupName);
-                        var edge = new ComplexPredicateEdge<TValue>(captureFsa);
-                        edge.IsCapturePredicate = true;
-                        EvaluateCondition(start, end, fsa, edge);
-                        return;
+                        throw new NotImplementedException("Capturing");
                     }
                 }
             }

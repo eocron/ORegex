@@ -55,11 +55,13 @@ namespace Eocron
             var captureTable = new OCaptureTable<TValue>();
             for (int i = startIndex; i < values.Length; i++)
             {
-                var capture = _cfsa.Run(values, i, captureTable, true);
+                var capture = _cfsa.Run(values, i);
                 if (!capture.Equals(Range.Invalid))
                 {
                     var match = new OMatch<TValue>(values, captureTable, capture);
+                    captureTable.Add(_cfsa.Name, match);
                     captureTable = new OCaptureTable<TValue>();
+                    
                     i += capture.Length - 1;
 
                     bool beginMatched = match.Index == startIndex;
@@ -85,7 +87,7 @@ namespace Eocron
 
         public bool IsMatch(TValue[] values, int startIndex = 0)
         {
-            return !_cfsa.Run(values, startIndex, null, false).Equals(Range.Invalid);
+            return !_cfsa.Run(values, startIndex).Equals(Range.Invalid);
         }
 
         public TValue[] Replace(TValue[] values, int startIndex = 0)

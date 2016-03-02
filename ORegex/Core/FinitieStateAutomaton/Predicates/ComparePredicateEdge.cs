@@ -26,29 +26,19 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
             get { return true; }
         }
 
-        public override bool IsComplexPredicate
+        public override bool IsMatch(TValue[] values, int index)
         {
-            get { return false; }
-        }
-
-        public override Range Match(TValue[] sequence, int startIndex, out OCaptureTable<TValue> table)
-        {
-            table = null;
-            if (_comparer.Equals(_value, sequence[startIndex]))
-            {
-                return new Range(startIndex, 1);
-            }
-            return Range.Invalid;
-        }
-
-        public override bool IsMatch(TValue value)
-        {
-            return _comparer.Equals(value, _value);
+            return _comparer.Equals(values[index], _value);
         }
 
         public override int GetHashCode()
         {
             return _comparer.GetHashCode() ^ _value.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return _value.ToString();
         }
     }
 }

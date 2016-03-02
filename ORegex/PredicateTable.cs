@@ -20,7 +20,8 @@ namespace Eocron
         {
             _table = new Dictionary<string, PredicateEdgeBase<TValue>>(other._table);
         }
-        public void AddPredicate(string name, Func<TValue, bool> predicate)
+
+        public void AddPredicate(string name, Func<TValue[], int, bool> predicate)
         {
             name.ThrowIfEmpty();
             predicate.ThrowIfNull();
@@ -30,12 +31,14 @@ namespace Eocron
                 throw new ArgumentException("Such name already exist: " + name, "name");
             }
 
-            if (_table.Values.Cast<FuncPredicateEdge<TValue>>().Select(x=>x._condition).Contains(predicate))
-            {
-                
-            }
-
             _table.Add(name, new FuncPredicateEdge<TValue>(predicate));
+        }
+
+        public void AddPredicate(string name, Func<TValue, bool> predicate)
+        {
+            name.ThrowIfEmpty();
+            predicate.ThrowIfNull();
+            AddPredicate(name, (v, i) => predicate(v[i]));
         }
 
         public void AddCompare(string name, TValue value, IEqualityComparer<TValue> comparer = null)

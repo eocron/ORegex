@@ -69,7 +69,6 @@
     <Compile Include="OCaptureTable.cs" />
     <Compile Include="Core\FinitieStateAutomaton\CFSA.cs" />
     <Compile Include="Core\FinitieStateAutomaton\Predicates\ComparePredicateEdge.cs" />
-    <Compile Include="Core\FinitieStateAutomaton\Predicates\ComplexPredicateEdge.cs" />
     <Compile Include="Core\FinitieStateAutomaton\Predicates\FuncPredicateEdge.cs" />
     <Compile Include="Core\FinitieStateAutomaton\IFSA.cs" />
     <Compile Include="Core\FinitieStateAutomaton\IFSATransition.cs" />
