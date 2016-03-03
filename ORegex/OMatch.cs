@@ -4,11 +4,11 @@ namespace Eocron
 {
     public sealed class OMatch<TValue> : OCapture<TValue>
     {
-        public readonly OCaptureTable<TValue> OCaptures;
+        public readonly OCaptureTable<TValue> Captures;
 
         internal OMatch(TValue[] collection, OCaptureTable<TValue> table, Range range): base(collection, range)
         {
-            OCaptures = table;
+            Captures = table;
         }
     }
 }

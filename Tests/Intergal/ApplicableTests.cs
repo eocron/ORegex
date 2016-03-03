@@ -112,7 +112,7 @@ namespace Tests.Intergal
             public Person(OMatch<Word> match)
             {
                 Words = match.Values.ToArray();
-                Name = match.OCaptures["name"].First().Values.First().Value;
+                Name = match.Captures["name"].First().Values.First().Value;
                 //Now just normalize this name and you are good.
             }
         }

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Eocron.Core.Ast;
 using Eocron.Core.FinitieStateAutomaton.Predicates;
 
@@ -12,6 +10,7 @@ namespace Eocron.Core.FinitieStateAutomaton
     /// </summary>
     public sealed class CFSA<TValue> : IFSA<TValue>
     {
+        private readonly Stack<CaptureEdge> _captureStack = new Stack<CaptureEdge>();
         private readonly Stack<FSMState> _instanceStack = new Stack<FSMState>();
 
         public bool ExactBegin { get; set; }
@@ -103,10 +102,12 @@ namespace Eocron.Core.FinitieStateAutomaton
             public int Index;
         }
 
-        private static void ManageSubCaptures(OCaptureTable<TValue> table, TValue[] collection,
+        private void ManageSubCaptures(OCaptureTable<TValue> table, TValue[] collection,
             IEnumerable<FSMState> states)
         {
-            Stack<CaptureEdge> stack = new Stack<CaptureEdge>();
+            var stack = _captureStack;
+            stack.Clear();
+            
             foreach (var s in states)
             {
                 int id = s.CurrentPredicateIndex - 1;
