@@ -23,7 +23,6 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         private readonly bool[] _finalsLookup;
 
-        private readonly int _stateCount;
         public IEnumerable<IFSATransition<TValue>> Transitions
         {
             get { return _transitionMatrix.Where(x=> x!= null).SelectMany(x => x); }
@@ -46,7 +45,6 @@ namespace Eocron.Core.FinitieStateAutomaton
             {
                 _finalsLookup[f] = true;
             }
-            _stateCount = _transitionMatrix.Length;
         }
 
         private sealed class FSMState
@@ -64,8 +62,10 @@ namespace Eocron.Core.FinitieStateAutomaton
         {
             range = default(Range);
             var stack = _globalStack;
-            stack.Push(CreateState(_startState, startIndex));
-            FSMState state = null;
+            stack.Clear();
+
+            FSMState state = CreateState(_startState, startIndex);
+            stack.Push(state);
             while (stack.Count > 0)
             {
                 state = stack.Peek();
@@ -85,9 +85,7 @@ namespace Eocron.Core.FinitieStateAutomaton
                 }
             }
 
-            stack.Clear();
-
-            if (state != null && state.IsFinal)
+            if (stack.Count != 0 && state.IsFinal)
             {
                 range = new Range(startIndex, state.CurrentIndex - startIndex);
                 return true;
@@ -100,19 +98,14 @@ namespace Eocron.Core.FinitieStateAutomaton
             return _finalsLookup[state];
         }
 
-        private IFSATransition<TValue>[] GetTransitions(int state)
-        {
-            return _transitionMatrix[state];
-        }
-
         private FSMState CreateState(int state, int index)
         {
             return new FSMState
             {
                 CurrentIndex = index,
                 CurrentPredicateIndex = 0,
-                Transitions = GetTransitions(state),
-                IsFinal = IsFinal(state),
+                Transitions = _transitionMatrix[state],
+                IsFinal = _finalsLookup[state],
             };
         }
 
