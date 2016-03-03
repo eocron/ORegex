@@ -10,7 +10,8 @@ namespace Eocron.Core.FinitieStateAutomaton
         {
             var dfa = NfaToDfa(fsa);
             //dfa = Minimize(dfa);
-            return dfa;
+            //return dfa;
+            return fsa;
         }
 
         private static FSA<TValue> Minimize(FSA<TValue> dfa)

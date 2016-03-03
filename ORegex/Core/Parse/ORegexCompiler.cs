@@ -23,8 +23,8 @@ namespace Eocron.Core.Parse
         public FSA<TValue> BuildInitialFsa(string input, PredicateTable<TValue> predicateTable)
         {
             var ast = _parser.Parse(input, predicateTable);
-            var dfa = _stb.Create(ast, ast.CaptureGroupNames[0]);
-            return dfa;
+            var nfa = _stb.CreateRawFsa(ast, ast.CaptureGroupNames[0]);
+            return nfa;
         }
     }
 }

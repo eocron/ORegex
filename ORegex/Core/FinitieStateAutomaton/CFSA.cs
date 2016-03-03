@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Eocron.Core.Ast;
+using Eocron.Core.FinitieStateAutomaton.Predicates;
 
 namespace Eocron.Core.FinitieStateAutomaton
 {
@@ -124,7 +125,8 @@ namespace Eocron.Core.FinitieStateAutomaton
                     var isMatch = trans.Condition.IsMatch(values, current.CurrentIndex);
                     if (isMatch)
                     {
-                        nextState = CreateState(trans.To, current.CurrentIndex + (trans.Condition.IsSystemPredicate ? 0 : 1));
+                        var isEps = trans.Condition.IsSystemPredicate || PredicateEdgeBase<TValue>.IsEpsilon(trans.Condition);
+                        nextState = CreateState(trans.To, current.CurrentIndex + (isEps ? 0 : 1));
                         return true;
                     }
                 }

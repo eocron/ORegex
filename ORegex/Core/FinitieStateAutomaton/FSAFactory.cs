@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Eocron.Core.Ast;
 using Eocron.Core.Ast.GroupQuantifiers;
 using Eocron.Core.FinitieStateAutomaton.Predicates;
@@ -78,17 +79,55 @@ namespace Eocron.Core.FinitieStateAutomaton
             }
             else
             {
-                int count = astRepeatNode.MaxCount - astRepeatNode.MinCount;
+                int count = astRepeatNode.MaxCount - astRepeatNode.MinCount - 1;
+                int next;
                 for (int i = 0; i < count; i++)
                 {
-                    var next = CreateNewState(fsa);
+                    next = CreateNewState(fsa);
                     RepeatZeroOrOne(prev, next, fsa, toRepeat, astRepeatNode.IsLazy);
                     prev = next;
                 }
-                fsa.AddEpsilonTransition(prev, end);
+                next = end;
+                RepeatZeroOrOne(prev, next, fsa, toRepeat, astRepeatNode.IsLazy);
             }
         }
+        //private void RepeatZeroOrOne(int start, int end, FSA<TValue> fsa, AstNodeBase node, bool isLasy)
+        //{
+        //    if (isLasy)
+        //    {
+        //        var lazyEdge = new SystemPredicateEdge<TValue>("#lazyEps", true);
+        //        fsa.AddTransition(start, lazyEdge, end);
+        //        Evaluate(start, end, fsa, node);
+        //    }
+        //    else
+        //    {
+        //        Evaluate(start, end, fsa, node);
+        //        fsa.AddEpsilonTransition(start, end);
+        //    }
+        //}
 
+        //private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, AstNodeBase predicate, bool isLasy)
+        //{
+
+        //    var tmp = CreateNewState(fsa);
+        //    if (isLasy)
+        //    {
+        //        var lazyEdge = new SystemPredicateEdge<TValue>("#lazyEps", true);
+        //        fsa.AddTransition(tmp, lazyEdge, end);
+        //        Evaluate(tmp, tmp, fsa, predicate);
+
+        //        fsa.AddTransition(start, lazyEdge, end);
+        //        fsa.AddEpsilonTransition(start, tmp);
+        //    }
+        //    else
+        //    {
+        //        Evaluate(tmp, tmp, fsa, predicate);
+        //        fsa.AddEpsilonTransition(tmp, end);
+
+        //        fsa.AddEpsilonTransition(start, tmp);
+        //        fsa.AddEpsilonTransition(start, end);
+        //    }
+        //}
         private void RepeatZeroOrOne(int start, int end, FSA<TValue> fsa, AstNodeBase node, bool isLasy)
         {
             var lazyEdge = new SystemPredicateEdge<TValue>("#lazyEps", true);
@@ -130,7 +169,7 @@ namespace Eocron.Core.FinitieStateAutomaton
         {
             foreach (var child in node.GetChildren())
             {
-                EvaluateCondition(start, end, fsa, child);
+                Evaluate(start, end, fsa, child);
             }
         }
 
@@ -150,13 +189,16 @@ namespace Eocron.Core.FinitieStateAutomaton
             }
 
             var prev = start;
-            foreach (var child in node.GetChildren())
+            int next;
+            var children = node.GetChildren().ToArray();
+            for(int i = 0; i < children.Length -1;i++)
             {
-                var next = CreateNewState(fsa);
-                Evaluate(prev, next, fsa, child);
+                next = CreateNewState(fsa);
+                Evaluate(prev, next, fsa, children[i]);
                 prev = next;
             }
-            fsa.AddEpsilonTransition(prev, end);
+            next = end;
+            Evaluate(prev, next, fsa, children[children.Length - 1]);
         }
 
         private void EvaluateAtom(int start, int end, FSA<TValue> fsa, AstAtomNode<TValue> node)

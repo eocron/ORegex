@@ -48,8 +48,8 @@ namespace TestUtility
             var elapsed = sw.Elapsed;
             label1.Text = "Compiled in: " + elapsed;
             DrawGraphAfter(dfa);
-            dfa = _compiler.BuildInitialFsa(oregex, _table);
-            DrawGraphBefore(dfa);
+            var nfa = _compiler.BuildInitialFsa(oregex, _table);
+            DrawGraphBefore(nfa);
         }
 
         private void HighLightSyntax()

@@ -13,10 +13,11 @@
         public AstRepeatNode(AstNodeBase arg, int minCount, int maxCount, bool isLazy, Range range)
             : base(range)
         {
-            if (minCount > maxCount)
+            if (minCount > maxCount || minCount == 0 && maxCount == 0)
             {
                 throw new ORegexException("Invalid expression repeat interval.");
             }
+
             MinCount = minCount;
             MaxCount = maxCount;
             IsLazy = isLazy;

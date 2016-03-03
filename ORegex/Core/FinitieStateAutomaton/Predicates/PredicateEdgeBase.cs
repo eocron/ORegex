@@ -6,7 +6,7 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
     [DebuggerDisplay("{Name}")]
     public abstract class PredicateEdgeBase<TValue>
     {
-        public static readonly FuncPredicateEdge<TValue> Epsilon = new FuncPredicateEdge<TValue>("#eps",(v,i) => { throw new NotImplementedException("Epsilon condition."); });
+        public static readonly FuncPredicateEdge<TValue> Epsilon = new FuncPredicateEdge<TValue>("#eps",(v,i) => true);
 
         public static readonly FuncPredicateEdge<TValue> AlwaysTrue = new FuncPredicateEdge<TValue>("#any",(v,i) => true);
 
