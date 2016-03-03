@@ -23,8 +23,6 @@ namespace Eocron.Core.Ast
             Length = length;
         }
 
-        public static readonly Range Invalid = new Range(-1, -1);
-
         public override bool Equals(object obj)
         {
             var range = (Range) obj;

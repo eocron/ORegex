@@ -20,14 +20,12 @@ namespace Eocron.Core.FinitieStateAutomaton
             result.AddStart(start);
             return result;
         }
-        public FSA<TValue> Create(AstNodeBase root, string name, bool compressToDFA)
+
+        public FiniteAutomaton<TValue> Create(AstNodeBase root, string name)
         {
-            var result = CreateRawFsa(root, name);
-            if (compressToDFA)
-            {
-                result = _preprocessor.Preprocess(result);
-            }
-            return result;
+            var nfa = CreateRawFsa(root, name);
+            var dfa = _preprocessor.Preprocess(nfa);
+            return new FiniteAutomaton<TValue>(new CFSA<TValue>(dfa), new CFSA<TValue>(nfa));
         }
 
         public void Evaluate(int start, int end, FSA<TValue> fsa, AstNodeBase node)

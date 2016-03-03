@@ -176,7 +176,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             return result;
         }
 
-        public Range Run(TValue[] values, int startIndex)
+        public bool TryRun(TValue[] values, int startIndex, out Range range)
         {
             throw new NotImplementedException();
         }

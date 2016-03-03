@@ -12,12 +12,11 @@ namespace Eocron.Core.Parse
             _stb = new FSAFactory<TValue>();
         }
 
-        public CFSA<TValue> Build(string input, PredicateTable<TValue> predicateTable, bool compileToDFA = false)
+        public IFSA<TValue> Build(string input, PredicateTable<TValue> predicateTable)
         {
             var ast = _parser.Parse(input, predicateTable);
-            var dfa = _stb.Create(ast, ast.CaptureGroupNames[0], compileToDFA);
-            var cfsa = new CFSA<TValue>(dfa);
-            return cfsa;
+            var fa = _stb.Create(ast, ast.CaptureGroupNames[0]);
+            return fa;
         }
 
         public FSA<TValue> BuildInitialFsa(string input, PredicateTable<TValue> predicateTable)

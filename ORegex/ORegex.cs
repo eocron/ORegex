@@ -18,21 +18,23 @@ namespace Eocron
     public class ORegex<TValue>
     {
         private readonly ORegexCompiler<TValue> _compiler = new ORegexCompiler<TValue>();
-        private readonly CFSA<TValue> _cfsa;
-        private readonly ORegexOptions _options;
+
+        private readonly IFSA<TValue> _fa;
+
+        public readonly ORegexOptions Options;
+
         public readonly string Pattern;
 
         public ORegex(string pattern, params Func<TValue,bool>[] predicates) : this(pattern, ORegexOptions.None, predicates){}
 
-        public ORegex(string pattern, PredicateTable<TValue> table) : this(pattern, ORegexOptions.None, table) { }
-
-
         public ORegex(string pattern, ORegexOptions options, params Func<TValue, bool>[] predicates) : this(pattern, options, CreatePredicateTable(predicates)) { }
+
+        public ORegex(string pattern, PredicateTable<TValue> table) : this(pattern, ORegexOptions.None, table) { }
 
         public ORegex(string pattern, ORegexOptions options, PredicateTable<TValue> table)
         {
-            _cfsa = _compiler.Build(pattern, table);
-            _options = options;
+            _fa = _compiler.Build(pattern, table);
+            Options = options;
             Pattern = pattern;
         }
 
@@ -52,28 +54,28 @@ namespace Eocron
 
         public IEnumerable<OMatch<TValue>> Matches(TValue[] values, int startIndex = 0)
         {
+            Range range;
             var captureTable = new OCaptureTable<TValue>();
             for (int i = startIndex; i <= values.Length; i++)
             {
-                var capture = _cfsa.Run(values, i);
-                if (!capture.Equals(Range.Invalid))
+                if (_fa.TryRun(values, i, out range))
                 {
-                    var match = new OMatch<TValue>(values, captureTable, capture);
-                    captureTable.Add(_cfsa.Name, match);
+                    var match = new OMatch<TValue>(values, captureTable, range);
+                    captureTable.Add(_fa.Name, match);
                     captureTable = new OCaptureTable<TValue>();
 
                     bool beginMatched = match.Index == startIndex;
                     bool endMatched = (match.Index + match.Length) == values.Length;
 
-                    if (!_cfsa.ExactBegin && !_cfsa.ExactEnd ||
-                        !(beginMatched ^ _cfsa.ExactBegin) && !(endMatched ^ _cfsa.ExactEnd))
+                    if (!_fa.ExactBegin && !_fa.ExactEnd ||
+                        !(beginMatched ^ _fa.ExactBegin) && !(endMatched ^ _fa.ExactEnd))
                     {
                         yield return match;
                     }
 
-                    i += capture.Length == 0 ? 0 : capture.Length - 1;
+                    i += range.Length == 0 ? 0 : range.Length - 1;
                 }
-                if (_cfsa.ExactBegin)
+                if (_fa.ExactBegin)
                 {
                     break;
                 }
@@ -87,7 +89,19 @@ namespace Eocron
 
         public bool IsMatch(TValue[] values, int startIndex = 0)
         {
-            return !_cfsa.Run(values, startIndex).Equals(Range.Invalid);
+            Range range;
+            for (int i = startIndex; i <= values.Length; i++)
+            {
+                if (_fa.TryRun(values, i, out range))
+                {
+                    return true;
+                }
+                if (_fa.ExactBegin)
+                {
+                    break;
+                }
+            }
+            return false;
         }
 
         public TValue[] Replace(TValue[] values, int startIndex = 0)

@@ -60,8 +60,9 @@ namespace Eocron.Core.FinitieStateAutomaton
         [ThreadStatic]
         private readonly Stack<FSMState> _globalStack = new Stack<FSMState>(); 
 
-        public Range Run(TValue[] values, int startIndex)
+        public bool TryRun(TValue[] values, int startIndex, out Range range)
         {
+            range = default(Range);
             var stack = _globalStack;
             stack.Push(CreateState(_startState, startIndex));
             FSMState state = null;
@@ -88,10 +89,10 @@ namespace Eocron.Core.FinitieStateAutomaton
 
             if (state != null && state.IsFinal)
             {
-                var result = new Range(startIndex, state.CurrentIndex - startIndex);
-                return result;
+                range = new Range(startIndex, state.CurrentIndex - startIndex);
+                return true;
             }
-            return Range.Invalid;
+            return false;
         }
 
         public bool IsFinal(int state)
