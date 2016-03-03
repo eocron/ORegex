@@ -122,12 +122,6 @@ namespace Eocron
             return false;
         }
 
-        //public TValue[] Replace(TValue[] values, int startIndex = 0)
-        //{
-        //    var matches = Matches(values, startIndex);
-        //    throw new NotImplementedException();
-        //}
-
         public override string ToString()
         {
             return Pattern;
