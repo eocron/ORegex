@@ -20,10 +20,13 @@ namespace Eocron.Core.FinitieStateAutomaton
             result.AddStart(start);
             return result;
         }
-        public FSA<TValue> Create(AstNodeBase root, string name)
+        public FSA<TValue> Create(AstNodeBase root, string name, bool compressToDFA)
         {
             var result = CreateRawFsa(root, name);
-            result = _preprocessor.Preprocess(result);
+            if (compressToDFA)
+            {
+                result = _preprocessor.Preprocess(result);
+            }
             return result;
         }
 
@@ -130,38 +133,36 @@ namespace Eocron.Core.FinitieStateAutomaton
         //}
         private void RepeatZeroOrOne(int start, int end, FSA<TValue> fsa, AstNodeBase node, bool isLasy)
         {
-            var lazyEdge = new SystemPredicateEdge<TValue>("#lazyEps", true);
             if (isLasy)
             {
-                fsa.AddTransition(start, lazyEdge, end);
+                fsa.AddEpsilonTransition(start, end);
                 Evaluate(start, end, fsa, node);
             }
             else
             {
                 Evaluate(start, end, fsa, node);
-                fsa.AddTransition(start, lazyEdge, end);
+                fsa.AddEpsilonTransition(start, end);
             }
         }
 
         private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, AstNodeBase predicate, bool isLasy)
         {
-            var lazyEdge = new SystemPredicateEdge<TValue>("#lazyEps", true);
             var tmp = CreateNewState(fsa);
             if (isLasy)
             {
-                fsa.AddTransition(tmp, lazyEdge, end);
+                fsa.AddEpsilonTransition(tmp, end);
                 Evaluate(tmp, tmp, fsa, predicate);
 
-                fsa.AddTransition(start, lazyEdge, end);
+                fsa.AddEpsilonTransition(start, end);
                 fsa.AddEpsilonTransition(start, tmp);
             }
             else
             {
                 Evaluate(tmp, tmp, fsa, predicate);
-                fsa.AddTransition(tmp, lazyEdge, end);
+                fsa.AddEpsilonTransition(tmp, end);
 
                 fsa.AddEpsilonTransition(start, tmp);
-                fsa.AddTransition(start, lazyEdge, end);
+                fsa.AddEpsilonTransition(start, end);
             }
         }
 

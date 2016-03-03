@@ -6,7 +6,7 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
     [DebuggerDisplay("{Name}")]
     public abstract class PredicateEdgeBase<TValue>
     {
-        public static readonly FuncPredicateEdge<TValue> Epsilon = new FuncPredicateEdge<TValue>("#eps",(v,i) => true);
+        public static readonly SystemPredicateEdge<TValue> Epsilon = new SystemPredicateEdge<TValue>("#eps");
 
         public static readonly FuncPredicateEdge<TValue> AlwaysTrue = new FuncPredicateEdge<TValue>("#any",(v,i) => true);
 
@@ -63,7 +63,7 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
 
         public static bool IsEpsilon(PredicateEdgeBase<TValue> a)
         {
-            return a.IsFuncPredicate && IsEqual(a, FuncPredicateEdge<TValue>.Epsilon);
+            return a.IsSystemPredicate;
         }
 
         public override string ToString()

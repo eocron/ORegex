@@ -131,7 +131,7 @@ namespace Eocron.Core.FinitieStateAutomaton
                     var isMatch = trans.Condition.IsMatch(values, current.CurrentIndex);
                     if (isMatch)
                     {
-                        var isEps = trans.Condition.IsSystemPredicate || PredicateEdgeBase<TValue>.IsEpsilon(trans.Condition);
+                        var isEps = PredicateEdgeBase<TValue>.IsEpsilon(trans.Condition);
                         nextState = CreateState(trans.To, current.CurrentIndex + (isEps ? 0 : 1));
                         return true;
                     }
