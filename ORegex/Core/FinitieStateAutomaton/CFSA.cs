@@ -58,7 +58,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             public bool IsFinal;
         }
 
-        public bool TryRun(TValue[] values, int startIndex, out Range range)
+        public bool TryRun(TValue[] values, int startIndex, OCaptureTable<TValue> table, out Range range)
         {
             range = default(Range);
             var stack = _instanceStack;
@@ -87,10 +87,57 @@ namespace Eocron.Core.FinitieStateAutomaton
 
             if (stack.Count != 0 && state.IsFinal)
             {
+                if (table != null)
+                {
+                    ManageSubCaptures(table, values, stack);
+                }
                 range = new Range(startIndex, state.CurrentIndex - startIndex);
                 return true;
             }
             return false;
+        }
+
+        private struct CaptureEdge
+        {
+            public string Name;
+            public int Index;
+        }
+
+        private static void ManageSubCaptures(OCaptureTable<TValue> table, TValue[] collection,
+            IEnumerable<FSMState> states)
+        {
+            Stack<CaptureEdge> stack = new Stack<CaptureEdge>();
+            foreach (var s in states)
+            {
+                int id = s.CurrentPredicateIndex - 1;
+                if (id >= 0)
+                {
+                    var cond = s.Transitions[id].Condition;
+                    if (cond.IsSystemPredicate)
+                    {
+                        var sys = (SystemPredicateEdge<TValue>) cond;
+                        if (sys.IsCapture)
+                        {
+                            var left = new CaptureEdge
+                            {
+                                Index = s.CurrentIndex,
+                                Name = sys.CaptureName,
+                            };
+                            if (stack.Count > 0 && stack.Peek().Name == left.Name)
+                            {
+                                var right = stack.Pop();
+                                table.Add(left.Name,
+                                    new OCapture<TValue>(collection, new Range(left.Index, right.Index - left.Index)));
+                            }
+                            else
+                            {
+                                stack.Push(left);
+                            }
+
+                        }
+                    }
+                }
+            }
         }
 
         public bool IsFinal(int state)

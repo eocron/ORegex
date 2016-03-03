@@ -17,6 +17,7 @@ Each lambda or value should have unique name inside pattern.
 - Capture groups support;
 - Greedy/Lazy support;
 - Exact begin/end match support.
+- RE2 algorithm with modifications.
 
 ### Example
 
@@ -140,8 +141,8 @@ You can start from viewing Unit Test project to see how you can use it, by time 
 Also, you can find there test utility and see how things work inside engine.
 
 ### Performance
-- Compared to real life cases performance is 2-3 times slower than .NET Regex engine on character sequences;
-- Greedy exhausting test (x+x+y+ pattern on a 'xxxxxxxxxxxxxxxxxxxx' string) is ~10 times faster than Regex engine. This result achieved due internal ORegex optimizations so pattern x+x+x+ becomes xxx+ and unnecessary backtrack avoided.
+- ORegex is 2-3 times faster than .NET Regex. It is hard to believe (cause delegates, gc, etc), so just see PerformanceTests inside Tests project;
+- Greedy exhausting test (x+x+y+ pattern on a 'xxxxxxxxxxxxxxxxxxxx' string) is ~20 times faster than Regex engine. This result achieved due to double finite state automaton implementation (fast dfa lookup, slow nfa command flow on captures).
 
 ### Future
 - Reverse search support;

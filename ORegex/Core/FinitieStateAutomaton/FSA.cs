@@ -101,11 +101,6 @@ namespace Eocron.Core.FinitieStateAutomaton
             AddTransition(from, FuncPredicateEdge<TValue>.Epsilon, to);
         }
 
-        public void AddSystemTransition(int from, string name, int to)
-        {
-            AddTransition(from, new SystemPredicateEdge<TValue>(name), to);
-        }
-
         private void AddTransition(FSATransition<TValue> trans)
         {
             if (trans == null)
@@ -176,7 +171,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             return result;
         }
 
-        public bool TryRun(TValue[] values, int startIndex, out Range range)
+        public bool TryRun(TValue[] values, int startIndex, OCaptureTable<TValue> table, out Range range)
         {
             throw new NotImplementedException();
         }

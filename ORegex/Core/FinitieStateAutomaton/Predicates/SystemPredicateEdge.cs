@@ -23,6 +23,10 @@
             get { return true; }
         }
 
+        public bool IsCapture { get; set; }
+
+        public string CaptureName { get; set; }
+
         public override bool IsMatch(TValue[] values, int index)
         {
             return true;

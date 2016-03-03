@@ -33,9 +33,9 @@ namespace Eocron.Core.FinitieStateAutomaton
             _cmdFSA = cmdFSA.ThrowIfNull();
         }
 
-        public bool TryRun(TValue[] values, int startIndex, out Range range)
+        public bool TryRun(TValue[] values, int startIndex, OCaptureTable<TValue> table, out Range range)
         {
-            return _fastFSA.TryRun(values, startIndex, out range) && _cmdFSA.TryRun(values, startIndex, out range);
+            return _fastFSA.TryRun(values, startIndex, null, out range) && _cmdFSA.TryRun(values, startIndex, table, out range);
         }
 
         public IEnumerable<IFSATransition<TValue>> Transitions

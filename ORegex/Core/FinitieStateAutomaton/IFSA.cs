@@ -11,7 +11,7 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         bool ExactBegin { get; }
 
-        bool TryRun(TValue[] values, int startIndex, out Range range);
+        bool TryRun(TValue[] values, int startIndex, OCaptureTable<TValue> table, out Range range);
 
         IEnumerable<IFSATransition<TValue>> Transitions { get; }
 

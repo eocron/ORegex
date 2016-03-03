@@ -180,10 +180,14 @@ namespace Eocron.Core.FinitieStateAutomaton
                 if (group.Quantifier != null && group.Quantifier is CaptureQuantifier)
                 {
                     var groupName = ((CaptureQuantifier) group.Quantifier).CaptureName;
-                    if (groupName != fsa.Name)
-                    {
-                        //throw new NotImplementedException("Capturing");
-                    }
+                    var sys = new SystemPredicateEdge<TValue>("#capture") {IsCapture = true, CaptureName = groupName};
+
+                    var startTmp = CreateNewState(fsa);
+                    fsa.AddTransition(start, sys, startTmp);
+                    start = startTmp;
+                    var endTmp = CreateNewState(fsa);
+                    fsa.AddTransition(endTmp, sys, end);
+                    end = endTmp;
                 }
             }
 

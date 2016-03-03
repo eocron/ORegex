@@ -11,6 +11,7 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
         public static readonly FuncPredicateEdge<TValue> AlwaysTrue = new FuncPredicateEdge<TValue>("#any",(v,i) => true);
 
         public readonly string Name;
+
         public abstract bool IsFuncPredicate { get; }
 
         public abstract bool IsComparePredicate { get; }

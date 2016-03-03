@@ -58,7 +58,7 @@ namespace Eocron
             var captureTable = new OCaptureTable<TValue>();
             for (int i = startIndex; i <= values.Length; i++)
             {
-                if (_fa.TryRun(values, i, out range))
+                if (_fa.TryRun(values, i, captureTable, out range))
                 {
                     var match = new OMatch<TValue>(values, captureTable, range);
                     captureTable.Add(_fa.Name, match);
@@ -92,7 +92,7 @@ namespace Eocron
             Range range;
             for (int i = startIndex; i <= values.Length; i++)
             {
-                if (_fa.TryRun(values, i, out range))
+                if (_fa.TryRun(values, i, null, out range))
                 {
                     return true;
                 }
