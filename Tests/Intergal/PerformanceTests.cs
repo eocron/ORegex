@@ -15,7 +15,7 @@ namespace Tests.Intergal
         public void BuildTest()
         {
             const string pattern = "({x}+{x}+){y}+{x}|{x}|{x}|{x}|{y}|{x}[^{x}][^{y}]?|(?<g1>{x}+?|(?<g2>{x}?)?)";
-            Trace.WriteLine(string.Format("Input pattern: {0}", pattern));
+            Console.WriteLine(string.Format("Input pattern: {0}", pattern));
             const int iterCount = 10;
             const int repeatCount = 10;
             for (int j = 0; j < iterCount; j++)
@@ -26,7 +26,7 @@ namespace Tests.Intergal
                     var oregex = new DebugORegex(pattern);
                 }
                 sw.Stop();
-                Trace.WriteLine(string.Format("Done {0} in {1}", repeatCount, sw.Elapsed));
+                Console.WriteLine(string.Format("Done {0} in {1}", repeatCount, sw.Elapsed));
             }
         }
 
@@ -37,7 +37,7 @@ namespace Tests.Intergal
             {
                 var str = string.Join("",Enumerable.Repeat("x",i));
                 PerformanceTest("{x}+{x}+{y}+", "x+x+y+", str, 1, false);
-                Trace.WriteLine("############################################");
+                Console.WriteLine("############################################");
             }
         }
 
@@ -56,7 +56,7 @@ namespace Tests.Intergal
                       "rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
             PerformanceTest("{x}+{x}+{y}+", "x+x+y+", str, 20, true);
-            Trace.WriteLine("############################################");
+            Console.WriteLine("############################################");
         }
 
         private static void PerformanceTest(string oregexPattern, string regexPattern, string inputText, int iterCount, bool outputTotal = false)
@@ -64,7 +64,7 @@ namespace Tests.Intergal
             var input = inputText.ToCharArray();
             var oregex = new DebugORegex(oregexPattern);
             var regex = new Regex(regexPattern, RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.Compiled);
-            Trace.WriteLine(string.Format("Input string: {0}", inputText));
+            Console.WriteLine(string.Format("Input string: {0}", inputText));
 
             var regexCount = new TimeSpan();
             var oregexCount = new TimeSpan();
@@ -75,20 +75,20 @@ namespace Tests.Intergal
                 sw.Stop();
                 oregexCount += sw.Elapsed;
                 long last = sw.ElapsedTicks;
-                Trace.WriteLine(string.Format("ORegex done in\t{0}", sw.Elapsed));
+                Console.WriteLine(string.Format("ORegex done in\t{0}", sw.Elapsed));
 
                 sw = Stopwatch.StartNew();
                 var array2 = regex.Matches(inputText).Cast<Match>().ToArray();
                 sw.Stop();
                 regexCount += sw.Elapsed;
-                Trace.WriteLine(string.Format("Regex done in\t{0}", sw.Elapsed));
+                Console.WriteLine(string.Format("Regex done in\t{0}", sw.Elapsed));
             }
 
             if (outputTotal)
             {
-                Trace.WriteLine("############################################");
-                Trace.WriteLine(string.Format("ORegex total\t{0}", oregexCount));
-                Trace.WriteLine(string.Format("Regex total\t{0}", regexCount));
+                Console.WriteLine("############################################");
+                Console.WriteLine(string.Format("ORegex total\t{0}", oregexCount));
+                Console.WriteLine(string.Format("Regex total\t{0}", regexCount));
             }
         }
     }

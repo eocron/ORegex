@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Eocron.Core.Ast;
 using Eocron.Core.FinitieStateAutomaton.Predicates;
 
@@ -55,10 +57,12 @@ namespace Eocron.Core.FinitieStateAutomaton
             public bool IsFinal;
         }
 
+        [ThreadStatic]
+        private readonly Stack<FSMState> _globalStack = new Stack<FSMState>(); 
+
         public Range Run(TValue[] values, int startIndex)
         {
-            var stack = new Stack<FSMState>(_stateCount);
-
+            var stack = _globalStack;
             stack.Push(CreateState(_startState, startIndex));
             FSMState state = null;
             while (stack.Count > 0)
@@ -79,6 +83,8 @@ namespace Eocron.Core.FinitieStateAutomaton
                     state = stack.Pop();
                 }
             }
+
+            stack.Clear();
 
             if (state != null && state.IsFinal)
             {

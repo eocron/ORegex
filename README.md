@@ -16,7 +16,6 @@ Each lambda or value should have unique name inside pattern.
 - Default regex engine support;
 - Capture groups support;
 - Greedy/Lazy support;
-- Backtracking DFA reduce support;
 - Exact begin/end match support.
 
 ### Example
