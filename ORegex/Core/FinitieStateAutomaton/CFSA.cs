@@ -12,7 +12,10 @@ namespace Eocron.Core.FinitieStateAutomaton
     /// </summary>
     public sealed class CFSA<TValue> : IFSA<TValue>
     {
+        private readonly Stack<FSMState> _instanceStack = new Stack<FSMState>();
+
         public bool ExactBegin { get; set; }
+
         public bool ExactEnd { get; set; }
 
         public string Name { get; private set; }
@@ -55,13 +58,10 @@ namespace Eocron.Core.FinitieStateAutomaton
             public bool IsFinal;
         }
 
-        [ThreadStatic]
-        private readonly Stack<FSMState> _globalStack = new Stack<FSMState>(); 
-
         public bool TryRun(TValue[] values, int startIndex, out Range range)
         {
             range = default(Range);
-            var stack = _globalStack;
+            var stack = _instanceStack;
             stack.Clear();
 
             FSMState state = CreateState(_startState, startIndex);
@@ -113,9 +113,7 @@ namespace Eocron.Core.FinitieStateAutomaton
         {
             nextState = default(FSMState);
             if (current.Transitions != null && 
-                current.Transitions.Length > 0 &&
-                current.CurrentPredicateIndex != current.Transitions.Length &&
-                current.CurrentIndex <= values.Length)
+                current.Transitions.Length > 0)
             {
                 for (int i = current.CurrentPredicateIndex; i < current.Transitions.Length; i++)
                 {
