@@ -8,43 +8,43 @@ namespace Eocron.Core.FinitieStateAutomaton
 {
     public sealed class FiniteAutomaton<TValue> : IFSA<TValue>
     {
-        private readonly IFSA<TValue> _fastFSA;
-        private readonly IFSA<TValue> _cmdFSA;
+        public readonly IFSA<TValue> FastFsa;
+        public readonly IFSA<TValue> CmdFsa;
 
 
         public string Name
         {
-            get { return _cmdFSA.Name; }
+            get { return CmdFsa.Name; }
         }
 
         public bool ExactEnd
         {
-            get { return _cmdFSA.ExactEnd; }
+            get { return CmdFsa.ExactEnd; }
         }
 
         public bool ExactBegin
         {
-            get { return _cmdFSA.ExactBegin; }
+            get { return CmdFsa.ExactBegin; }
         }
 
         public FiniteAutomaton(IFSA<TValue> fastFSA, IFSA<TValue> cmdFSA)
         {
-            _fastFSA = fastFSA.ThrowIfNull();
-            _cmdFSA = cmdFSA.ThrowIfNull();
+            FastFsa = fastFSA.ThrowIfNull();
+            CmdFsa = cmdFSA.ThrowIfNull();
         }
 
         public bool TryRun(TValue[] values, int startIndex, OCaptureTable<TValue> table, out Range range)
         {
-            return _fastFSA.TryRun(values, startIndex, null, out range) && _cmdFSA.TryRun(values, startIndex, table, out range);
+            return FastFsa.TryRun(values, startIndex, null, out range) && CmdFsa.TryRun(values, startIndex, table, out range);
         }
 
         public IEnumerable<IFSATransition<TValue>> Transitions
         {
-            get { return _cmdFSA.Transitions; }
+            get { return CmdFsa.Transitions; }
         }
         public bool IsFinal(int state)
         {
-            return _cmdFSA.IsFinal(state);
+            return CmdFsa.IsFinal(state);
         }
     }
 }

@@ -28,13 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.gViewer1 = new Microsoft.Glee.GraphViewerGdi.GViewer();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdFsaGraph = new Microsoft.Glee.GraphViewerGdi.GViewer();
+            this.fastFsaGraph = new Microsoft.Glee.GraphViewerGdi.GViewer();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -51,37 +53,14 @@
             this.RegexPatternBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.InputTextBox = new System.Windows.Forms.RichTextBox();
-            this.gViewer2 = new Microsoft.Glee.GraphViewerGdi.GViewer();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.IterationsCountBoxRun)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.IterationsCountBoxBuild)).BeginInit();
             this.tabPage3.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // gViewer1
-            // 
-            this.gViewer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.gViewer1.AsyncLayout = false;
-            this.gViewer1.AutoScroll = true;
-            this.gViewer1.BackColor = System.Drawing.Color.White;
-            this.gViewer1.BackwardEnabled = false;
-            this.gViewer1.ForwardEnabled = false;
-            this.gViewer1.Graph = null;
-            this.gViewer1.Location = new System.Drawing.Point(604, 6);
-            this.gViewer1.MouseHitDistance = 0.05D;
-            this.gViewer1.Name = "gViewer1";
-            this.gViewer1.NavigationVisible = false;
-            this.gViewer1.PanButtonPressed = false;
-            this.gViewer1.SaveButtonVisible = false;
-            this.gViewer1.Size = new System.Drawing.Size(278, 352);
-            this.gViewer1.TabIndex = 0;
-            this.gViewer1.ZoomF = 1D;
-            this.gViewer1.ZoomFraction = 0.5D;
-            this.gViewer1.ZoomWindowThreshold = 0.05D;
             // 
             // richTextBox1
             // 
@@ -140,24 +119,87 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(899, 394);
+            this.tabControl1.Size = new System.Drawing.Size(883, 394);
             this.tabControl1.TabIndex = 5;
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.gViewer2);
+            this.tabPage1.Controls.Add(this.tableLayoutPanel1);
             this.tabPage1.Controls.Add(this.richTextBox1);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.button1);
-            this.tabPage1.Controls.Add(this.gViewer1);
             this.tabPage1.Controls.Add(this.richTextBox2);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(891, 368);
+            this.tabPage1.Size = new System.Drawing.Size(875, 368);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Expression Tests";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.BackColor = System.Drawing.Color.DimGray;
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.cmdFsaGraph, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.fastFsaGraph, 1, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(300, 7);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(566, 355);
+            this.tableLayoutPanel1.TabIndex = 5;
+            // 
+            // cmdFsaGraph
+            // 
+            this.cmdFsaGraph.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdFsaGraph.AsyncLayout = false;
+            this.cmdFsaGraph.AutoScroll = true;
+            this.cmdFsaGraph.BackwardEnabled = false;
+            this.cmdFsaGraph.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.cmdFsaGraph.ForwardEnabled = false;
+            this.cmdFsaGraph.Graph = null;
+            this.cmdFsaGraph.Location = new System.Drawing.Point(3, 3);
+            this.cmdFsaGraph.MouseHitDistance = 0.05D;
+            this.cmdFsaGraph.Name = "cmdFsaGraph";
+            this.cmdFsaGraph.NavigationVisible = true;
+            this.cmdFsaGraph.PanButtonPressed = false;
+            this.cmdFsaGraph.SaveButtonVisible = true;
+            this.cmdFsaGraph.Size = new System.Drawing.Size(277, 349);
+            this.cmdFsaGraph.TabIndex = 0;
+            this.cmdFsaGraph.ZoomF = 1D;
+            this.cmdFsaGraph.ZoomFraction = 0.5D;
+            this.cmdFsaGraph.ZoomWindowThreshold = 0.05D;
+            // 
+            // fastFsaGraph
+            // 
+            this.fastFsaGraph.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.fastFsaGraph.AsyncLayout = false;
+            this.fastFsaGraph.AutoScroll = true;
+            this.fastFsaGraph.BackwardEnabled = false;
+            this.fastFsaGraph.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.fastFsaGraph.ForwardEnabled = false;
+            this.fastFsaGraph.Graph = null;
+            this.fastFsaGraph.Location = new System.Drawing.Point(286, 3);
+            this.fastFsaGraph.MouseHitDistance = 0.05D;
+            this.fastFsaGraph.Name = "fastFsaGraph";
+            this.fastFsaGraph.NavigationVisible = true;
+            this.fastFsaGraph.PanButtonPressed = false;
+            this.fastFsaGraph.SaveButtonVisible = true;
+            this.fastFsaGraph.Size = new System.Drawing.Size(277, 349);
+            this.fastFsaGraph.TabIndex = 1;
+            this.fastFsaGraph.ZoomF = 1D;
+            this.fastFsaGraph.ZoomFraction = 0.5D;
+            this.fastFsaGraph.ZoomWindowThreshold = 0.05D;
             // 
             // tabPage2
             // 
@@ -172,7 +214,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(891, 368);
+            this.tabPage2.Size = new System.Drawing.Size(875, 368);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Performance Tests";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -285,7 +327,7 @@
             this.tabPage3.Controls.Add(this.InputTextBox);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(891, 368);
+            this.tabPage3.Size = new System.Drawing.Size(875, 368);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Regex Test";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -350,41 +392,19 @@
             this.InputTextBox.TabIndex = 0;
             this.InputTextBox.Text = "abbbbabbbbbb";
             // 
-            // gViewer2
-            // 
-            this.gViewer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.gViewer2.AsyncLayout = false;
-            this.gViewer2.AutoScroll = true;
-            this.gViewer2.BackColor = System.Drawing.Color.White;
-            this.gViewer2.BackwardEnabled = false;
-            this.gViewer2.ForwardEnabled = false;
-            this.gViewer2.Graph = null;
-            this.gViewer2.Location = new System.Drawing.Point(320, 6);
-            this.gViewer2.MouseHitDistance = 0.05D;
-            this.gViewer2.Name = "gViewer2";
-            this.gViewer2.NavigationVisible = false;
-            this.gViewer2.PanButtonPressed = false;
-            this.gViewer2.SaveButtonVisible = false;
-            this.gViewer2.Size = new System.Drawing.Size(278, 352);
-            this.gViewer2.TabIndex = 5;
-            this.gViewer2.ZoomF = 1D;
-            this.gViewer2.ZoomFraction = 0.5D;
-            this.gViewer2.ZoomWindowThreshold = 0.05D;
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(898, 392);
+            this.ClientSize = new System.Drawing.Size(882, 392);
             this.Controls.Add(this.tabControl1);
-            this.MinimumSize = new System.Drawing.Size(521, 282);
+            this.MinimumSize = new System.Drawing.Size(898, 430);
             this.Name = "MainWindow";
             this.Text = "ORegex Test Utility";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.IterationsCountBoxRun)).EndInit();
@@ -397,7 +417,6 @@
 
         #endregion
 
-        private Microsoft.Glee.GraphViewerGdi.GViewer gViewer1;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.RichTextBox richTextBox2;
@@ -420,7 +439,9 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.NumericUpDown IterationsCountBoxRun;
         private System.Windows.Forms.Label label7;
-        private Microsoft.Glee.GraphViewerGdi.GViewer gViewer2;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Microsoft.Glee.GraphViewerGdi.GViewer cmdFsaGraph;
+        private Microsoft.Glee.GraphViewerGdi.GViewer fastFsaGraph;
     }
 }
 

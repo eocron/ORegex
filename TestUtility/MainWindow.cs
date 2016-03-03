@@ -27,29 +27,28 @@ namespace TestUtility
             HighLightSyntax();
         }
 
-        private void DrawGraphAfter(IFSA<char> fsm)
+        private void DrawGraphFastFsa(IFSA<char> fsm)
         {
             var graph = _graphCreator.Create(fsm, _table);
-            gViewer1.Graph = graph;
-            gViewer1.Refresh();
+            fastFsaGraph.Graph = graph;
+            fastFsaGraph.Refresh();
         }
 
-        private void DrawGraphBefore(IFSA<char> fsm)
+        private void DrawGraphCmdFsa(IFSA<char> fsa)
         {
-            var graph = _graphCreator.Create(fsm, _table);
-            gViewer2.Graph = graph;
-            gViewer2.Refresh();
+            var graph = _graphCreator.Create(fsa, _table);
+            cmdFsaGraph.Graph = graph;
+            cmdFsaGraph.Refresh();
         }
 
         private void ProcessORegex(string oregex)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            IFSA<char> dfa = _compiler.Build(oregex, _table);
+            var fa = (FiniteAutomaton<char>)_compiler.Build(oregex, _table);
             var elapsed = sw.Elapsed;
             label1.Text = "Compiled in: " + elapsed;
-            DrawGraphAfter(dfa);
-            var nfa = _compiler.BuildInitialFsa(oregex, _table);
-            DrawGraphBefore(nfa);
+            DrawGraphCmdFsa(fa.CmdFsa);
+            DrawGraphFastFsa(fa.FastFsa);
         }
 
         private void HighLightSyntax()
@@ -151,9 +150,9 @@ namespace TestUtility
         private void TestRegexEqualityButton_Click(object sender, EventArgs e)
         {
             var regex = new Regex(RegexPatternBox.Text);
-            var Eocron = new ORegex<char>(ORegexPatternBox.Text, ORegexOptions.None, _table);
+            var oregex = new ORegex<char>(ORegexPatternBox.Text, ORegexOptions.None, _table);
             var matches = regex.Matches(InputTextBox.Text).Cast<Match>().ToArray();
-            var omatches = Eocron.Matches(InputTextBox.Text.ToCharArray()).ToArray();
+            var omatches = oregex.Matches(InputTextBox.Text.ToCharArray()).ToArray();
 
             if (matches.Length != omatches.Length)
             {
