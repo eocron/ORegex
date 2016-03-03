@@ -52,6 +52,12 @@ namespace Eocron
             return table;
         }
 
+        /// <summary>
+        /// Tries to match pattern starting from startIndex position.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="startIndex"></param>
+        /// <returns></returns>
         public IEnumerable<OMatch<TValue>> Matches(TValue[] values, int startIndex = 0)
         {
             Range range;
@@ -82,11 +88,23 @@ namespace Eocron
             }
         }
 
+        /// <summary>
+        /// Tries to match pattern starting from startIndex position.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="startIndex"></param>
+        /// <returns></returns>
         public OMatch<TValue> Match(TValue[] values, int startIndex = 0)
         {
             return Matches(values, startIndex).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Tries to match pattern starting from startIndex position.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="startIndex"></param>
+        /// <returns></returns>
         public bool IsMatch(TValue[] values, int startIndex = 0)
         {
             Range range;
@@ -104,11 +122,11 @@ namespace Eocron
             return false;
         }
 
-        public TValue[] Replace(TValue[] values, int startIndex = 0)
-        {
-            var matches = Matches(values, startIndex);
-            throw new NotImplementedException();
-        }
+        //public TValue[] Replace(TValue[] values, int startIndex = 0)
+        //{
+        //    var matches = Matches(values, startIndex);
+        //    throw new NotImplementedException();
+        //}
 
         public override string ToString()
         {
