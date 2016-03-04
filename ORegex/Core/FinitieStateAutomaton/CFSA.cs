@@ -62,7 +62,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             range = default(Range);
             var stack = _instanceStack;
             stack.Clear();
-
+            bool hasSubCaptures = false;
             FSMState state = CreateState(_startState, startIndex);
             stack.Push(state);
             while (stack.Count > 0)
@@ -70,7 +70,7 @@ namespace Eocron.Core.FinitieStateAutomaton
                 state = stack.Peek();
 
                 FSMState next;
-                if (TryGetNextState(state, values, out next))
+                if (TryGetNextState(state, values, out next, ref hasSubCaptures))
                 {
                     stack.Push(next);
                 }
@@ -86,7 +86,7 @@ namespace Eocron.Core.FinitieStateAutomaton
 
             if (stack.Count != 0 && state.IsFinal)
             {
-                if (table != null)
+                if (hasSubCaptures && table != null)
                 {
                     ManageSubCaptures(table, values, stack);
                 }
@@ -157,7 +157,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             };
         }
 
-        private bool TryGetNextState(FSMState current, TValue[] values, out FSMState nextState)
+        private bool TryGetNextState(FSMState current, TValue[] values, out FSMState nextState, ref bool hasSubCaptures)
         {
             nextState = default(FSMState);
             if (current.Transitions != null && 
@@ -172,6 +172,8 @@ namespace Eocron.Core.FinitieStateAutomaton
                     if (isMatch)
                     {
                         var isEps = PredicateEdgeBase<TValue>.IsEpsilon(trans.Condition);
+                        hasSubCaptures |= trans.Condition.IsSystemPredicate &&
+                                         ((SystemPredicateEdge<TValue>) trans.Condition).IsCapture;
                         nextState = CreateState(trans.To, current.CurrentIndex + (isEps ? 0 : 1));
                         return true;
                     }

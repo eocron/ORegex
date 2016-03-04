@@ -72,9 +72,16 @@
       <Name>ORegex</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="TestData\Performance\Page.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="TestData\Legacy\045.test">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestData\Legacy\044.test">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

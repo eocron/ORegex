@@ -36,9 +36,9 @@ namespace TestUtility
 
         public void RunTest(int iterCount)
         {
-            var str = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+            var str = SingleFileTestFactory.GetTestData("Performance//Page.html");
             var input = str.ToCharArray();
-            var oregex = new DebugORegex("({x}+{x}+){y}+");
+            var oregex = new DebugORegex("{b1o}{p}{b1c}.*?{b1o}{slash}{p}{b1c}");
 
             for (int i = 0; i < iterCount; i++)
             {

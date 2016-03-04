@@ -33,6 +33,9 @@ namespace Tests.Core
                 AddPredicate(c.ToString(), x => x == tmp);
             }
             AddPredicate("WS", char.IsWhiteSpace);
+            AddPredicate("b1o", x=> x== '<');
+            AddPredicate("b1c", x => x == '>');
+            AddPredicate("slash", x => x == '/');
         }
     }
 }

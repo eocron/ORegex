@@ -59,6 +59,14 @@ namespace Tests.Intergal
             Console.WriteLine("############################################");
         }
 
+        [Test]
+        public void HtmlTagExtractionTest()
+        {
+            var str = SingleFileTestFactory.GetTestData("Performance//Page.html");
+
+            PerformanceTest(@"{b1o}{p}{b1c}.*?{b1o}{slash}{p}{b1c}", "<p>.*?</p>", str, 20, true);
+            Console.WriteLine("############################################");
+        }
         private static void PerformanceTest(string oregexPattern, string regexPattern, string inputText, int iterCount, bool outputTotal = false)
         {
             var input = inputText.ToCharArray();
