@@ -120,7 +120,7 @@
   </Target>
   -->
   <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
-    <Exec Command="nuget pack ORegex.csproj -Prop Configuration=Release licenseUrl=https://github.com/eocron/ORegex/blob/master/LICENSE">
+    <Exec Command="nuget pack ORegex.csproj -Prop Configuration=Release">
     </Exec>
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
