@@ -24,6 +24,11 @@ namespace Eocron.Core.FinitieStateAutomaton
             get { return CmdFsa.ExactBegin; }
         }
 
+        public string[] CaptureNames 
+        {
+            get { return CmdFsa.CaptureNames; }
+        }
+
         public FiniteAutomaton(IFSA<TValue> fastFSA, IFSA<TValue> cmdFSA)
         {
             FastFsa = fastFSA.ThrowIfNull();

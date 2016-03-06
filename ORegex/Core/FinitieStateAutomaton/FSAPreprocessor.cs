@@ -11,7 +11,6 @@ namespace Eocron.Core.FinitieStateAutomaton
             var dfa = NfaToDfa(fsa);
             dfa = Minimize(dfa);
             return dfa;
-            //return fsa;
         }
 
         private static FSA<TValue> Minimize(FSA<TValue> dfa)
@@ -31,7 +30,8 @@ namespace Eocron.Core.FinitieStateAutomaton
                     dfa.F, dfa.Q0)
                 {
                     ExactBegin = dfa.ExactBegin,
-                    ExactEnd = dfa.ExactEnd
+                    ExactEnd = dfa.ExactEnd,
+                    CaptureNames = dfa.CaptureNames
                 };
         }
 
@@ -44,7 +44,8 @@ namespace Eocron.Core.FinitieStateAutomaton
             FSA<TValue> dfa = new FSA<TValue>(nfa.Name)
             {
                 ExactBegin = nfa.ExactBegin, 
-                ExactEnd = nfa.ExactEnd
+                ExactEnd = nfa.ExactEnd,
+                CaptureNames = nfa.CaptureNames,
             };
 
             // Sets of NFA states which is represented by some DFA state

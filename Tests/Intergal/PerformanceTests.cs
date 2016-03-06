@@ -92,7 +92,7 @@ namespace Tests.Intergal
             for (int j = 0; j < iterCount; j++)
             {
                 var sw = Stopwatch.StartNew();
-                var array1 = oregex.Matches(input).ToArray();
+                var array1 = oregex.Matches(input);
                 sw.Stop();
                 oregexCount += sw.Elapsed;
                 long last = sw.ElapsedTicks;

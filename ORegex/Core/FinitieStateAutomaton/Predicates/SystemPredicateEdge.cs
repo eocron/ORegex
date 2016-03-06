@@ -27,6 +27,8 @@
 
         public string CaptureName { get; set; }
 
+        public int CaptureId { get; set; }
+
         public override bool IsMatch(TValue[] values, int index)
         {
             return true;

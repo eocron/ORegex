@@ -12,6 +12,8 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         public bool ExactEnd { get; set; }
 
+        public string[] CaptureNames { get; set; }
+
         #region Speedup
 
         private readonly OrderedSet<PredicateEdgeBase<TValue>> _sigma = new OrderedSet<PredicateEdgeBase<TValue>>();

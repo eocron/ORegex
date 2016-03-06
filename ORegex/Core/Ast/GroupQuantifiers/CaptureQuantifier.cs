@@ -4,9 +4,12 @@
     {
         public string CaptureName;
 
-        public CaptureQuantifier(string originalString, string name) : base(originalString)
+        public int CaptureId;
+
+        public CaptureQuantifier(string originalString, string name, int id) : base(originalString)
         {
             CaptureName = name.ThrowIfEmpty();
+            CaptureId = id;
         }
     }
 }

@@ -16,5 +16,7 @@ namespace Eocron.Core.FinitieStateAutomaton
         IEnumerable<IFSATransition<TValue>> Transitions { get; }
 
         bool IsFinal(int state);
+
+        string[] CaptureNames { get; }
     }
 }

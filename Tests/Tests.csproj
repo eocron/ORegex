@@ -63,6 +63,7 @@
     <Compile Include="Intergal\PerformanceTests.cs" />
     <Compile Include="Intergal\ApplicableTests.cs" />
     <Compile Include="Intergal\RegexLegacyTests.cs" />
+    <Compile Include="Intergal\ReplaceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\SingleFileTestFactory.cs" />
   </ItemGroup>

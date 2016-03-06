@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime.Tree;
 using Eocron.Core.Ast;
 using Eocron.Core.FinitieStateAutomaton.Predicates;
 
@@ -20,6 +21,8 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         public string Name { get; private set; }
 
+        public string[] CaptureNames { get; set; }
+
         private readonly IFSATransition<TValue>[][] _transitionMatrix;
 
         private readonly int _startState;
@@ -36,6 +39,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             ExactBegin = fsa.ExactBegin;
             ExactEnd = fsa.ExactEnd;
             Name = fsa.Name;
+            CaptureNames = fsa.CaptureNames;
             _transitionMatrix = new IFSATransition<TValue>[fsa.StateCount][];
             foreach (var look in fsa.Transitions.ToLookup(x => x.From, x => x))
             {
@@ -117,8 +121,8 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         private struct CaptureEdge
         {
-            public string Name;
             public int Index;
+            public int CaptureId;
         }
 
         private void ManageSubCaptures(OCaptureTable<TValue> table, TValue[] collection,
@@ -142,12 +146,13 @@ namespace Eocron.Core.FinitieStateAutomaton
                             var left = new CaptureEdge
                             {
                                 Index = s.CurrentIndex,
-                                Name = sys.CaptureName,
+                                CaptureId = sys.CaptureId
                             };
-                            if (stack.Count > 0 && stack.Peek().Name == left.Name)
+                            if (stack.Count > 0 && stack.Peek().CaptureId == left.CaptureId)
                             {
                                 var right = stack.Pop();
-                                table.Add(left.Name,
+                                table.Add(
+                                    left.CaptureId, 
                                     new OCapture<TValue>(collection, new Range(left.Index, right.Index - left.Index)));
                             }
                             else

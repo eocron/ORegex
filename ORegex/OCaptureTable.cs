@@ -5,72 +5,48 @@ namespace Eocron
 {
     public sealed class OCaptureTable<TValue> : IEnumerable<KeyValuePair<string, List<OCapture<TValue>>>>
     {
-        private static readonly OCapture<TValue>[] EmptyArray = new OCapture<TValue>[0];
-        private static readonly Dictionary<string, List<OCapture<TValue>>> EmptyCaptures = new Dictionary<string, List<OCapture<TValue>>>();
-
-        private Dictionary<string, List<OCapture<TValue>>> _captures;
+        private readonly Dictionary<string, List<OCapture<TValue>>> _nameToCaptureIndex;
+        private readonly List<OCapture<TValue>>[] _idToCaptureIndex;
+        public OCaptureTable(string[] captureNames)
+        {
+            _nameToCaptureIndex = new Dictionary<string, List<OCapture<TValue>>>(captureNames.Length);
+            _idToCaptureIndex = new List<OCapture<TValue>>[captureNames.Length];
+            for(int i = 0; i < captureNames.Length;i++)
+            {
+                var name = captureNames[i];
+                List<OCapture<TValue>> tmp;
+                if (!_nameToCaptureIndex.TryGetValue(name, out tmp))
+                {
+                    tmp = new List<OCapture<TValue>>(1);
+                    _nameToCaptureIndex[name] = tmp;
+                }
+                _idToCaptureIndex[i] = tmp;
+            }
+        }
 
         public int Count
         {
-            get { return _captures == null ? 0 : _captures.Count; }
+            get { return _nameToCaptureIndex.Count; }
         }
+
         public IEnumerable<OCapture<TValue>> this[string name]
         {
-            get
-            {
-                if (_captures == null)
-                {
-                    return EmptyArray;
-                }
-                return _captures[name];
-            }
+            get { return _nameToCaptureIndex[name]; }
         }
 
-        internal void Add(string name, OCapture<TValue> capture)
+        public IEnumerable<OCapture<TValue>> this[int id]
         {
-            if (_captures == null)
-            {
-                _captures = new Dictionary<string, List<OCapture<TValue>>>();
-            }
-            List<OCapture<TValue>> list;
-            if (!_captures.TryGetValue(name, out list))
-            {
-                list = new List<OCapture<TValue>>();
-                _captures.Add(name,list);
-            }
-            list.Add(capture);
+            get { return _idToCaptureIndex[id]; }
         }
 
-        internal void Remove(string name)
+        internal void Add(int captureId, OCapture<TValue> capture)
         {
-            if (_captures == null)
-            {
-                return;
-            }
-            _captures.Remove(name);
-        }
-
-        internal void Add(OCaptureTable<TValue> table)
-        {
-            if (table._captures != null)
-            {
-                foreach (var c in table._captures)
-                {
-                    foreach (var v in c.Value)
-                    {
-                        Add(c.Key, v);
-                    }
-                }
-            }
+            _idToCaptureIndex[captureId].Add(capture);
         }
 
         public IEnumerator<KeyValuePair<string, List<OCapture<TValue>>>> GetEnumerator()
         {
-            if (_captures == null)
-            {
-                return EmptyCaptures.GetEnumerator();
-            }
-            return _captures.GetEnumerator();
+            return _nameToCaptureIndex.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

@@ -12,7 +12,9 @@ namespace Eocron.Core.Parse
         private readonly PredicateTable<TValue> _predicateTable;
         private readonly RegexGrammarParser _parser;
 
-        public List<string> CaptureGroupNames; 
+        public List<string> CaptureGroupNames;
+
+        public int CurrentCaptureGroupId = 0;
 
         public ORegexAstFactoryArgs(PredicateTable<TValue> predicateTable, RegexGrammarParser parser)
         {

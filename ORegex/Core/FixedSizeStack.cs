@@ -1,9 +1,12 @@
-﻿namespace Eocron.Core
+﻿using System;
+
+namespace Eocron.Core
 {
     internal sealed class FixedSizeStack<TValue>
     {
-        private readonly TValue[] _stack;
+        private TValue[] _stack;
         private int _count;
+        private readonly int _growthFactor;
 
         public int Count
         {
@@ -14,13 +17,18 @@
         {
             get { return _stack[_count - index - 1]; }
         }
-        public FixedSizeStack(int size)
+        public FixedSizeStack(int size, int growthFactor = 2)
         {
+            _growthFactor = growthFactor;
             _stack = new TValue[size];
         }
 
         public void Push(TValue value)
         {
+            if (_count == _stack.Length)
+            {
+                Array.Resize(ref _stack, _count*_growthFactor);
+            }
             _stack[_count++] = value;
         }
 

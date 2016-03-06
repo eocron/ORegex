@@ -10,9 +10,9 @@ namespace Eocron.Core.FinitieStateAutomaton
     {
         private readonly FSAPreprocessor<TValue> _preprocessor = new FSAPreprocessor<TValue>();
 
-        public FSA<TValue> CreateRawFsa(AstNodeBase root, string name)
+        public FSA<TValue> CreateRawFsa(AstRootNode root)
         {
-            var result = new FSA<TValue>(name);
+            var result = new FSA<TValue>(root.CaptureGroupNames[0]) {CaptureNames = root.CaptureGroupNames};
             var start = result.NewState();
             var end = result.NewState();
             Evaluate(start, end, result, root);
@@ -21,9 +21,9 @@ namespace Eocron.Core.FinitieStateAutomaton
             return result;
         }
 
-        public FiniteAutomaton<TValue> Create(AstNodeBase root, string name)
+        public FiniteAutomaton<TValue> Create(AstRootNode root)
         {
-            var nfa = CreateRawFsa(root, name);
+            var nfa = CreateRawFsa(root);
             var dfa = _preprocessor.Preprocess(nfa);
             return new FiniteAutomaton<TValue>(new CFSA<TValue>(dfa), new CFSA<TValue>(nfa));
         }
@@ -92,43 +92,7 @@ namespace Eocron.Core.FinitieStateAutomaton
                 RepeatZeroOrOne(prev, next, fsa, toRepeat, astRepeatNode.IsLazy);
             }
         }
-        //private void RepeatZeroOrOne(int start, int end, FSA<TValue> fsa, AstNodeBase node, bool isLasy)
-        //{
-        //    if (isLasy)
-        //    {
-        //        var lazyEdge = new SystemPredicateEdge<TValue>("#lazyEps", true);
-        //        fsa.AddTransition(start, lazyEdge, end);
-        //        Evaluate(start, end, fsa, node);
-        //    }
-        //    else
-        //    {
-        //        Evaluate(start, end, fsa, node);
-        //        fsa.AddEpsilonTransition(start, end);
-        //    }
-        //}
 
-        //private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, AstNodeBase predicate, bool isLasy)
-        //{
-
-        //    var tmp = CreateNewState(fsa);
-        //    if (isLasy)
-        //    {
-        //        var lazyEdge = new SystemPredicateEdge<TValue>("#lazyEps", true);
-        //        fsa.AddTransition(tmp, lazyEdge, end);
-        //        Evaluate(tmp, tmp, fsa, predicate);
-
-        //        fsa.AddTransition(start, lazyEdge, end);
-        //        fsa.AddEpsilonTransition(start, tmp);
-        //    }
-        //    else
-        //    {
-        //        Evaluate(tmp, tmp, fsa, predicate);
-        //        fsa.AddEpsilonTransition(tmp, end);
-
-        //        fsa.AddEpsilonTransition(start, tmp);
-        //        fsa.AddEpsilonTransition(start, end);
-        //    }
-        //}
         private void RepeatZeroOrOne(int start, int end, FSA<TValue> fsa, AstNodeBase node, bool isLasy)
         {
             if (isLasy)
@@ -179,8 +143,13 @@ namespace Eocron.Core.FinitieStateAutomaton
                 var group = (AstGroupNode) node;
                 if (group.Quantifier != null && group.Quantifier is CaptureQuantifier)
                 {
-                    var groupName = ((CaptureQuantifier) group.Quantifier).CaptureName;
-                    var sys = new SystemPredicateEdge<TValue>("#capture") {IsCapture = true, CaptureName = groupName};
+                    var captureQ = ((CaptureQuantifier) group.Quantifier);
+                    var sys = new SystemPredicateEdge<TValue>("#capture")
+                    {
+                        IsCapture = true, 
+                        CaptureName = captureQ.CaptureName,
+                        CaptureId = captureQ.CaptureId
+                    };
 
                     var startTmp = CreateNewState(fsa);
                     fsa.AddTransition(start, sys, startTmp);
@@ -212,16 +181,6 @@ namespace Eocron.Core.FinitieStateAutomaton
         private void EvaluateCondition(int start, int end, FSA<TValue> fsa, PredicateEdgeBase<TValue> condition)
         {
             fsa.AddTransition(start, condition, end);
-        }
-
-        private void EvaluateCondition(int start, int end, FSA<TValue> fsa, AstNodeBase node)
-        {
-            var tmp1 = CreateNewState(fsa);
-            var tmp2 = CreateNewState(fsa);
-
-            fsa.AddEpsilonTransition(start, tmp1);
-            Evaluate(tmp1, tmp2, fsa, node);
-            fsa.AddEpsilonTransition(tmp2, end);
         }
 
         private int CreateNewState(FSA<TValue> fsa)

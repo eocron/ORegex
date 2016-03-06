@@ -84,6 +84,7 @@ namespace Eocron.Core.Parse
         private static AstRootNode CreateRoot(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             args.CaptureGroupNames.Add(MainCaptureName);
+
             List<AstNodeBase> children = new List<AstNodeBase>();
             bool matchBegin = false;
             bool matchEnd = false;
@@ -175,8 +176,8 @@ namespace Eocron.Core.Parse
             if(predicate.StartsWith("(?<") && predicate.Length > 4)
             {
                 var name = predicate.Substring(3, predicate.Length - 4);
+                quantifier = new CaptureQuantifier(predicate, name, args.CaptureGroupNames.Count);
                 args.CaptureGroupNames.Add(name);
-                quantifier = new CaptureQuantifier(predicate, name);
             }
             else if(predicate.StartsWith("(?"))
             {

@@ -96,6 +96,7 @@
     <Compile Include="Core\FinitieStateAutomaton\FSAFactory.cs" />
     <Compile Include="OCapture.cs" />
     <Compile Include="OMatch.cs" />
+    <Compile Include="OMatchCollection.cs" />
     <Compile Include="ORegex.cs" />
     <Compile Include="ORegexOptions.cs" />
     <Compile Include="PredicateTable.cs" />

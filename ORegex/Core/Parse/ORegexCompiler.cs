@@ -15,14 +15,14 @@ namespace Eocron.Core.Parse
         public IFSA<TValue> Build(string input, PredicateTable<TValue> predicateTable)
         {
             var ast = _parser.Parse(input, predicateTable);
-            var fa = _stb.Create(ast, ast.CaptureGroupNames[0]);
+            var fa = _stb.Create(ast);
             return fa;
         }
 
         public FSA<TValue> BuildInitialFsa(string input, PredicateTable<TValue> predicateTable)
         {
             var ast = _parser.Parse(input, predicateTable);
-            var nfa = _stb.CreateRawFsa(ast, ast.CaptureGroupNames[0]);
+            var nfa = _stb.CreateRawFsa(ast);
             return nfa;
         }
     }
