@@ -33,7 +33,7 @@ namespace Tests.Intergal
         [Test]
         public void ExhaustingRunTest()
         {
-            for (int i = 30; i <= 80; i += 10)
+            for (int i = 50; i <= 500; i += 50)
             {
                 var str = string.Join("",Enumerable.Repeat("x",i));
                 PerformanceTest("{x}+{x}+{y}+", "x+x+y+", str, 1, false);
@@ -67,12 +67,25 @@ namespace Tests.Intergal
             PerformanceTest(@"{b1o}{p}{b1c}.*?{b1o}{slash}{p}{b1c}", "<p>.*?</p>", str, 20, true);
             Console.WriteLine("############################################");
         }
+
+        [Test]
+        public void RandomSequenceTest()
+        {
+            var str = SingleFileTestFactory.GetTestData("Performance//random.txt");
+
+            PerformanceTest(@"{a}({b}{a})+", "a(ba)+", str, 10, true);
+            Console.WriteLine("############################################");
+        }
+
         private static void PerformanceTest(string oregexPattern, string regexPattern, string inputText, int iterCount, bool outputTotal = false)
         {
             var input = inputText.ToCharArray();
             var oregex = new DebugORegex(oregexPattern);
             var regex = new Regex(regexPattern, RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.Compiled);
-            Console.WriteLine(string.Format("Input string: {0}", inputText));
+            if (input.Length <= 3000)
+            {
+                Console.WriteLine(string.Format("Input string: {0}", inputText));
+            }
 
             var regexCount = new TimeSpan();
             var oregexCount = new TimeSpan();

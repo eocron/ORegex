@@ -23,7 +23,7 @@ namespace Tests.Intergal
         {
             var regexPattern = test.GetRoot().Element("REGEX").Value;
             var oregexPattern = test.GetRoot().Element("OREGEX").Value;
-
+            
             var text = test.GetRoot().Element("TEXT").Value;
 
             var regex = new Regex(regexPattern, RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.Compiled);

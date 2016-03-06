@@ -10,8 +10,9 @@ namespace Eocron.Core.FinitieStateAutomaton
     /// </summary>
     public sealed class CFSA<TValue> : IFSA<TValue>
     {
-        private readonly Stack<CaptureEdge> _captureStack = new Stack<CaptureEdge>();
-        private readonly Stack<FSMState> _instanceStack = new Stack<FSMState>();
+        private readonly FixedSizeStack<CaptureEdge> _captureStack = new FixedSizeStack<CaptureEdge>(ORegex<TValue>.MaxMatchSize);
+        private readonly FixedSizeStack<FSAState> _instanceStack = new FixedSizeStack<FSAState>(ORegex<TValue>.MaxMatchSize);
+        private readonly FixedSizeStack<int> _piStack = new FixedSizeStack<int>(ORegex<TValue>.MaxMatchSize);
 
         public bool ExactBegin { get; set; }
 
@@ -27,7 +28,7 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         public IEnumerable<IFSATransition<TValue>> Transitions
         {
-            get { return _transitionMatrix.Where(x=> x!= null).SelectMany(x => x); }
+            get { return _transitionMatrix.Where(x => x != null).SelectMany(x => x); }
         }
 
         public CFSA(FSA<TValue> fsa)
@@ -49,46 +50,64 @@ namespace Eocron.Core.FinitieStateAutomaton
             }
         }
 
-        private sealed class FSMState
-        {
-            public int CurrentIndex;
-            public int CurrentPredicateIndex;
-            public IFSATransition<TValue>[] Transitions;
-            public bool IsFinal;
-        }
+
 
         public bool TryRun(TValue[] values, int startIndex, OCaptureTable<TValue> table, out Range range)
         {
             range = default(Range);
+            var piStack = _piStack;
+            piStack.Clear();
             var stack = _instanceStack;
             stack.Clear();
             bool hasSubCaptures = false;
-            FSMState state = CreateState(_startState, startIndex);
+            FSAState state = CreateState(_startState, startIndex);
             stack.Push(state);
+            var pi = 0;
+            piStack.Push(pi);
             while (stack.Count > 0)
             {
                 state = stack.Peek();
+                pi = piStack.Peek();
 
-                FSMState next;
-                if (TryGetNextState(state, values, out next, ref hasSubCaptures))
+                bool retrieved = false;
+                var transitions = _transitionMatrix[state.StateId];
+                if (transitions != null &&
+                    transitions.Length > 0)
                 {
-                    stack.Push(next);
+                    for (int i = pi; i < transitions.Length; i++)
+                    {
+                        var trans = transitions[i];
+                        piStack.Push(piStack.Pop() + 1);
+
+                        var isMatch = trans.Condition.IsMatch(values, state.CurrentIndex);
+                        if (isMatch)
+                        {
+                            var isEps = PredicateEdgeBase<TValue>.IsEpsilon(trans.Condition);
+                            hasSubCaptures |= trans.Condition.IsSystemPredicate && ((SystemPredicateEdge<TValue>)trans.Condition).IsCapture;
+                            stack.Push(CreateState(trans.To, state.CurrentIndex + (isEps ? 0 : 1)));
+                            piStack.Push(0);
+                            retrieved = true;
+                            break;
+                        }
+                    }
                 }
-                else if (state.IsFinal)
+
+                if (!retrieved)
                 {
-                    break;
-                }
-                else
-                {
-                    state = stack.Pop();
+                    if (_finalsLookup[state.StateId])
+                    {
+                        break;
+                    }
+                    stack.Pop();
+                    piStack.Pop();
                 }
             }
 
-            if (stack.Count != 0 && state.IsFinal)
+            if (stack.Count != 0 && _finalsLookup[state.StateId])
             {
                 if (hasSubCaptures && table != null)
                 {
-                    ManageSubCaptures(table, values, stack);
+                    ManageSubCaptures(table, values, stack, piStack);
                 }
                 range = new Range(startIndex, state.CurrentIndex - startIndex);
                 return true;
@@ -103,20 +122,21 @@ namespace Eocron.Core.FinitieStateAutomaton
         }
 
         private void ManageSubCaptures(OCaptureTable<TValue> table, TValue[] collection,
-            IEnumerable<FSMState> states)
+            FixedSizeStack<FSAState> states, FixedSizeStack<int> piStack)
         {
             var stack = _captureStack;
             stack.Clear();
-            
-            foreach (var s in states)
+
+            for (int i = 0; i < piStack.Count; i++)
             {
-                int id = s.CurrentPredicateIndex - 1;
+                var s = states[i];
+                int id = piStack[i] - 1;
                 if (id >= 0)
                 {
-                    var cond = s.Transitions[id].Condition;
+                    var cond = _transitionMatrix[s.StateId][id].Condition;
                     if (cond.IsSystemPredicate)
                     {
-                        var sys = (SystemPredicateEdge<TValue>) cond;
+                        var sys = (SystemPredicateEdge<TValue>)cond;
                         if (sys.IsCapture)
                         {
                             var left = new CaptureEdge
@@ -146,40 +166,13 @@ namespace Eocron.Core.FinitieStateAutomaton
             return _finalsLookup[state];
         }
 
-        private FSMState CreateState(int state, int index)
+        private FSAState CreateState(int state, int index)
         {
-            return new FSMState
+            return new FSAState
             {
+                StateId = state,
                 CurrentIndex = index,
-                CurrentPredicateIndex = 0,
-                Transitions = _transitionMatrix[state],
-                IsFinal = _finalsLookup[state],
             };
-        }
-
-        private bool TryGetNextState(FSMState current, TValue[] values, out FSMState nextState, ref bool hasSubCaptures)
-        {
-            nextState = default(FSMState);
-            if (current.Transitions != null && 
-                current.Transitions.Length > 0)
-            {
-                for (int i = current.CurrentPredicateIndex; i < current.Transitions.Length; i++)
-                {
-                    var trans = current.Transitions[i];
-                    current.CurrentPredicateIndex++;
-
-                    var isMatch = trans.Condition.IsMatch(values, current.CurrentIndex);
-                    if (isMatch)
-                    {
-                        var isEps = PredicateEdgeBase<TValue>.IsEpsilon(trans.Condition);
-                        hasSubCaptures |= trans.Condition.IsSystemPredicate &&
-                                         ((SystemPredicateEdge<TValue>) trans.Condition).IsCapture;
-                        nextState = CreateState(trans.To, current.CurrentIndex + (isEps ? 0 : 1));
-                        return true;
-                    }
-                }
-            }
-            return false;
         }
     }
 }

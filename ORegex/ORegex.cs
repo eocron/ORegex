@@ -17,6 +17,11 @@ namespace Eocron
     /// <typeparam name="TValue"></typeparam>
     public class ORegex<TValue>
     {
+        /// <summary>
+        /// Defines maximum fixed stack size. If match is too large - exception will be thrown.
+        /// </summary>
+        public static int MaxMatchSize = 1024;
+
         private readonly ORegexCompiler<TValue> _compiler = new ORegexCompiler<TValue>();
 
         private readonly IFSA<TValue> _fa;
