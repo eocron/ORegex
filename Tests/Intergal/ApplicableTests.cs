@@ -27,6 +27,18 @@ namespace Tests.Intergal
             //11,12,13
         }
 
+        [Test]
+        public void NumberGroupTest()
+        {
+            var oregex = new ORegex<int>("((?<pair>{0}){1})+", x => x != 0, x => x == 0);
+
+            var input = new int[] { 0, 0, 0, 1, 0, 2, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0 };
+            foreach (var match in oregex.Matches(input))
+            {
+                Trace.WriteLine(string.Join(",", match.Values));
+            }
+        }
+
         private static bool IsPrime(int number)
         {
             int boundary = (int)Math.Floor(Math.Sqrt(number));
