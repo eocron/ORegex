@@ -143,21 +143,21 @@ namespace Eocron.Core.FinitieStateAutomaton
                         var sys = (SystemPredicateEdge<TValue>)cond;
                         if (sys.IsCapture)
                         {
-                            var left = new CaptureEdge
+                            var right = new CaptureEdge
                             {
                                 Index = s.CurrentIndex,
                                 CaptureId = sys.CaptureId
                             };
-                            if (stack.Count > 0 && stack.Peek().CaptureId == left.CaptureId)
+                            if (stack.Count > 0 && stack.Peek().CaptureId == right.CaptureId)
                             {
-                                var right = stack.Pop();
+                                var left = stack.Pop();
                                 table.Add(
                                     left.CaptureId, 
                                     new OCapture<TValue>(collection, new Range(left.Index, right.Index - left.Index)));
                             }
                             else
                             {
-                                stack.Push(left);
+                                stack.Push(right);
                             }
 
                         }

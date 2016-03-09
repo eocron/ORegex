@@ -76,7 +76,7 @@ namespace Tests.Intergal
         {
             Assert.AreEqual(expected.Index, actual.Index);
             Assert.AreEqual(expected.Length, actual.Length);
-            //CompareCaptures(expected, actual);
+            CompareCaptures(expected, actual);
         }
 
         private static void CompareCaptures(Match expected, OMatch<char> actual)

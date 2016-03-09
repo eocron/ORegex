@@ -15,7 +15,7 @@ namespace Eocron.Core
 
         public TValue this[int index]
         {
-            get { return _stack[_count - index - 1]; }
+            get { return _stack[index]; }
         }
         public FixedSizeStack(int size, int growthFactor = 2)
         {
