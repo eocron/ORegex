@@ -91,7 +91,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ORegex\ORegex.csproj">
+    <ProjectReference Include="..\ORegex\ORegex.net40.csproj">
       <Project>{8fdbea09-300d-4e58-91fd-214049c533b9}</Project>
       <Name>ORegex</Name>
     </ProjectReference>

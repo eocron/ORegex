@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>ORegex</id>
+    <version>2.1.3.0</version>
+    <title>ORegex</title>
+    <authors>eocron</authors>
+    <owners>eocron</owners>
+    <licenseUrl>https://en.wikipedia.org/wiki/BSD_licenses</licenseUrl>
+    <projectUrl>https://github.com/eocron/ORegex</projectUrl>
+    <iconUrl>https://lh3.ggpht.com/1Q9ADK1KydIGBmE8BdifA4job8xW2GhK15p7GQBl-1bm66aGdPoQ8WUNkamSwJnSUlA=w300</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Object Oriented Regular Expressions. Syntax the same as .NET Regular Expressions.</description>
+    <copyright>Copyright 2016.</copyright>
+    <tags>Regex .NET C# ORegex</tags>
+    <dependencies>
+    	<dependency id="Antlr4" version="4.3.0" />
+    	<dependency id="Antlr4.Runtime" version="4.3.0"/>
+    </dependencies>
+  </metadata>
+  	<files>
+		<file src="..\ORegex\bin\Release\net40-client\ORegex.dll" target="lib\net40-client\" />
+		<file src="..\ORegex\bin\Release\net45\ORegex.dll" target="lib\net45\" />
+	</files>
+</package>

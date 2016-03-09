@@ -8,11 +8,7 @@ using Eocron.Core.Parse;
 namespace Eocron
 {
     /// <summary>
-    /// Objected regex.  Very useful for simple tasks with a little amount of predicates.
-    /// For use just type {number} instead of character like you usualliy write regex.
-    /// Number can be from 0 to MaxPredicatesCount-1.
-    /// Example of pattern: {0}(.{0})* where {0} -> isPrime(x) on sequence: 1 2 3 4 5 6 7 8 9 10 11 12 13
-    /// Syntax to write patterns is RegularExpressions.
+    /// Objected regex pattern instance.
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
     public class ORegex<TValue>
