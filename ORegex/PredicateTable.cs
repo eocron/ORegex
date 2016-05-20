@@ -29,7 +29,7 @@ namespace Eocron
         /// </summary>
         /// <param name="name"></param>
         /// <param name="predicate"></param>
-        public void AddPredicate(string name, Func<TValue[], int, bool> predicate)
+        public void AddPredicate(string name, Func<SequenceHandler<TValue>, int, bool> predicate)
         {
             name.ThrowIfEmpty();
             predicate.ThrowIfNull();

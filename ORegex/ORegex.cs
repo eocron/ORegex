@@ -63,20 +63,23 @@ namespace Eocron
         public OMatchCollection<TValue> Matches(TValue[] values, int startIndex = 0)
         {
             CheckInput(values,startIndex);
+            var handler = new SequenceHandler<TValue>(values);
+            handler.Reverse = Options.HasFlag(ORegexOptions.ReverseSequence);
+
             OMatchCollection<TValue> result = new OMatchCollection<TValue>();
             var captureTable = new OCaptureTable<TValue>(_fa.CaptureNames);
-            for (int i = startIndex; i <= values.Length; i++)
+            for (int i = startIndex; i <= handler.Count; i++)
             {
                 Range range;
-                if (_fa.TryRun(values, i, captureTable, out range))
+                if (_fa.TryRun(handler, i, captureTable, out range))
                 {
                     bool beginMatched = range.Index == startIndex;
-                    bool endMatched = (range.Index + range.Length) == values.Length;
+                    bool endMatched = (range.Index + range.Length) == handler.Count;
 
                     if (!_fa.ExactBegin && !_fa.ExactEnd ||
                         !(beginMatched ^ _fa.ExactBegin) && !(endMatched ^ _fa.ExactEnd))
                     {
-                        var match = new OMatch<TValue>(values, captureTable, range);
+                        var match = new OMatch<TValue>(handler, captureTable, range);
                         captureTable.Add(0, match);
                         result.Add(match);
                     }
@@ -101,19 +104,22 @@ namespace Eocron
         public OMatch<TValue> Match(TValue[] values, int startIndex = 0)
         {
             CheckInput(values, startIndex);
+            var handler = new SequenceHandler<TValue>(values);
+            handler.Reverse = Options.HasFlag(ORegexOptions.ReverseSequence);
+
             var captureTable = new OCaptureTable<TValue>(_fa.CaptureNames);
-            for (int i = startIndex; i <= values.Length; i++)
+            for (int i = startIndex; i <= handler.Count; i++)
             {
                 Range range;
-                if (_fa.TryRun(values, i, captureTable, out range))
+                if (_fa.TryRun(handler, i, captureTable, out range))
                 {
                     bool beginMatched = range.Index == startIndex;
-                    bool endMatched = (range.Index + range.Length) == values.Length;
+                    bool endMatched = (range.Index + range.Length) == handler.Count;
 
                     if (!_fa.ExactBegin && !_fa.ExactEnd ||
                         !(beginMatched ^ _fa.ExactBegin) && !(endMatched ^ _fa.ExactEnd))
                     {
-                        var match = new OMatch<TValue>(values, captureTable, range);
+                        var match = new OMatch<TValue>(handler, captureTable, range);
                         captureTable.Add(0, match);
                         return match;
                     }
@@ -137,13 +143,16 @@ namespace Eocron
         public bool IsMatch(TValue[] values, int startIndex = 0)
         {
             CheckInput(values, startIndex);
-            for (int i = startIndex; i <= values.Length; i++)
+            var handler = new SequenceHandler<TValue>(values);
+            handler.Reverse = Options.HasFlag(ORegexOptions.ReverseSequence);
+
+            for (int i = startIndex; i <= handler.Count; i++)
             {
                 Range range;
-                if (_fa.TryRun(values, i, null, out range))
+                if (_fa.TryRun(handler, i, null, out range))
                 {
                     bool beginMatched = range.Index == startIndex;
-                    bool endMatched = (range.Index + range.Length) == values.Length;
+                    bool endMatched = (range.Index + range.Length) == handler.Count;
 
                     if (!_fa.ExactBegin && !_fa.ExactEnd ||
                         !(beginMatched ^ _fa.ExactBegin) && !(endMatched ^ _fa.ExactEnd))
@@ -170,6 +179,9 @@ namespace Eocron
         {
             replaceProvider.ThrowIfNull();
             CheckInput(values, startIndex);
+            var handler = new SequenceHandler<TValue>(values);
+            handler.Reverse = Options.HasFlag(ORegexOptions.ReverseSequence);
+            
             var matches = Matches(values, startIndex);
 
             if (matches.Count > 0)
@@ -181,14 +193,14 @@ namespace Eocron
                     var transform = replaceProvider(m);
                     for (int j = i; j < m.Index; j++)
                     {
-                        result.Add(values[j]);
+                        result.Add(handler[j]);
                     }
                     result.AddRange(transform);
                     i = m.Index + m.Length;
                 }
-                for (int j = i; j < values.Length; j++)
+                for (int j = i; j < handler.Count; j++)
                 {
-                    result.Add(values[j]);
+                    result.Add(handler[j]);
                 }
                 return result.ToArray();
             }

@@ -173,7 +173,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             return result;
         }
 
-        public bool TryRun(TValue[] values, int startIndex, OCaptureTable<TValue> table, out Range range)
+        public bool TryRun(SequenceHandler<TValue> values, int startIndex, OCaptureTable<TValue> table, out Range range)
         {
             throw new NotImplementedException();
         }

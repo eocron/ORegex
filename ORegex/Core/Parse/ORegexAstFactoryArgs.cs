@@ -48,7 +48,7 @@ namespace Eocron.Core.Parse
             {
                 var predicates = names.Select(GetPredicate).Distinct().ToArray();
 
-                Func<TValue[], int, bool> invertedPredicate = (v,i) =>
+                Func<SequenceHandler<TValue>, int, bool> invertedPredicate = (v,i) =>
                 {
                     return !predicates.Any(p => p.IsMatch(v,i));
                 };

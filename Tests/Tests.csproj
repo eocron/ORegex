@@ -68,6 +68,7 @@
     <Compile Include="Intergal\ReplaceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\SingleFileTestFactory.cs" />
+    <Compile Include="Unit\SequenceHandlerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ORegex\ORegex.net40.csproj">

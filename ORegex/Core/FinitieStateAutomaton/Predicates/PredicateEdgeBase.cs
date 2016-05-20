@@ -28,7 +28,7 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
             return IsEqual((PredicateEdgeBase<TValue>) obj, this);
         }
 
-        public abstract bool IsMatch(TValue[] values, int index);
+        public abstract bool IsMatch(SequenceHandler<TValue> values, int index);
 
         public static bool IsEqual(PredicateEdgeBase<TValue> a, PredicateEdgeBase<TValue> b)
         {

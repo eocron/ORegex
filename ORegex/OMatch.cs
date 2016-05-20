@@ -1,4 +1,5 @@
-﻿using Eocron.Core.Ast;
+﻿using Eocron.Core;
+using Eocron.Core.Ast;
 
 namespace Eocron
 {
@@ -9,7 +10,7 @@ namespace Eocron
         /// </summary>
         public readonly OCaptureTable<TValue> Captures;
 
-        internal OMatch(TValue[] collection, OCaptureTable<TValue> table, Range range): base(collection, range)
+        internal OMatch(SequenceHandler<TValue> handler, OCaptureTable<TValue> table, Range range): base(handler, range)
         {
             Captures = table;
         }

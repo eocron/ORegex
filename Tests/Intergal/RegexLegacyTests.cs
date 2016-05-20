@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using Eocron;
 using NUnit.Framework;
 using Tests.Core;
@@ -21,13 +22,18 @@ namespace Tests.Intergal
         [Test, TestCaseSource(typeof(RegexLegacyTests), "GetTests")]
         public void LegasyTest(SingleFileTest test)
         {
-            var regexPattern = test.GetRoot().Element("REGEX").Value;
-            var oregexPattern = test.GetRoot().Element("OREGEX").Value;
-            
+            var xreg = test.GetRoot().Element("REGEX");
+            var xoreg = test.GetRoot().Element("OREGEX");
+            var regexOptions = GetRegexOptions(xreg);
+            var oRegexOptions = GetORegexOptions(xoreg);
+
+            var regexPattern = xreg.Value;
+            var oregexPattern = xoreg.Value;
+
             var text = test.GetRoot().Element("TEXT").Value;
 
-            var regex = new Regex(regexPattern, RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.Compiled);
-            var oregex = new DebugORegex(oregexPattern);
+            var regex = new Regex(regexPattern, regexOptions);
+            var oregex = new DebugORegex(oregexPattern, oRegexOptions);
 
             var regexMatches = regex.Matches(text).Cast<Match>().ToArray();
             var oregexMatches = oregex.Matches(text.ToCharArray()).ToArray();
@@ -70,6 +76,18 @@ namespace Tests.Intergal
             }
 
 
+        }
+
+        private static RegexOptions GetRegexOptions(XElement regex)
+        {
+            var stdOptions = RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.Compiled;
+            var additionalOptions = RegexOptions.None;
+            return stdOptions | additionalOptions;
+        }
+
+        private static ORegexOptions GetORegexOptions(XElement oregex)
+        {
+            return ORegexOptions.None;
         }
 
         private static void Compare(Match expected, OMatch<char> actual)

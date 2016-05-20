@@ -68,6 +68,7 @@
     <Compile Include="Core\FinitieStateAutomaton\FSAState.cs" />
     <Compile Include="Core\FinitieStateAutomaton\Predicates\SystemPredicateEdge.cs" />
     <Compile Include="Core\FixedSizeStack.cs" />
+    <Compile Include="Core\SequenceHandler.cs" />
     <Compile Include="OCaptureTable.cs" />
     <Compile Include="Core\FinitieStateAutomaton\CFSA.cs" />
     <Compile Include="Core\FinitieStateAutomaton\Predicates\ComparePredicateEdge.cs" />

@@ -56,7 +56,7 @@ namespace Eocron.Core.FinitieStateAutomaton
 
 
 
-        public bool TryRun(TValue[] values, int startIndex, OCaptureTable<TValue> table, out Range range)
+        public bool TryRun(SequenceHandler<TValue> values, int startIndex, OCaptureTable<TValue> table, out Range range)
         {
             range = default(Range);
             var piStack = _piStack;
@@ -125,7 +125,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             public int CaptureId;
         }
 
-        private void ManageSubCaptures(OCaptureTable<TValue> table, TValue[] collection,
+        private void ManageSubCaptures(OCaptureTable<TValue> table, SequenceHandler<TValue> handler,
             FixedSizeStack<FSAState> states, FixedSizeStack<int> piStack)
         {
             var stack = _captureStack;
@@ -153,7 +153,7 @@ namespace Eocron.Core.FinitieStateAutomaton
                                 var left = stack.Pop();
                                 table.Add(
                                     left.CaptureId, 
-                                    new OCapture<TValue>(collection, new Range(left.Index, right.Index - left.Index)));
+                                    new OCapture<TValue>(handler, new Range(left.Index, right.Index - left.Index)));
                             }
                             else
                             {

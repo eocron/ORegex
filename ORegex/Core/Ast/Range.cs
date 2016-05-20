@@ -28,5 +28,10 @@ namespace Eocron.Core.Ast
             var range = (Range) obj;
             return range.Index == Index && range.Length == Length;
         }
+
+        public override string ToString()
+        {
+            return string.Format("(i:{0}, l:{1})", Index, Length);
+        }
     }
 }
