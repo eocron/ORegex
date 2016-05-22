@@ -34,6 +34,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.optionsBox = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.cmdFsaGraph = new Microsoft.Glee.GraphViewerGdi.GViewer();
             this.fastFsaGraph = new Microsoft.Glee.GraphViewerGdi.GViewer();
@@ -68,9 +69,9 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.richTextBox1.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.richTextBox1.ForeColor = System.Drawing.Color.Black;
-            this.richTextBox1.Location = new System.Drawing.Point(6, 134);
+            this.richTextBox1.Location = new System.Drawing.Point(6, 173);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(287, 199);
+            this.richTextBox1.Size = new System.Drawing.Size(287, 160);
             this.richTextBox1.TabIndex = 1;
             this.richTextBox1.Text = "^\n\t\t\t{a}(?<group1>{a})\n| {a}{a}*?\n| ({a}{a}({a})?)\n\n///i write some regex\n/*asdfs" +
     "df*/\n\n| [{a}{a}]\n| [^{a}{a}]\n| (?<={a})\n| .\n| {a}{2,}\n| {a}{2,3}?\n$";
@@ -124,6 +125,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.optionsBox);
             this.tabPage1.Controls.Add(this.tableLayoutPanel1);
             this.tabPage1.Controls.Add(this.richTextBox1);
             this.tabPage1.Controls.Add(this.label1);
@@ -136,6 +138,15 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Expression Tests";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // optionsBox
+            // 
+            this.optionsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.optionsBox.Location = new System.Drawing.Point(6, 134);
+            this.optionsBox.Name = "optionsBox";
+            this.optionsBox.Size = new System.Drawing.Size(286, 20);
+            this.optionsBox.TabIndex = 6;
             // 
             // tableLayoutPanel1
             // 
@@ -442,6 +453,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private Microsoft.Glee.GraphViewerGdi.GViewer cmdFsaGraph;
         private Microsoft.Glee.GraphViewerGdi.GViewer fastFsaGraph;
+        private System.Windows.Forms.TextBox optionsBox;
     }
 }
 

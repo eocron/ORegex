@@ -12,10 +12,10 @@ namespace Eocron.Core.Parse
             _stb = new FSAFactory<TValue>();
         }
 
-        public IFSA<TValue> Build(string input, PredicateTable<TValue> predicateTable)
+        public IFSA<TValue> Build(string input, PredicateTable<TValue> predicateTable, ORegexOptions options)
         {
             var ast = _parser.Parse(input, predicateTable);
-            var fa = _stb.Create(ast);
+            var fa = _stb.Create(ast, options);
             return fa;
         }
 

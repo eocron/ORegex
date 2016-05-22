@@ -44,11 +44,36 @@ namespace TestUtility
         private void ProcessORegex(string oregex)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            var fa = (FiniteAutomaton<char>)_compiler.Build(oregex, _table);
+            var fa = (FiniteAutomaton<char>)_compiler.Build(oregex, _table, Options);
             var elapsed = sw.Elapsed;
             label1.Text = "Compiled in: " + elapsed;
             DrawGraphCmdFsa(fa.CmdFsa);
             DrawGraphFastFsa(fa.FastFsa);
+        }
+
+        private ORegexOptions Options
+        {
+            get
+            {
+                var additionalOptions = ORegexOptions.None;
+                var xoptions = optionsBox.Text;
+                if (!string.IsNullOrWhiteSpace(xoptions))
+                {
+                    try
+                    {
+                        additionalOptions = additionalOptions |
+                                            xoptions.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries)
+                                                .Select(x => Enum.Parse(typeof (ORegexOptions), x))
+                                                .Cast<ORegexOptions>()
+                                                .Aggregate((output, next) => output | next);
+                    }
+                    catch (Exception)
+                    {
+                        additionalOptions = ORegexOptions.None;
+                    }
+                }
+                return additionalOptions;
+            }
         }
 
         private void HighLightSyntax()
@@ -114,15 +139,15 @@ namespace TestUtility
             var text = richTextBox1.Text;
             if (!string.IsNullOrWhiteSpace(text))
             {
-                try
-                {
+                //try
+                //{
                     Stopwatch sw = Stopwatch.StartNew();
                     ProcessORegex(text);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //}
             }
         }
         
@@ -137,7 +162,7 @@ namespace TestUtility
             {
                 var sw = Stopwatch.StartNew();
                 var test = new PerformanceTest();
-                test.BuildTest((int)IterationsCountBoxBuild.Value);
+                test.BuildTest((int)IterationsCountBoxBuild.Value, Options);
                 sw.Stop();
                 label2.Text = "Elapsed " + sw.Elapsed;
             }

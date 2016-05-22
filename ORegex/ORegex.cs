@@ -35,7 +35,7 @@ namespace Eocron
 
         public ORegex(string pattern, ORegexOptions options, PredicateTable<TValue> table)
         {
-            _fa = Compiler.Build(pattern, table);
+            _fa = Compiler.Build(pattern, table, options);
             Options = options;
             Pattern = pattern;
         }

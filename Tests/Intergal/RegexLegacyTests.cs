@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,7 +6,6 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Eocron;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 using Tests.Core;
 
 namespace Tests.Intergal
