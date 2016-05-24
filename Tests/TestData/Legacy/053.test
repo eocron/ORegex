@@ -1,0 +1,8 @@
+﻿<TEST>
+  <REGEX options="RightToLeft">.b?</REGEX>
+  <OREGEX options="RightToLeft">.{b}?</OREGEX>
+	<TEXT>ababbabbbb      c
+  
+  
+  </TEXT>
+</TEST>

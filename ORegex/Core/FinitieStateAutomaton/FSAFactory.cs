@@ -116,10 +116,9 @@ namespace Eocron.Core.FinitieStateAutomaton
             var tmp = CreateNewState(fsa);
             if (isLasy)
             {
+                fsa.AddEpsilonTransition(start, end);
                 fsa.AddEpsilonTransition(tmp, end);
                 Evaluate(tmp, tmp, fsa, predicate);
-
-                fsa.AddEpsilonTransition(start, end);
                 fsa.AddEpsilonTransition(start, tmp);
             }
             else
