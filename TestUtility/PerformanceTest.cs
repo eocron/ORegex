@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Eocron;
 using Eocron.Core.Parse;
 using Tests.Core;
 
@@ -10,7 +11,7 @@ namespace TestUtility
         private readonly ORegexCompiler<char> _compiler = new ORegexCompiler<char>();
         private readonly DebugPredicateTable _table = new DebugPredicateTable();
 
-        public void BuildTest(int iterCount)
+        public void BuildTest(int iterCount, ORegexOptions options)
         {
             const string input =
                 @"  ^
@@ -30,7 +31,7 @@ namespace TestUtility
                     $";
             for (int i = 0; i < iterCount; i++)
             {
-                _compiler.Build(input, _table);
+                _compiler.Build(input, _table, options);
             }
         }
 

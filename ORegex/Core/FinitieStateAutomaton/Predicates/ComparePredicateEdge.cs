@@ -30,9 +30,9 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
             get { return false; }
         }
 
-        public override bool IsMatch(TValue[] values, int index)
+        public override bool IsMatch(SequenceHandler<TValue> values, int index)
         {
-            if (index >= values.Length)
+            if (index >= values.Count)
             {
                 return false;
             }

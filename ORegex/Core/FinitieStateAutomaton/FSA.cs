@@ -63,7 +63,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             Name = name.ThrowIfEmpty();
             Q0 = q0.ToHashSet();
             F = f.ToHashSet();
-            StateCount = Q.Count();
+
             #region Speedup
             foreach(var t in transitions)
             {
@@ -80,8 +80,7 @@ namespace Eocron.Core.FinitieStateAutomaton
                     _sigma.Add(t.Condition);
                 }
             }
-            
-
+            StateCount = Q.Count();
             #endregion
         }
 
@@ -173,7 +172,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             return result;
         }
 
-        public bool TryRun(TValue[] values, int startIndex, OCaptureTable<TValue> table, out Range range)
+        public bool TryRun(SequenceHandler<TValue> values, int startIndex, OCaptureTable<TValue> table, out Range range)
         {
             throw new NotImplementedException();
         }

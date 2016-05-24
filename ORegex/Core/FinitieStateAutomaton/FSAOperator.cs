@@ -1,37 +1,56 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Eocron.Core.FinitieStateAutomaton.Predicates;
 
 namespace Eocron.Core.FinitieStateAutomaton
 {
-    public sealed class FSAPreprocessor<TValue>
+    /// <summary>
+    /// Defines operations available on finite state automaton graphs.
+    /// </summary>
+    /// <typeparam name="TValue"></typeparam>
+    public sealed class FSAOperator<TValue>
     {
-        public FSA<TValue> Preprocess(FSA<TValue> fsa)
+        /// <summary>
+        /// Convert any FSA to minimized DFA.
+        /// Warning: elminates any epsilon transition.
+        /// </summary>
+        /// <param name="fsa"></param>
+        /// <returns></returns>
+        public FSA<TValue> MinimizeFsa(FSA<TValue> fsa)
         {
-            var dfa = NfaToDfa(fsa);
-            dfa = Minimize(dfa);
-            return dfa;
+            fsa = RotateFsa(fsa);
+            fsa = RotateFsa(fsa);
+            return fsa;
         }
 
-        private static FSA<TValue> Minimize(FSA<TValue> dfa)
+        /// <summary>
+        /// Convert any FSA to reversed DFA.
+        /// Warning: elminates any epsilon transition.
+        /// </summary>
+        /// <param name="fsa"></param>
+        /// <returns></returns>
+        public FSA<TValue> RotateFsa(FSA<TValue> fsa)
         {
-            var reversedNDFSM = Reverse(dfa);
-            var reversedDFSM = NfaToDfa(reversedNDFSM);
-            var NDFSM = Reverse(reversedDFSM);
-            var DFA = NfaToDfa(NDFSM);
-            return DFA;
+            return ToDfa(ReverseFsa(fsa));
         }
 
-        private static FSA<TValue> Reverse(FSA<TValue> dfa)
+        /// <summary>
+        /// Reverse any FSA.
+        /// Warning: Type of automaton can change from NFA to DFA or DFA to NFA.
+        /// </summary>
+        /// <param name="fsa"></param>
+        /// <returns></returns>
+        public FSA<TValue> ReverseFsa(FSA<TValue> fsa)
         {
             return
-                new FSA<TValue>(dfa.Name,
-                    dfa.Transitions.Select(x => new FSATransition<TValue>(x.To, x.Condition, x.From)),
-                    dfa.F, dfa.Q0)
+                new FSA<TValue>(fsa.Name,
+                    fsa.Transitions.Select(x => new FSATransition<TValue>(x.To, x.Condition, x.From)),
+                    fsa.F, fsa.Q0)
                 {
-                    ExactBegin = dfa.ExactBegin,
-                    ExactEnd = dfa.ExactEnd,
-                    CaptureNames = dfa.CaptureNames
+                    ExactBegin = fsa.ExactBegin,
+                    ExactEnd = fsa.ExactEnd,
+                    CaptureNames = fsa.CaptureNames
                 };
         }
 
@@ -39,13 +58,13 @@ namespace Eocron.Core.FinitieStateAutomaton
         /// Subset machine that employs the powerset construction or subset construction algorithm.
         /// It creates a DFA that recognizes the same language as the given NFA.
         /// </summary>
-        private static FSA<TValue> NfaToDfa(FSA<TValue> nfa)
+        private static FSA<TValue> ToDfa(FSA<TValue> fsa)
         {
-            FSA<TValue> dfa = new FSA<TValue>(nfa.Name)
+            FSA<TValue> dfa = new FSA<TValue>(fsa.Name)
             {
-                ExactBegin = nfa.ExactBegin, 
-                ExactEnd = nfa.ExactEnd,
-                CaptureNames = nfa.CaptureNames,
+                ExactBegin = fsa.ExactBegin, 
+                ExactEnd = fsa.ExactEnd,
+                CaptureNames = fsa.CaptureNames,
             };
 
             // Sets of NFA states which is represented by some DFA state
@@ -55,11 +74,11 @@ namespace Eocron.Core.FinitieStateAutomaton
             // Gives a number to each state in the DFA
             var dfaStateNum = new Dictionary<Set<int>, int>();
 
-            var nfaInitial = nfa.Q0.ToSet();
+            var nfaInitial = fsa.Q0.ToSet();
 
             // Initially, EpsilonClosure(nfa.initial) is the only state in the DFAs states
             // and it's unmarked.
-            var first = EpsilonClosure(nfa, nfaInitial);
+            var first = EpsilonClosure(fsa, nfaInitial);
             unmarkedStates.Add(first);
 
             // The initial dfa state
@@ -80,15 +99,15 @@ namespace Eocron.Core.FinitieStateAutomaton
 
                 // If this state contains the NFA's final state, add it to the DFA's set of
                 // final states.
-                if (nfa.F.Any(x => aState.Contains(x)))
+                if (fsa.F.Any(x => aState.Contains(x)))
                     dfa.AddFinal(dfaStateNum[aState]);
 
                 // For each input symbol the NFA knows...
                 
-                foreach (var current in nfa.Sigma)
+                foreach (var current in fsa.Sigma)
                 {
                     // Next state
-                    var next = EpsilonClosure(nfa, nfa.Move(aState, current));
+                    var next = EpsilonClosure(fsa, fsa.Move(aState, current));
 
                     if (next.Count > 0)
                     {

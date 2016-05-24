@@ -6,9 +6,9 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
     [DebuggerDisplay("(Predicate, {Name})")]
     public sealed class FuncPredicateEdge<TValue> : PredicateEdgeBase<TValue>
     {
-        internal Func<TValue[], int, bool> _condition { get;private set; }
+        internal Func<SequenceHandler<TValue>, int, bool> _condition { get; private set; }
 
-        public FuncPredicateEdge(string name, Func<TValue[], int, bool> condition) : base(name)
+        public FuncPredicateEdge(string name, Func<SequenceHandler<TValue>, int, bool> condition) : base(name)
         {
             _condition = condition;
         }
@@ -32,9 +32,9 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
             return _condition.GetHashCode();
         }
 
-        public override bool IsMatch(TValue[] values, int index)
+        public override bool IsMatch(SequenceHandler<TValue> values, int index)
         {
-            if (index >= values.Length)
+            if (index >= values.Count)
             {
                 return false;
             }

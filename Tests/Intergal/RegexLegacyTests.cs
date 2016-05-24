@@ -1,9 +1,9 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using Eocron;
 using NUnit.Framework;
 using Tests.Core;
@@ -13,6 +13,11 @@ namespace Tests.Intergal
     [TestFixture]
     public sealed class RegexLegacyTests
     {
+        private const string TEXT = "TEXT";
+        private const string REGEX = "REGEX";
+        private const string OREGEX = "OREGEX";
+        private const string OPTIONS = "options";
+
         private static IEnumerable<SingleFileTest> GetTests()
         {
             return SingleFileTestFactory.GetTests("Legacy");
@@ -21,13 +26,18 @@ namespace Tests.Intergal
         [Test, TestCaseSource(typeof(RegexLegacyTests), "GetTests")]
         public void LegasyTest(SingleFileTest test)
         {
-            var regexPattern = test.GetRoot().Element("REGEX").Value;
-            var oregexPattern = test.GetRoot().Element("OREGEX").Value;
-            
-            var text = test.GetRoot().Element("TEXT").Value;
+            var xreg = test.GetRoot().Element(REGEX);
+            var xoreg = test.GetRoot().Element(OREGEX);
+            var regexOptions = GetRegexOptions(xreg);
+            var oRegexOptions = GetORegexOptions(xoreg);
 
-            var regex = new Regex(regexPattern, RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.Compiled);
-            var oregex = new DebugORegex(oregexPattern);
+            var regexPattern = xreg.Value;
+            var oregexPattern = xoreg.Value;
+
+            var text = test.GetRoot().Element(TEXT).Value;
+
+            var regex = new Regex(regexPattern, regexOptions);
+            var oregex = new DebugORegex(oregexPattern, oRegexOptions);
 
             var regexMatches = regex.Matches(text).Cast<Match>().ToArray();
             var oregexMatches = oregex.Matches(text.ToCharArray()).ToArray();
@@ -70,6 +80,36 @@ namespace Tests.Intergal
             }
 
 
+        }
+
+        private static RegexOptions GetRegexOptions(XElement regex)
+        {
+            const RegexOptions stdOptions = RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.Compiled;
+
+            var additionalOptions = RegexOptions.None;
+            var xoptions = regex.Attribute(OPTIONS);
+            if (xoptions != null)
+            {
+                additionalOptions = additionalOptions | xoptions.Value.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(x => Enum.Parse(typeof (RegexOptions), x))
+                    .Cast<RegexOptions>()
+                    .Aggregate((output, next) => output | next);
+            }
+            return stdOptions | additionalOptions;
+        }
+
+        private static ORegexOptions GetORegexOptions(XElement oregex)
+        {
+            var additionalOptions = ORegexOptions.None;
+            var xoptions = oregex.Attribute(OPTIONS);
+            if (xoptions != null)
+            {
+                additionalOptions = additionalOptions | xoptions.Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(x => Enum.Parse(typeof(ORegexOptions), x))
+                    .Cast<ORegexOptions>()
+                    .Aggregate((output, next) => output | next);
+            }
+            return additionalOptions;
         }
 
         private static void Compare(Match expected, OMatch<char> actual)

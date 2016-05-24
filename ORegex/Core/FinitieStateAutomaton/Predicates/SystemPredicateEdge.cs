@@ -29,7 +29,7 @@
 
         public int CaptureId { get; set; }
 
-        public override bool IsMatch(TValue[] values, int index)
+        public override bool IsMatch(SequenceHandler<TValue> values, int index)
         {
             return true;
         }

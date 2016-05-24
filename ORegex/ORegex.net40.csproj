@@ -68,6 +68,7 @@
     <Compile Include="Core\FinitieStateAutomaton\FSAState.cs" />
     <Compile Include="Core\FinitieStateAutomaton\Predicates\SystemPredicateEdge.cs" />
     <Compile Include="Core\FixedSizeStack.cs" />
+    <Compile Include="Core\SequenceHandler.cs" />
     <Compile Include="OCaptureTable.cs" />
     <Compile Include="Core\FinitieStateAutomaton\CFSA.cs" />
     <Compile Include="Core\FinitieStateAutomaton\Predicates\ComparePredicateEdge.cs" />
@@ -83,7 +84,7 @@
     <Compile Include="Core\Parse\ORegexCompiler.cs" />
     <Compile Include="Core\Parse\ORegexErrorListener.cs" />
     <Compile Include="Core\Parse\ORegexParser.cs" />
-    <Compile Include="Core\FinitieStateAutomaton\FSAPreprocessor.cs" />
+    <Compile Include="Core\FinitieStateAutomaton\FSAOperator.cs" />
     <Compile Include="Core\FinitieStateAutomaton\FSATransition.cs" />
     <Compile Include="Core\FinitieStateAutomaton\FSA.cs" />
     <Compile Include="Core\Parse\RegexGrammar.g4.lexer.cs">

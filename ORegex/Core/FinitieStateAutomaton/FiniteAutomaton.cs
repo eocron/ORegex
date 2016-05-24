@@ -35,7 +35,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             CmdFsa = cmdFSA.ThrowIfNull();
         }
 
-        public bool TryRun(TValue[] values, int startIndex, OCaptureTable<TValue> table, out Range range)
+        public bool TryRun(SequenceHandler<TValue> values, int startIndex, OCaptureTable<TValue> table, out Range range)
         {
             return FastFsa.TryRun(values, startIndex, null, out range) && CmdFsa.TryRun(values, startIndex, table, out range);
         }

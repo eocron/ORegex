@@ -1,0 +1,5 @@
+﻿<TEST>
+  <REGEX options="RightToLeft">(?&lt;g1&gt;a+)|.+?</REGEX>
+  <OREGEX options="RightToLeft">(?&lt;g1&gt;{a}+)|.+?</OREGEX>
+  <TEXT>aaaaaaa</TEXT>
+</TEST>

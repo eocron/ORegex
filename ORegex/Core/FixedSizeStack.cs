@@ -2,6 +2,10 @@
 
 namespace Eocron.Core
 {
+    /// <summary>
+    /// Stack used to speed up algorithm. Standard Stack is slow for this task.
+    /// </summary>
+    /// <typeparam name="TValue"></typeparam>
     internal sealed class FixedSizeStack<TValue>
     {
         private TValue[] _stack;

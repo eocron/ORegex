@@ -8,7 +8,7 @@ namespace Eocron.Core.FinitieStateAutomaton
 {
     public sealed class FSAFactory<TValue>
     {
-        private readonly FSAPreprocessor<TValue> _preprocessor = new FSAPreprocessor<TValue>();
+        private readonly FSAOperator<TValue> _fsaOperator = new FSAOperator<TValue>();
 
         public FSA<TValue> CreateRawFsa(AstRootNode root)
         {
@@ -21,10 +21,14 @@ namespace Eocron.Core.FinitieStateAutomaton
             return result;
         }
 
-        public FiniteAutomaton<TValue> Create(AstRootNode root)
+        public FiniteAutomaton<TValue> Create(AstRootNode root, ORegexOptions options)
         {
             var nfa = CreateRawFsa(root);
-            var dfa = _preprocessor.Preprocess(nfa);
+            if (options.HasFlag(ORegexOptions.ReversePattern))//if options set to reverse pattern we should reverse initial nfa, and we good.
+            {
+                nfa = _fsaOperator.ReverseFsa(nfa);
+            }
+            var dfa = _fsaOperator.MinimizeFsa(nfa);
             return new FiniteAutomaton<TValue>(new CFSA<TValue>(dfa), new CFSA<TValue>(nfa));
         }
 
@@ -112,10 +116,9 @@ namespace Eocron.Core.FinitieStateAutomaton
             var tmp = CreateNewState(fsa);
             if (isLasy)
             {
+                fsa.AddEpsilonTransition(start, end);
                 fsa.AddEpsilonTransition(tmp, end);
                 Evaluate(tmp, tmp, fsa, predicate);
-
-                fsa.AddEpsilonTransition(start, end);
                 fsa.AddEpsilonTransition(start, tmp);
             }
             else

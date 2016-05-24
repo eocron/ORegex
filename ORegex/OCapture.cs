@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Eocron.Core;
 using Eocron.Core.Ast;
 
 namespace Eocron
@@ -24,11 +25,12 @@ namespace Eocron
             }
         }
 
-        internal OCapture(TValue[] collection, Range range)
+        internal OCapture(SequenceHandler<TValue> handler, Range range)
         {
+            range = handler.Translate(range);
             Index = range.Index;
             Length = range.Length;
-            _collection = collection;
+            _collection = handler.Collection;
         }
 
         public IEnumerator<TValue> GetEnumerator()

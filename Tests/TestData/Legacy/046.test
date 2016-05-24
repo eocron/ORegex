@@ -1,0 +1,7 @@
+﻿<TEST>
+	<REGEX options="RightToLeft">ab+</REGEX>
+  <OREGEX options="RightToLeft">{a}{b}+</OREGEX>
+	<TEXT>
+      abbbbbb
+	</TEXT>
+</TEST>

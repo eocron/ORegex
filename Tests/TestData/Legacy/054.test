@@ -1,0 +1,6 @@
+﻿<TEST>
+  <REGEX options="RightToLeft">a*?</REGEX>
+  <OREGEX options="RightToLeft">{a}*?</OREGEX>
+	<TEXT>ababbaaabaaaabbb
+  </TEXT>
+</TEST>
