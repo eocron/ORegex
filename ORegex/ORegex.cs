@@ -40,6 +40,13 @@ namespace Eocron
             Pattern = pattern;
         }
 
+        internal ORegex(IFSA<TValue> finiteAutomaton, ORegexOptions options)
+        {
+            _fa = finiteAutomaton.ThrowIfNull();
+            Options = options;
+            Pattern = "#Internal pattern are not available by default.";
+        }
+
         private static PredicateTable<TValue> CreatePredicateTable(Func<TValue, bool>[] predicates)
         {
             if (predicates == null || predicates.Length == 0)

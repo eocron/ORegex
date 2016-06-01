@@ -18,12 +18,5 @@ namespace Eocron.Core.Parse
             var fa = _stb.Create(ast, options);
             return fa;
         }
-
-        public FSA<TValue> BuildInitialFsa(string input, PredicateTable<TValue> predicateTable)
-        {
-            var ast = _parser.Parse(input, predicateTable);
-            var nfa = _stb.CreateRawFsa(ast);
-            return nfa;
-        }
     }
 }

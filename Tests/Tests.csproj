@@ -107,9 +107,6 @@
     <None Include="TestData\Legacy\048.test">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestData\Legacy\047.test">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="TestData\Legacy\046.test">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

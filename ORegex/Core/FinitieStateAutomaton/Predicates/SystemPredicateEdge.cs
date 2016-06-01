@@ -1,6 +1,6 @@
 ﻿namespace Eocron.Core.FinitieStateAutomaton.Predicates
 {
-    public sealed class SystemPredicateEdge<TValue> : PredicateEdgeBase<TValue>
+    public class SystemPredicateEdge<TValue> : PredicateEdgeBase<TValue>
     {
         public readonly bool IsUnique;
         public SystemPredicateEdge(string cmd, bool isUnique = false) : base(cmd)

@@ -3,6 +3,7 @@ using System.Linq;
 using Eocron.Core.Ast;
 using Eocron.Core.Ast.GroupQuantifiers;
 using Eocron.Core.FinitieStateAutomaton.Predicates;
+using Eocron.Core.Parse;
 
 namespace Eocron.Core.FinitieStateAutomaton
 {
@@ -144,22 +145,31 @@ namespace Eocron.Core.FinitieStateAutomaton
             if (node is AstGroupNode)
             {
                 var group = (AstGroupNode) node;
-                if (group.Quantifier != null && group.Quantifier is CaptureQuantifier)
+                if (group.Quantifier != null)
                 {
-                    var captureQ = ((CaptureQuantifier) group.Quantifier);
-                    var sys = new SystemPredicateEdge<TValue>("#capture")
+                    if (group.Quantifier is CaptureQuantifier)
                     {
-                        IsCapture = true, 
-                        CaptureName = captureQ.CaptureName,
-                        CaptureId = captureQ.CaptureId
-                    };
+                        var captureQ = (CaptureQuantifier) group.Quantifier;
+                        var sys = new SystemPredicateEdge<TValue>("#capture")
+                        {
+                            IsCapture = true,
+                            CaptureName = captureQ.CaptureName,
+                            CaptureId = captureQ.CaptureId
+                        };
 
-                    var startTmp = CreateNewState(fsa);
-                    fsa.AddTransition(start, sys, startTmp);
-                    start = startTmp;
-                    var endTmp = CreateNewState(fsa);
-                    fsa.AddTransition(endTmp, sys, end);
-                    end = endTmp;
+                        var startTmp = CreateNewState(fsa);
+                        fsa.AddTransition(start, sys, startTmp);
+                        start = startTmp;
+                        var endTmp = CreateNewState(fsa);
+                        fsa.AddTransition(endTmp, sys, end);
+                        end = endTmp;
+                    }
+                    else if(group.Quantifier is LookAheadQuantifier)
+                    {
+                        var lookQ = (LookAheadQuantifier)group.Quantifier;
+                        EvaluateLook(start, end, fsa, lookQ, group);
+                        return;
+                    }
                 }
             }
 
@@ -179,6 +189,18 @@ namespace Eocron.Core.FinitieStateAutomaton
         private void EvaluateAtom(int start, int end, FSA<TValue> fsa, AstAtomNode<TValue> node)
         {
             EvaluateCondition(start, end, fsa, node.Condition);
+        }
+
+        private void EvaluateLook(int start, int end, FSA<TValue> fsa, LookAheadQuantifier quantifier, AstConcatNode concatNode)
+        {
+            const ORegexOptions options = ORegexOptions.None;
+            var concat = new AstConcatNode(concatNode.Children, concatNode.Range);
+            var root = new AstRootNode(concat, true, false, concat.Range,
+                new String[] {ORegexAstFactory<TValue>.MainCaptureName});
+            var fa = Create(root, options);
+            var oregex = new ORegex<TValue>(fa, options);
+            var func = new ORegexPredicateEdge<TValue>("#look", oregex, quantifier.IsNegative);
+            EvaluateCondition(start, end, fsa, func);
         }
 
         private void EvaluateCondition(int start, int end, FSA<TValue> fsa, PredicateEdgeBase<TValue> condition)

@@ -19,7 +19,7 @@ namespace Eocron.Core.Ast
             MatchBegin = matchBegin;
             MatchEnd = matchEnd;
             Regex = innerExpression;
-            CaptureGroupNames = captureGroupNames.ToArray();
+            CaptureGroupNames = captureGroupNames == null ? new string[0] : captureGroupNames.ToArray();
         }
 
         public override string ToString()
