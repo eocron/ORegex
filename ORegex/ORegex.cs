@@ -40,6 +40,13 @@ namespace Eocron
             Pattern = pattern;
         }
 
+        internal ORegex(IFSA<TValue> finiteAutomaton, ORegexOptions options)
+        {
+            _fa = finiteAutomaton.ThrowIfNull();
+            Options = options;
+            Pattern = "#Internal pattern are not available by default.";
+        }
+
         private static PredicateTable<TValue> CreatePredicateTable(Func<TValue, bool>[] predicates)
         {
             if (predicates == null || predicates.Length == 0)
@@ -60,11 +67,12 @@ namespace Eocron
         /// <param name="values"></param>
         /// <param name="startIndex"></param>
         /// <returns></returns>
-        public OMatchCollection<TValue> Matches(TValue[] values, int startIndex = 0)
+        public OMatchCollection<TValue> Matches(TValue[] values, int startIndex = -1)
         {
             CheckInput(values,startIndex);
             var handler = new SequenceHandler<TValue>(values);
             handler.Reverse = Options.HasFlag(ORegexOptions.ReverseSequence);
+            startIndex = GetStartIndex(handler, startIndex);
 
             OMatchCollection<TValue> result = new OMatchCollection<TValue>();
             var captureTable = new OCaptureTable<TValue>(_fa.CaptureNames);
@@ -101,11 +109,12 @@ namespace Eocron
         /// <param name="values"></param>
         /// <param name="startIndex"></param>
         /// <returns></returns>
-        public OMatch<TValue> Match(TValue[] values, int startIndex = 0)
+        public OMatch<TValue> Match(TValue[] values, int startIndex = -1)
         {
             CheckInput(values, startIndex);
             var handler = new SequenceHandler<TValue>(values);
             handler.Reverse = Options.HasFlag(ORegexOptions.ReverseSequence);
+            startIndex = GetStartIndex(handler, startIndex);
 
             var captureTable = new OCaptureTable<TValue>(_fa.CaptureNames);
             for (int i = startIndex; i <= handler.Count; i++)
@@ -140,11 +149,12 @@ namespace Eocron
         /// <param name="values"></param>
         /// <param name="startIndex"></param>
         /// <returns></returns>
-        public bool IsMatch(TValue[] values, int startIndex = 0)
+        public bool IsMatch(TValue[] values, int startIndex = -1)
         {
             CheckInput(values, startIndex);
             var handler = new SequenceHandler<TValue>(values);
             handler.Reverse = Options.HasFlag(ORegexOptions.ReverseSequence);
+            startIndex = GetStartIndex(handler, startIndex);
 
             for (int i = startIndex; i <= handler.Count; i++)
             {
@@ -154,11 +164,19 @@ namespace Eocron
                     bool beginMatched = range.Index == startIndex;
                     bool endMatched = (range.Index + range.Length) == handler.Count;
 
-                    if (!_fa.ExactBegin && !_fa.ExactEnd ||
-                        !(beginMatched ^ _fa.ExactBegin) && !(endMatched ^ _fa.ExactEnd))
+                    if (_fa.ExactBegin && _fa.ExactEnd)
                     {
-                        return true;
+                        return beginMatched && endMatched;
                     }
+                    if (_fa.ExactBegin)
+                    {
+                        return beginMatched;
+                    }
+                    if (_fa.ExactEnd)
+                    {
+                        return endMatched;
+                    }
+                    return true;
                 }
                 if (_fa.ExactBegin)
                 {
@@ -175,13 +193,11 @@ namespace Eocron
         /// <param name="replaceProvider">Provides subSequence replacement.</param>
         /// <param name="startIndex"></param>
         /// <returns></returns>
-        public TValue[] Replace(TValue[] values, Func<OMatch<TValue>, TValue[]> replaceProvider, int startIndex = 0)
+        public TValue[] Replace(TValue[] values, Func<OMatch<TValue>, TValue[]> replaceProvider, int startIndex = -1)
         {
             replaceProvider.ThrowIfNull();
             CheckInput(values, startIndex);
-            var handler = new SequenceHandler<TValue>(values);
-            handler.Reverse = Options.HasFlag(ORegexOptions.ReverseSequence);
-            
+
             var matches = Matches(values, startIndex);
 
             if (matches.Count > 0)
@@ -193,14 +209,14 @@ namespace Eocron
                     var transform = replaceProvider(m);
                     for (int j = i; j < m.Index; j++)
                     {
-                        result.Add(handler[j]);
+                        result.Add(values[j]);
                     }
                     result.AddRange(transform);
                     i = m.Index + m.Length;
                 }
-                for (int j = i; j < handler.Count; j++)
+                for (int j = i; j < values.Length; j++)
                 {
-                    result.Add(handler[j]);
+                    result.Add(values[j]);
                 }
                 return result.ToArray();
             }
@@ -209,7 +225,7 @@ namespace Eocron
 
         private static void CheckInput(TValue[] values, int startIndex)
         {
-            if (startIndex < 0)
+            if (startIndex < -1)
             {
                 throw new ArgumentOutOfRangeException("startIndex");
             }
@@ -219,6 +235,16 @@ namespace Eocron
                 throw new ArgumentNullException("values");
             }
         }
+
+        private static int GetStartIndex(SequenceHandler<TValue> handler, int startIndex)
+        {
+            if (startIndex < 0)
+            {
+                return 0;
+            }
+            return handler.Invert(startIndex);
+        }
+
         public override string ToString()
         {
             return Pattern;
