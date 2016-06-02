@@ -1,0 +1,6 @@
+﻿<TEST>
+  <REGEX>.(?&lt;=a)b</REGEX>
+  <OREGEX>.(?&lt;={a}){b}</OREGEX>
+	<TEXT>ababbaaabaaaabbb
+  </TEXT>
+</TEST>

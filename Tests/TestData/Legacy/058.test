@@ -1,0 +1,6 @@
+﻿<TEST>
+  <REGEX>(?!ab{2,3}).b</REGEX>
+  <OREGEX>(?!{a}{b}{2,3}).{b}</OREGEX>
+	<TEXT>ababbaaabaaaabbb
+  </TEXT>
+</TEST>

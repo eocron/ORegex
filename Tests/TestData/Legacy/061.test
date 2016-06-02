@@ -1,0 +1,7 @@
+﻿<TEST>
+  <REGEX options="RightToLeft">(?&lt;!a)a(?&lt;g1&gt;b)</REGEX>
+  <OREGEX options="RightToLeft">(?&lt;!{a}){a}(?&lt;g1&gt;{b})</OREGEX>
+	<TEXT>
+      ababbabbbb
+	</TEXT>
+</TEST>

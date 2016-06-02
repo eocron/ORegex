@@ -35,7 +35,7 @@ namespace Eocron.Core
             }
         }
 
-        private int Invert(int i)
+        public int Invert(int i)
         {
             return Reverse ? _collection.Length - i - 1 : i;
         }
