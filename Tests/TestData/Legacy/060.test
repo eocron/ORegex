@@ -1,0 +1,6 @@
+﻿<TEST>
+  <REGEX>(?&lt;!ab)b</REGEX>
+  <OREGEX>(?&lt;!{a}{b}){b}</OREGEX>
+	<TEXT>ababbaaabaaaabbb
+  </TEXT>
+</TEST>

@@ -1,0 +1,6 @@
+﻿<TEST>
+  <REGEX>(?=c).b</REGEX>
+  <OREGEX>(?={c}).{b}</OREGEX>
+	<TEXT>ababbaaabaaaabbb
+  </TEXT>
+</TEST>
