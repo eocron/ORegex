@@ -16,8 +16,10 @@ Each lambda or value should have unique name inside pattern.
 - Default regex engine support;
 - Capture groups support;
 - Greedy/Lazy support;
-- Exact begin/end match support.
-- RE2 algorithm with modifications.
+- Exact begin/end match support;
+- RE2 algorithm with modifications (backtracking seriously cutted down);
+- Reverse pattern/input support. Also, this includes RightToLeft option support;
+- Negative/Positive look ahead/behind support.
 
 ### Example
 
@@ -141,11 +143,9 @@ You can start from viewing Unit Test project to see how you can use it, by time 
 Also, you can find there test utility and see how things work inside engine.
 
 ### Performance
-- ORegex is 2-3 times slower than original .NET Regex, howevere it is ~2 times faster on simple patterns without many repetitions.
+- ORegex is 2-3 times slower than original .NET Regex, however it is ~2 times faster on simple patterns without many repetitions.
 - Greedy exhausting test (x+x+y+ pattern on a 'xxxxxxxxxxxxxxxxxxxx' string) is ~20 times faster than Regex engine. This result achieved due to double finite state automaton implementation (fast dfa lookup, slow nfa command flow on captures) so backtracking seriously cutted down.
 
 ### Future
-- Reverse search support;
 - C/C++ macros definition support;
 - Overlap capture support;
-- [{Positive}{Negative}] Look[{ahead}{behind}] support;

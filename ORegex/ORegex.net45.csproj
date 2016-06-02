@@ -69,6 +69,7 @@
     <Compile Include="Core\FinitieStateAutomaton\FiniteAutomaton.cs" />
     <Compile Include="Core\FinitieStateAutomaton\FSAOperator.cs" />
     <Compile Include="Core\FinitieStateAutomaton\FSAState.cs" />
+    <Compile Include="Core\FinitieStateAutomaton\Predicates\ORegexPredicateEdge.cs" />
     <Compile Include="Core\FinitieStateAutomaton\Predicates\SystemPredicateEdge.cs" />
     <Compile Include="Core\FixedSizeStack.cs" />
     <Compile Include="Core\SequenceHandler.cs" />

@@ -173,13 +173,13 @@ namespace Eocron.Core.Parse
             }
 
             QuantifierBase quantifier = null;
-            if(predicate.StartsWith("(?<") && predicate.Length > 4)
+            if(CaptureQuantifier.IsCapture(predicate))
             {
-                var name = predicate.Substring(3, predicate.Length - 4);
-                quantifier = new CaptureQuantifier(predicate, name, args.CaptureGroupNames.Count);
-                args.CaptureGroupNames.Add(name);
+                var cq = new CaptureQuantifier(predicate, args.CaptureGroupNames.Count);
+                args.CaptureGroupNames.Add(cq.CaptureName);
+                quantifier = cq;
             }
-            else if(predicate.StartsWith("(?"))
+            else if(LookAheadQuantifier.IsLook(predicate))
             {
                 quantifier = new LookAheadQuantifier(predicate);
             }
