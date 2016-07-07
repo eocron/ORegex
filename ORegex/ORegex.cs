@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Eocron.Core;
 using Eocron.Core.Ast;
@@ -27,6 +28,15 @@ namespace Eocron
 
         public readonly string Pattern;
 
+        public ORegex(string pattern, params TValue[] values) : this(pattern, ORegexOptions.None, null, values)
+        {
+        }
+
+        public ORegex(string pattern, ORegexOptions options, IEqualityComparer<TValue> comparer, params TValue[] values)
+            : this(pattern, options, CreateValuesPredicateTable(values, comparer))
+        {
+        }
+
         public ORegex(string pattern, params Func<TValue,bool>[] predicates) : this(pattern, ORegexOptions.None, predicates){}
 
         public ORegex(string pattern, ORegexOptions options, params Func<TValue, bool>[] predicates) : this(pattern, options, CreatePredicateTable(predicates)) { }
@@ -47,6 +57,24 @@ namespace Eocron
             Pattern = "#Internal pattern are not available by default.";
         }
 
+        private static PredicateTable<TValue> CreateValuesPredicateTable(TValue[] values,
+            IEqualityComparer<TValue> comparer = null)
+        {
+            if (values == null || values.Length == 0)
+            {
+                throw new ArgumentException("No values provided.");
+            }
+            if (comparer == null)
+            {
+                comparer = EqualityComparer<TValue>.Default;
+            }
+            var table = new PredicateTable<TValue>();
+            for (int i = 0; i < values.Length; i++)
+            {
+                table.AddCompare(i.ToString(), values[i], comparer);
+            }
+            return table;
+        }
         private static PredicateTable<TValue> CreatePredicateTable(Func<TValue, bool>[] predicates)
         {
             if (predicates == null || predicates.Length == 0)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -56,7 +57,6 @@ namespace Tests.Intergal
                       "rxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
             PerformanceTest("{x}+{x}+{y}+", "x+x+y+", str, 20, true);
-            Console.WriteLine("############################################");
         }
 
         [Test]
@@ -65,7 +65,6 @@ namespace Tests.Intergal
             var str = SingleFileTestFactory.GetTestData("Performance//Page.html");
 
             PerformanceTest(@"{b1o}{p}{b1c}.*?{b1o}{slash}{p}{b1c}", "<p>.*?</p>", str, 20, true);
-            Console.WriteLine("############################################");
         }
 
         [Test]
@@ -73,15 +72,16 @@ namespace Tests.Intergal
         {
             var str = SingleFileTestFactory.GetTestData("Performance//random.txt");
 
-            PerformanceTest(@"{a}({b}{a})+", "a(ba)+", str, 10, true);
-            Console.WriteLine("############################################");
+            PerformanceTest(@"{a}({b}{a})+", "a(ba)+", str, 20, true);
         }
 
-        private static void PerformanceTest(string oregexPattern, string regexPattern, string inputText, int iterCount, bool outputTotal = false)
+        private static void PerformanceTest(string oregexPattern, string regexPattern, string inputText, int iterCount,
+            bool outputTotal = false)
         {
             var input = inputText.ToCharArray();
             var oregex = new DebugORegex(oregexPattern);
-            var regex = new Regex(regexPattern, RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.Compiled);
+            var regex = new Regex(regexPattern,
+                RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.Compiled);
             if (input.Length <= 3000)
             {
                 Console.WriteLine(string.Format("Input string: {0}", inputText));
@@ -89,27 +89,51 @@ namespace Tests.Intergal
 
             var regexCount = new TimeSpan();
             var oregexCount = new TimeSpan();
+            var table = new DataTable();
+            table.Columns.Add("№", typeof (int));
+            table.Columns.Add("ORegex", typeof (TimeSpan));
+            table.Columns.Add("Regex", typeof (TimeSpan));
+            table.Columns.Add("Ratio", typeof (double));
+
             for (int j = 0; j < iterCount; j++)
             {
-                var sw = Stopwatch.StartNew();
+                var sw1 = Stopwatch.StartNew();
                 var array1 = oregex.Matches(input);
-                sw.Stop();
-                oregexCount += sw.Elapsed;
-                long last = sw.ElapsedTicks;
-                Console.WriteLine(string.Format("ORegex done in\t{0}", sw.Elapsed));
+                sw1.Stop();
+                oregexCount += sw1.Elapsed;
 
-                sw = Stopwatch.StartNew();
+                var sw2 = Stopwatch.StartNew();
                 var array2 = regex.Matches(inputText).Cast<Match>().ToArray();
-                sw.Stop();
-                regexCount += sw.Elapsed;
-                Console.WriteLine(string.Format("Regex done in\t{0}", sw.Elapsed));
+                sw2.Stop();
+                regexCount += sw2.Elapsed;
+
+                table.Rows.Add(j + 1, sw1.Elapsed, sw2.Elapsed,
+                    Math.Round(sw2.ElapsedTicks/(double) sw1.ElapsedTicks, 2));
             }
 
             if (outputTotal)
             {
-                Console.WriteLine("############################################");
-                Console.WriteLine(string.Format("ORegex total\t{0}", oregexCount));
-                Console.WriteLine(string.Format("Regex total\t{0}", regexCount));
+                table.Rows.Add(0, oregexCount, regexCount, Math.Round(oregexCount.Ticks/(double) regexCount.Ticks, 3));
+            }
+
+            Console.WriteLine("ORegex pattern: {0}; Regex pattern: {1}.", oregexPattern, regexPattern);
+            PrintTable(table);
+        }
+
+        private static void PrintTable(DataTable table)
+        {
+            foreach (DataColumn c in table.Columns)
+            {
+                Console.Write(c.ColumnName + "\t");
+            }
+            Console.WriteLine();
+            foreach (DataRow row in table.Rows)
+            {
+                for (int x = 0; x < table.Columns.Count; x++)
+                {
+                    Console.Write(row[x].ToString() + "\t");
+                }
+                Console.WriteLine();
             }
         }
     }

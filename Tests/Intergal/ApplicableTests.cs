@@ -20,7 +20,6 @@ namespace Tests.Intergal
             {
                 Trace.WriteLine(string.Join(",", match.Values));
             }
-
             //OUTPUT:
             //2
             //3,4,5,6,7
@@ -91,13 +90,33 @@ namespace Tests.Intergal
             {
                 Console.WriteLine("Person found: {0}, length: {1}", person.Name, person.Words.Length);
             }
-
+            Assert.AreEqual(persons.Count(), 3);
             //OUTPUT:
             //Person found: Тамара, length: 2
             //Person found: Джека, length: 1
             //Person found: Михаилом, length: 3
         }
 
+        [Test]
+        public void ByteMaskSearchTest()
+        {
+            var oregex = new ORegex<byte>("{0}{1}{2}{3}{4}{5}{6}{7}", 12, 3, 5, 76, 8, 0, 6, 125);
+            byte[] toBeSearched = new byte[]
+            {
+                23, 36, 43, 76, 125, 56, 34, 234, 12, 3, 5, 76, 8, 0, 6, 125, 234, 56, 211, 122, 22, 4, 7, 89, 76, 64, 12,
+                3, 5, 76, 8, 0, 6, 125
+            };
+
+            var matches = oregex.Matches(toBeSearched);
+            Assert.AreEqual(matches.Count, 2);
+            foreach (var m in matches)
+            {
+                Console.WriteLine("Match at {0} found:\t{1}",m.Index,string.Join(",", m.Values));
+            }
+            //OUTPUT:
+            //Match at 8 found:     12,3,5,76,8,0,6,125
+            //Match at 26 found:    12,3,5,76,8,0,6,125
+        }
         public enum SemanticType
         {
             Name,
