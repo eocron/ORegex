@@ -12,7 +12,7 @@ PredicateTable is simple key value dictionary for predicates.
 Predicate tables can accept lambda's and comparer's (IEqualityComparer<T>) with values.
 Each lambda or value should have unique name inside pattern.
 
-### Features
+## Features
 - Default regex engine support;
 - Capture groups support;
 - Greedy/Lazy support;
@@ -21,14 +21,50 @@ Each lambda or value should have unique name inside pattern.
 - Reverse pattern/input support. Also, this includes RightToLeft option support;
 - Negative/Positive look ahead/behind support.
 
-### Example
+## Syntax
+
+*Concatenation:*
+
+    {a}{b}{c}
+    
+*Repetition operators:*
+
+    {a}?            - match zero or one times.
+    {a}*            - match zero or any number of times.
+    {a}+            - match one or any number of times.
+    {a}{n,}         - match at least 'n' times.
+    {a}{n,m}        - match between 'n' and 'm' times.
+    {a}{n,n}        - match exactly 'n' times.
+    
+*Important to mention, all of this operator's support 'lazy' modifier:*
+
+    {a}+?
+    {a}{n,}?
+    ...
+    
+*Groups and Capturing:*
+
+    ({a}{b})?{c}
+    (?<groupName>{a}{b})?{c}
+    
+*Look somewhere:*
+
+    (?={a})         - positive lookahead.
+    (?!{a})         - negative lookahead.
+    (?<={a})        - positive lookbehind.
+    (?<!{a})        - negative lookbehind.
+
+
+
+
+
+## Example
 
 Simple prime sequence test:
 
         public void PrimeTest()
         {
             var oregex = new ORegex<int>("{0}(.{0})*", IsPrime);
-
             var input = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
             foreach (var match in oregex.Matches(input))
             {
@@ -44,18 +80,15 @@ Simple prime sequence test:
         private static bool IsPrime(int number)
         {
             int boundary = (int)Math.Floor(Math.Sqrt(number));
-
             if (number == 1) return false;
             if (number == 2) return true;
-
             for (int i = 2; i <= boundary; ++i)
             {
                 if (number % i == 0) return false;
             }
-
             return true;
         }
-
+    
 Or more complex test from NLP field:
 
         public void PersonSelectionTest()
@@ -142,10 +175,10 @@ Or more complex test from NLP field:
 You can start from viewing Unit Test project to see how you can use it, by time there will be more examples. 
 Also, you can find there test utility and see how things work inside engine.
 
-### Performance
+## Performance
 - ORegex is 2-3 times slower than original .NET Regex, however it is ~2 times faster on simple patterns without many repetitions.
 - Greedy exhausting test (x+x+y+ pattern on a 'xxxxxxxxxxxxxxxxxxxx' string) is ~20 times faster than Regex engine. This result achieved due to double finite state automaton implementation (fast dfa lookup, slow nfa command flow on captures) so backtracking seriously cutted down.
 
-### Future
+## Future
 - C/C++ macros definition support;
 - Overlap capture support;
