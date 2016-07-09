@@ -1,4 +1,4 @@
-[The "BSD license"]
+The "BSD license"
 Copyright (c) 2015 Artem Dorofeev
 All rights reserved.
 
