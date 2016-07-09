@@ -1,6 +1,7 @@
 ###The "BSD license"
 
 Copyright (c) 2015 Artem Dorofeev
+
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
