@@ -31,11 +31,11 @@ is the same as:
 
 ## Syntax
 
-*Concatenation:*
+###Concatenation
 
     {a}{b}{c}
     
-*Repetition operators:*
+###Repetition operators
 
     {a}?            - match zero or one time.
     {a}*            - match zero or any number of times.
@@ -53,19 +53,19 @@ is the same as:
     {a}{n,m}?
     {a}{n,n}?
     
-*Groups*
+###Groups
 
     ({a}{b})?{c}
 
 This group will be available by index '1'. Index '0' is root match.
 
-*Capture*
+###Capture
 
     (?<groupName>{a}{b})?{c}
     
 This group will be available by index '1' and name 'groupName'.
 
-*Look somewhere:*
+###Look somewhere
 
     (?={a})         - positive lookahead.
     (?!{a})         - negative lookahead.
