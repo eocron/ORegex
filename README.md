@@ -33,14 +33,17 @@ Each lambda or value should have unique name inside pattern.
     {a}*            - match zero or any number of times.
     {a}+            - match one or any number of times.
     {a}{n,}         - match at least 'n' times.
-    {a}{n,m}        - match between 'n' and 'm' times.
+    {a}{n,m}        - match at least 'n' times but not greater than 'm' times.
     {a}{n,n}        - match exactly 'n' times.
     
 *Important to mention, all of this operator's support 'lazy' modifier:*
 
+    {a}??
+    {a}*?
     {a}+?
     {a}{n,}?
-    ...
+    {a}{n,m}?
+    {a}{n,n}?
     
 *Groups and Capturing:*
 
@@ -53,9 +56,6 @@ Each lambda or value should have unique name inside pattern.
     (?!{a})         - negative lookahead.
     (?<={a})        - positive lookbehind.
     (?<!{a})        - negative lookbehind.
-
-
-
 
 
 ## Example
