@@ -10,7 +10,15 @@ To declare predicate in pattern you type:
 
 PredicateTable is simple key value dictionary for predicates.
 Predicate tables can accept lambda's and comparer's (IEqualityComparer<T>) with values.
-Each lambda or value should have unique name inside pattern.
+Each lambda or value should have unique name inside pattern. Pattern in can have as much whitespaces as you want, so you are free to format your patterns in fancy styles:
+
+    {f}    {a}    {n}
+    {c}     |     {y}
+
+is the same as:
+    
+    {f}{a}{n}{c}|{y}
+
 
 ## Features
 - Default regex engine support;
