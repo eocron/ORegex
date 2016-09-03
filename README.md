@@ -63,7 +63,9 @@ This group will be available by index '1'. Index '0' is root match.
 
     (?<groupName>{a}{b})?{c}
     
-This group will be available by index '1' and name 'groupName'.
+This group will be available by index '1' and name 'groupName'. Important to mention, you can write Russian names too. For example:
+
+    (?<НазваниеГруппы>{a}{b})?{c}
 
 ###Look somewhere
 
