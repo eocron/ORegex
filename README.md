@@ -37,9 +37,9 @@ is the same as:
     
 *Repetition operators:*
 
-    {a}?            - match zero or one times.
+    {a}?            - match zero or one time.
     {a}*            - match zero or any number of times.
-    {a}+            - match one or any number of times.
+    {a}+            - match at least one or greater number of times.
     {a}{n,}         - match at least 'n' times.
     {a}{n,m}        - match at least 'n' times but not greater than 'm' times.
     {a}{n,n}        - match exactly 'n' times.
@@ -53,11 +53,18 @@ is the same as:
     {a}{n,m}?
     {a}{n,n}?
     
-*Groups and Capturing:*
+*Groups*
 
     ({a}{b})?{c}
+
+This group will be available by index '1'. Index '0' is root match.
+
+*Capture*
+
     (?<groupName>{a}{b})?{c}
     
+This group will be available by index '1' and name 'groupName'.
+
 *Look somewhere:*
 
     (?={a})         - positive lookahead.
