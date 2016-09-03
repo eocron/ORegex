@@ -90,7 +90,7 @@ Simple prime sequence test:
         }
 ```    
 Or more complex test from NLP field:
-
+```cs
         public void PersonSelectionTest()
         {
             //INPUT_TEXT: Пяточкова Тамара решила выгулять Джека и встретилась с Михаилом А.М.
@@ -170,7 +170,7 @@ Or more complex test from NLP field:
             var inp = str.Trim(new[] { '.', ' ', '\t', '\n', '\r' });
             return inp.Length == 1 && char.IsUpper(inp[0]);
         }
-
+```
 
 You can start from viewing Unit Test project to see how you can use it, by time there will be more examples. 
 Also, you can find there test utility and see how things work inside engine.
