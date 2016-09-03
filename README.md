@@ -61,7 +61,7 @@ Each lambda or value should have unique name inside pattern.
 ## Example
 
 Simple prime sequence test:
-
+```cs
         public void PrimeTest()
         {
             var oregex = new ORegex<int>("{0}(.{0})*", IsPrime);
@@ -88,7 +88,7 @@ Simple prime sequence test:
             }
             return true;
         }
-    
+```    
 Or more complex test from NLP field:
 
         public void PersonSelectionTest()
