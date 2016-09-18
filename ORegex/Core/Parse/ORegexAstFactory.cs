@@ -21,34 +21,31 @@ namespace Eocron.Core.Parse
 
         private static AstNodeBase Create(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
-            if(IsRoot(node, args))
+            if (IsRoot(node, args))
             {
                 return CreateRoot(node, args);
             }
-            else if(IsConcat(node, args))
+            if (IsConcat(node, args))
             {
                 return CreateConcat(node, args);
             }
-            else if (IsAtom(node, args))
+            if (IsAtom(node, args))
             {
                 return CreateAtom(node, args);
             }
-            else if (IsGroup(node, args))
+            if (IsGroup(node, args))
             {
                 return CreateGroup(node, args);
             }
-            else if (IsUnOper(node, args))
+            if (IsUnOper(node, args))
             {
                 return CreateUnOper(node, args);
             }
-            else if (IsBinOper(node, args))
+            if (IsBinOper(node, args))
             {
                 return CreateBinOper(node, args);
             }
-            else
-            {
-                return Create(node.GetChild(0), args);//fictive node, skip him
-            }
+            return Create(node.GetChild(0), args); //fictive node, skip him
         }
 
         private static bool IsRoot(IParseTree node, ORegexAstFactoryArgs<TValue> args)
@@ -84,8 +81,6 @@ namespace Eocron.Core.Parse
         private static AstRootNode CreateRoot(IParseTree node, ORegexAstFactoryArgs<TValue> args)
         {
             args.CaptureGroupNames.Add(MainCaptureName);
-
-            List<AstNodeBase> children = new List<AstNodeBase>();
             bool matchBegin = false;
             bool matchEnd = false;
 
@@ -99,15 +94,7 @@ namespace Eocron.Core.Parse
                 matchEnd = true;
             }
 
-            AstNodeBase inner = null;
-            if (matchBegin)
-            {
-                inner = Create(node.GetChild(1), args);
-            }
-            else
-            {
-                inner = Create(node.GetChild(0), args);
-            }
+            var inner = Create(matchBegin ? node.GetChild(1) : node.GetChild(0), args);
             return new AstRootNode(inner, matchBegin, matchEnd, new Range(node), args.CaptureGroupNames);
         }
 
@@ -120,33 +107,24 @@ namespace Eocron.Core.Parse
                 {
                     return new AstAtomNode<TValue>(name, args.GetPredicate(name), new Range(node));
                 }
-                else
-                {
-                    return CreateNAtom(node.GetChild(0), args);
-                }
+                return CreateNAtom(node.GetChild(0), args);
             }
-            else
+            var children = new List<AstAtomNode<TValue>>();
+            for (int i = 1; i < node.ChildCount - 1; i++)
             {
-                var children = new List<AstAtomNode<TValue>>();
-                for (int i = 1; i < node.ChildCount - 1; i++)
-                {
-                    var child = CreateNAtom(node.GetChild(i), args);
-                    children.Add(child);
-                }
-
-                var isNegate = node.GetChild(0).GetText().Length == 2;
-                if (isNegate)
-                {
-                    PredicateEdgeBase<TValue> p;
-                    string n;
-                    args.GetInvertedPredicate(children.Select(x => x.Name), out p, out n);
-                    return new AstAtomNode<TValue>(n, p, new Range(node));
-                }
-                else
-                {
-                    return new AstOrNode(children, new Range(node));
-                }
+                var child = CreateNAtom(node.GetChild(i), args);
+                children.Add(child);
             }
+
+            var isNegate = node.GetChild(0).GetText().Length == 2;
+            if (isNegate)
+            {
+                PredicateEdgeBase<TValue> p;
+                string n;
+                args.GetInvertedPredicate(children.Select(x => x.Name), out p, out n);
+                return new AstAtomNode<TValue>(n, p, new Range(node));
+            }
+            return new AstOrNode(children, new Range(node));
         }
 
         private static AstAtomNode<TValue> CreateNAtom(IParseTree node, ORegexAstFactoryArgs<TValue> args)
@@ -173,13 +151,13 @@ namespace Eocron.Core.Parse
             }
 
             QuantifierBase quantifier = null;
-            if(CaptureQuantifier.IsCapture(predicate))
+            if (CaptureQuantifier.IsCapture(predicate))
             {
                 var cq = new CaptureQuantifier(predicate, args.CaptureGroupNames.Count);
                 args.CaptureGroupNames.Add(cq.CaptureName);
                 quantifier = cq;
             }
-            else if(LookAheadQuantifier.IsLook(predicate))
+            else if (LookAheadQuantifier.IsLook(predicate))
             {
                 quantifier = new LookAheadQuantifier(predicate);
             }
@@ -190,9 +168,10 @@ namespace Eocron.Core.Parse
         {
             var arg = Create(node.GetChild(0), args);
             var oper = node.GetChild(1).ToString();
-            int min = 0, max = 0;
+            int min,
+                max;
             bool isLazy = false;
-            var match = Regex.Match(oper,@"{(?<min>\d+),(?<max>\d+)?}(?<greed>\?)?");
+            var match = Regex.Match(oper, @"{(?<min>\d+),(?<max>\d+)?}(?<greed>\?)?");
             if (match.Success)
             {
                 isLazy = match.Groups["greed"].Success;
@@ -262,7 +241,7 @@ namespace Eocron.Core.Parse
 
                 children.Add(Create(child, args));
             }
-            return new AstConcatNode(children, new Range(node)); 
+            return new AstConcatNode(children, new Range(node));
         }
     }
 }

@@ -24,8 +24,10 @@ namespace Tests.Unit
         public void InvertRun()
         {
             var seq = new[] {0, 1, 2, 3, 4, 5};
-            var handler = new SequenceHandler<int>(seq);
-            handler.Reverse = true;
+            var handler = new SequenceHandler<int>(seq)
+                          {
+                              Reverse = true
+                          };
             var inverted = seq.Reverse().ToArray();
             Assert.AreEqual(handler.Count, seq.Length);
             for (int i = 0; i < handler.Count; i++)
@@ -40,15 +42,17 @@ namespace Tests.Unit
             var seq = new[] {0, 1, 2, 3, 4, 5};
             var handler = new SequenceHandler<int>(seq);
             Range range = new Range(1, 3);
-            Assert.AreEqual(new Range(1, 3), handler.Translate(new Range(1, 3)));
+            Assert.AreEqual(range, handler.Translate(range));
         }
 
         [Test]
         public void CorrectRealInvertTransform()
         {
             var seq = new[] {0, 1, 2, 3, 4, 5};
-            var handler = new SequenceHandler<int>(seq);
-            handler.Reverse = true;
+            var handler = new SequenceHandler<int>(seq)
+                          {
+                              Reverse = true
+                          };
 
             Assert.AreEqual(new Range(2, 3), handler.Translate(new Range(1, 3)));
             Assert.AreEqual(new Range(0, 0), handler.Translate(new Range(6, 0)));

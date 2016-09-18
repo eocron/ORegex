@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Eocron;
+﻿using Eocron;
 using Eocron.Core.Parse;
 using Tests.Core;
 
@@ -43,7 +41,7 @@ namespace TestUtility
 
             for (int i = 0; i < iterCount; i++)
             {
-                var array = oregex.Matches(input).ToArray();
+                oregex.Matches(input).Evaluate();
             }
         }
     }

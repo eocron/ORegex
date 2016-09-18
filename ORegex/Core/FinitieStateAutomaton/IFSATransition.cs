@@ -2,12 +2,13 @@
 
 namespace Eocron.Core.FinitieStateAutomaton
 {
+    // ReSharper disable once InconsistentNaming
     public interface IFSATransition<TValue>
     {
-        int From { get; }
+        int BeginState { get; }
 
         PredicateEdgeBase<TValue> Condition { get; }
 
-        int To { get; }
+        int EndState { get; }
     }
 }

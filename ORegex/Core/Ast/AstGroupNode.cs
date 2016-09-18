@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Eocron.Core.Ast.GroupQuantifiers;
 
 namespace Eocron.Core.Ast
@@ -21,10 +19,7 @@ namespace Eocron.Core.Ast
             {
                 return string.Format("Group[{0}]", Children.Length);
             }
-            else
-            {
-                return string.Format("Group[{0}][{1}]", Children.Length, Quantifier.GetType().Name);
-            }
+            return string.Format("Group[{0}][{1}]", Children.Length, Quantifier.GetType().Name);
         }
     }
 }

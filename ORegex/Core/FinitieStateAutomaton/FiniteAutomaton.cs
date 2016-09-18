@@ -29,10 +29,10 @@ namespace Eocron.Core.FinitieStateAutomaton
             get { return CmdFsa.CaptureNames; }
         }
 
-        public FiniteAutomaton(IFSA<TValue> fastFSA, IFSA<TValue> cmdFSA)
+        public FiniteAutomaton(IFSA<TValue> fastFsa, IFSA<TValue> cmdFsa)
         {
-            FastFsa = fastFSA.ThrowIfNull();
-            CmdFsa = cmdFSA.ThrowIfNull();
+            FastFsa = fastFsa.ThrowIfNull();
+            CmdFsa = cmdFsa.ThrowIfNull();
         }
 
         public bool TryRun(SequenceHandler<TValue> values, int startIndex, OCaptureTable<TValue> table, out Range range)

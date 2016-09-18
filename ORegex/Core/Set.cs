@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Eocron.Core
 {
@@ -19,12 +20,7 @@ namespace Eocron.Core
         }
         public override int GetHashCode()
         {
-            int hash = 0;
-            foreach (var v in this)
-            {
-                hash ^= v.GetHashCode();
-            }
-            return hash;
+            return this.Aggregate(0, (current, v) => current ^ v.GetHashCode());
         }
 
         public override bool Equals(object obj)

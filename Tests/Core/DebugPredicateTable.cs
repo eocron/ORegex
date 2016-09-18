@@ -1,5 +1,4 @@
-﻿using System.Collections.Specialized;
-using Eocron;
+﻿using Eocron;
 
 namespace Tests.Core
 {

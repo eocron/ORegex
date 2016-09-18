@@ -6,11 +6,11 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
     [DebuggerDisplay("(Predicate, {Name})")]
     public sealed class FuncPredicateEdge<TValue> : PredicateEdgeBase<TValue>
     {
-        internal Func<SequenceHandler<TValue>, int, bool> _condition { get; private set; }
+        internal Func<SequenceHandler<TValue>, int, bool> Condition { get; }
 
         public FuncPredicateEdge(string name, Func<SequenceHandler<TValue>, int, bool> condition) : base(name)
         {
-            _condition = condition;
+            Condition = condition;
         }
 
         public override bool IsFuncPredicate
@@ -29,7 +29,7 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
         }
         public override int GetHashCode()
         {
-            return _condition.GetHashCode();
+            return Condition.GetHashCode();
         }
 
         public override bool IsMatch(SequenceHandler<TValue> values, int index)
@@ -38,7 +38,7 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
             {
                 return false;
             }
-            return _condition(values, index);
+            return Condition(values, index);
         }
     }
 }

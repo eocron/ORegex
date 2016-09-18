@@ -9,7 +9,7 @@ namespace Eocron.Core
         {
             if (string.IsNullOrWhiteSpace(str))
             {
-                throw new ArgumentNullException("String is empty.");
+                throw new ArgumentNullException(nameof(str), "String is empty.");
             }
             return str;
         }
@@ -18,7 +18,7 @@ namespace Eocron.Core
         {
             if (value == null)
             {
-                throw new ArgumentNullException("Value is null.");
+                throw new ArgumentNullException(nameof(value), "Value is null.");
             }
             return value;
         }

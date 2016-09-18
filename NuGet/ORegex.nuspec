@@ -18,7 +18,7 @@
     </dependencies>
   </metadata>
   	<files>
-		<file src="..\ORegex\bin\Release\net40-client\ORegex.dll" target="lib\net40-client\" />
-		<file src="..\ORegex\bin\Release\net45\ORegex.dll" target="lib\net45\" />
+		<file src="net40-client\ORegex.dll" target="lib\net40-client\" />
+		<file src="net45\ORegex.dll" target="lib\net45\" />
 	</files>
 </package>

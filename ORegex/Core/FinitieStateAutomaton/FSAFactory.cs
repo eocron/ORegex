@@ -7,13 +7,17 @@ using Eocron.Core.Parse;
 
 namespace Eocron.Core.FinitieStateAutomaton
 {
+    // ReSharper disable once InconsistentNaming
     public sealed class FSAFactory<TValue>
     {
         private readonly FSAOperator<TValue> _fsaOperator = new FSAOperator<TValue>();
 
         public FSA<TValue> CreateRawFsa(AstRootNode root, ORegexOptions options)
         {
-            var result = new FSA<TValue>(root.CaptureGroupNames[0]) {CaptureNames = root.CaptureGroupNames};
+            var result = new FSA<TValue>(root.CaptureGroupNames[0])
+                         {
+                             CaptureNames = root.CaptureGroupNames
+                         };
             var start = result.NewState();
             var end = result.NewState();
             Evaluate(start, end, result, root, options);
@@ -26,7 +30,6 @@ namespace Eocron.Core.FinitieStateAutomaton
         {
             var nfa = CreateRawFsa(root, options);
             if (options.HasFlag(ORegexOptions.ReversePattern))
-                //if options set to reverse pattern we should reverse initial nfa, and we good.
             {
                 nfa = _fsaOperator.ReverseFsa(nfa);
             }
@@ -36,9 +39,10 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         public void Evaluate(int start, int end, FSA<TValue> fsa, AstNodeBase node, ORegexOptions options)
         {
+            // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
             if (node is AstAtomNode<TValue>)
             {
-                EvaluateAtom(start, end, fsa, (AstAtomNode<TValue>) node, options);
+                EvaluateAtom(start, end, fsa, (AstAtomNode<TValue>) node);
             }
             else if (node is AstConcatNode)
             {
@@ -69,8 +73,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             Evaluate(start, end, fsa, astRootNode.Regex, options);
         }
 
-        private void EvaluateRepeat(int start, int end, FSA<TValue> fsa, AstRepeatNode astRepeatNode,
-            ORegexOptions options)
+        private void EvaluateRepeat(int start, int end, FSA<TValue> fsa, AstRepeatNode astRepeatNode, ORegexOptions options)
         {
             var toRepeat = astRepeatNode.Argument;
             var prev = start;
@@ -100,8 +103,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             }
         }
 
-        private void RepeatZeroOrOne(int start, int end, FSA<TValue> fsa, AstNodeBase node, bool isLasy,
-            ORegexOptions options)
+        private void RepeatZeroOrOne(int start, int end, FSA<TValue> fsa, AstNodeBase node, bool isLasy, ORegexOptions options)
         {
             if (isLasy)
             {
@@ -115,8 +117,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             }
         }
 
-        private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, AstNodeBase predicate, bool isLasy,
-            ORegexOptions options)
+        private void RepeatZeroOrInfinite(int start, int end, FSA<TValue> fsa, AstNodeBase predicate, bool isLasy, ORegexOptions options)
         {
             var tmp = CreateNewState(fsa);
             if (isLasy)
@@ -146,20 +147,21 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         private void EvaluateConcat(int start, int end, FSA<TValue> fsa, AstConcatNode node, ORegexOptions options)
         {
-            if (node is AstGroupNode)
+            var group = node as AstGroupNode;
+            if (group != null)
             {
-                var group = (AstGroupNode) node;
                 if (group.Quantifier != null)
                 {
+                    // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
                     if (group.Quantifier is CaptureQuantifier)
                     {
                         var captureQ = (CaptureQuantifier) group.Quantifier;
                         var sys = new SystemPredicateEdge<TValue>("#capture")
-                        {
-                            IsCapture = true,
-                            CaptureName = captureQ.CaptureName,
-                            CaptureId = captureQ.CaptureId
-                        };
+                                  {
+                                      IsCapture = true,
+                                      CaptureName = captureQ.CaptureName,
+                                      CaptureId = captureQ.CaptureId
+                                  };
 
                         var startTmp = CreateNewState(fsa);
                         fsa.AddTransition(start, sys, startTmp);
@@ -190,30 +192,40 @@ namespace Eocron.Core.FinitieStateAutomaton
             Evaluate(prev, next, fsa, children[children.Length - 1], options);
         }
 
-        private void EvaluateAtom(int start, int end, FSA<TValue> fsa, AstAtomNode<TValue> node, ORegexOptions options)
+        private void EvaluateAtom(int start, int end, FSA<TValue> fsa, AstAtomNode<TValue> node)
         {
-            EvaluateCondition(start, end, fsa, node.Condition, options);
+            EvaluateCondition(start, end, fsa, node.Condition);
         }
 
-        private void EvaluateLook(int start, int end, FSA<TValue> fsa, LookAheadQuantifier quantifier,
-            AstConcatNode concatNode, ORegexOptions options)
+        private void EvaluateLook(
+            int start,
+            int end,
+            FSA<TValue> fsa,
+            LookAheadQuantifier quantifier,
+            AstConcatNode concatNode,
+            ORegexOptions options)
         {
             bool isBehind = options.HasFlag(ORegexOptions.ReversePattern) ? !quantifier.IsBehind : quantifier.IsBehind;
             bool isNegative = quantifier.IsNegative;
 
             var condOptions = isBehind ? ORegexOptions.RightToLeft : ORegexOptions.None;
             var concat = new AstConcatNode(concatNode.Children, concatNode.Range);
-            var root = new AstRootNode(concat, true, false, concat.Range,
-                new[] {ORegexAstFactory<TValue>.MainCaptureName});
+            var root = new AstRootNode(concat,
+                                       true,
+                                       false,
+                                       concat.Range,
+                                       new[]
+                                       {
+                                           ORegexAstFactory<TValue>.MainCaptureName
+                                       });
             var fa = Create(root, condOptions);
             var oregex = new ORegex<TValue>(fa, condOptions);
 
             var func = new ORegexPredicateEdge<TValue>("#look", oregex, isNegative, isBehind);
-            EvaluateCondition(start, end, fsa, func, options);
+            EvaluateCondition(start, end, fsa, func);
         }
 
-        private void EvaluateCondition(int start, int end, FSA<TValue> fsa, PredicateEdgeBase<TValue> condition,
-            ORegexOptions options)
+        private void EvaluateCondition(int start, int end, FSA<TValue> fsa, PredicateEdgeBase<TValue> condition)
         {
             fsa.AddTransition(start, condition, end);
         }

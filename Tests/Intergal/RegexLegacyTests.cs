@@ -13,28 +13,32 @@ namespace Tests.Intergal
     [TestFixture]
     public sealed class RegexLegacyTests
     {
-        private const string TEXT = "TEXT";
-        private const string REGEX = "REGEX";
-        private const string OREGEX = "OREGEX";
-        private const string OPTIONS = "options";
+        private const string TextTag = "TEXT";
+        private const string RegexTag = "REGEX";
+        private const string OregexTag = "OREGEX";
+        private const string OptionsTag = "options";
 
+        // ReSharper disable once UnusedMethodReturnValue.Local
         private static IEnumerable<SingleFileTest> GetTests()
         {
             return SingleFileTestFactory.GetTests("Legacy");
         }
 
-        [Test, TestCaseSource(typeof(RegexLegacyTests), "GetTests")]
+        [Test, TestCaseSource(typeof(RegexLegacyTests), nameof(GetTests))]
         public void LegasyTest(SingleFileTest test)
         {
-            var xreg = test.GetRoot().Element(REGEX);
-            var xoreg = test.GetRoot().Element(OREGEX);
+            var xreg = test.GetRoot().Element(RegexTag);
+            var xoreg = test.GetRoot().Element(OregexTag);
             var regexOptions = GetRegexOptions(xreg);
             var oRegexOptions = GetORegexOptions(xoreg);
 
+            // ReSharper disable once PossibleNullReferenceException
             var regexPattern = xreg.Value;
+            // ReSharper disable once PossibleNullReferenceException
             var oregexPattern = xoreg.Value;
 
-            var text = test.GetRoot().Element(TEXT).Value;
+            // ReSharper disable once PossibleNullReferenceException
+            var text = test.GetRoot().Element(TextTag).Value;
 
             var regex = new Regex(regexPattern, regexOptions);
             var oregex = new DebugORegex(oregexPattern, oRegexOptions);
@@ -56,7 +60,7 @@ namespace Tests.Intergal
                     Compare(rm, orm);
                 }
             }
-            catch (Exception e)
+            catch
             {
                 Console.WriteLine("##############################################################");
                 Console.WriteLine("#                         EXPECTED                           #");
@@ -65,7 +69,7 @@ namespace Tests.Intergal
                 {
                     Console.WriteLine(ExpectedString(m));
                 }
-                throw e;
+                throw;
             }
             finally
             {
@@ -87,7 +91,7 @@ namespace Tests.Intergal
             const RegexOptions stdOptions = RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.Compiled;
 
             var additionalOptions = RegexOptions.None;
-            var xoptions = regex.Attribute(OPTIONS);
+            var xoptions = regex.Attribute(OptionsTag);
             if (xoptions != null)
             {
                 additionalOptions = additionalOptions | xoptions.Value.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries)
@@ -101,7 +105,7 @@ namespace Tests.Intergal
         private static ORegexOptions GetORegexOptions(XElement oregex)
         {
             var additionalOptions = ORegexOptions.None;
-            var xoptions = oregex.Attribute(OPTIONS);
+            var xoptions = oregex.Attribute(OptionsTag);
             if (xoptions != null)
             {
                 additionalOptions = additionalOptions | xoptions.Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)

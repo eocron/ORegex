@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Eocron.Core.FinitieStateAutomaton.Predicates;
 
 namespace Eocron.Core.FinitieStateAutomaton
@@ -9,6 +8,7 @@ namespace Eocron.Core.FinitieStateAutomaton
     /// Defines operations available on finite state automaton graphs.
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
+    // ReSharper disable once InconsistentNaming
     public sealed class FSAOperator<TValue>
     {
         /// <summary>
@@ -45,7 +45,7 @@ namespace Eocron.Core.FinitieStateAutomaton
         {
             return
                 new FSA<TValue>(fsa.Name,
-                    fsa.Transitions.Select(x => new FSATransition<TValue>(x.To, x.Condition, x.From)),
+                    fsa.Transitions.Select(x => new FSATransition<TValue>(x.EndState, x.Condition, x.BeginState)),
                     fsa.F, fsa.Q0)
                 {
                     ExactBegin = fsa.ExactBegin,
@@ -151,17 +151,21 @@ namespace Eocron.Core.FinitieStateAutomaton
                 var t = uncheckedStack.Pop();
 
                 // For each state u with an edge from t to u labeled Epsilon
-                foreach (var input in nfa.GetTransitionsFrom(t))
+                IEnumerable<FSATransition<TValue>> transitions;
+                if (nfa.TryGetTransitionsFrom(t, out transitions))
                 {
-                    if (PredicateEdgeBase<TValue>.IsEpsilon(input.Condition))
+                    foreach (var input in transitions)
                     {
-                        int u = input.To;
-
-                        // If u is not already in epsilonClosure, add it and push it onto stack
-                        if (!epsilonClosure.Contains(u))
+                        if (PredicateEdgeBase<TValue>.IsEpsilon(input.Condition))
                         {
-                            epsilonClosure.Add(u);
-                            uncheckedStack.Push(u);
+                            int u = input.EndState;
+
+                            // If u is not already in epsilonClosure, add it and push it onto stack
+                            if (!epsilonClosure.Contains(u))
+                            {
+                                epsilonClosure.Add(u);
+                                uncheckedStack.Push(u);
+                            }
                         }
                     }
                 }

@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using Eocron.Core.Ast;
 
 namespace Eocron.Core.FinitieStateAutomaton.Predicates
 {
     [DebuggerDisplay("(Compare, {Name})")]
     public sealed class ComparePredicateEdge<TValue> : PredicateEdgeBase<TValue>
     {
-        internal readonly IEqualityComparer<TValue> _comparer;
-        internal readonly TValue _value;
+        internal readonly IEqualityComparer<TValue> Comparer;
+        internal readonly TValue Value;
         
         public ComparePredicateEdge(string name, TValue value, IEqualityComparer<TValue> comparer = null) : base(name)
         {
-            _comparer = comparer ?? EqualityComparer<TValue>.Default;
-            _value = value;
+            Comparer = comparer ?? EqualityComparer<TValue>.Default;
+            Value = value;
         }
 
         public override bool IsFuncPredicate
@@ -36,12 +35,12 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
             {
                 return false;
             }
-            return _comparer.Equals(values[index], _value);
+            return Comparer.Equals(values[index], Value);
         }
 
         public override int GetHashCode()
         {
-            return _comparer.GetHashCode() ^ _value.GetHashCode();
+            return Comparer.GetHashCode() ^ Value.GetHashCode();
         }
     }
 }
