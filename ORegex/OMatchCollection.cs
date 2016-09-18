@@ -1,39 +1,31 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Eocron
 {
-    public sealed class OMatchCollection<TValue> : IEnumerable<OMatch<TValue>>
+    public sealed class OMatchCollection<TValue> : IReadOnlyCollection<OMatch<TValue>>
     {
-        private static readonly List<OMatch<TValue>> Empty = new List<OMatch<TValue>>(); 
-        private List<OMatch<TValue>> _matches;
+        private readonly List<OMatch<TValue>> _list;
 
-        public int Count
+        internal OMatchCollection(IEnumerable<OMatch<TValue>> enumerable)
         {
-            get { return (_matches?? Empty).Count; }
+            _list = enumerable.ToList();
         }
-
-        internal void Add(OMatch<TValue> match)
-        {
-            if (_matches == null)
-            {
-                _matches = new List<OMatch<TValue>>();
-            }
-            _matches.Add(match);
-        }
-
 
         public IEnumerator<OMatch<TValue>> GetEnumerator()
         {
-            return (_matches ?? Empty).GetEnumerator();
+            return _list.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public int Count
+        {
+            get { return _list.Count; }
         }
     }
 }

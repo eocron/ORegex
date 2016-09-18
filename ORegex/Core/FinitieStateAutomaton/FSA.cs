@@ -6,6 +6,7 @@ using Eocron.Core.FinitieStateAutomaton.Predicates;
 
 namespace Eocron.Core.FinitieStateAutomaton
 {
+    // ReSharper disable once InconsistentNaming
     public sealed class FSA<TValue> : IFSA<TValue>
     {
         public bool ExactBegin { get; set; }
@@ -22,7 +23,7 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         #endregion
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public IEnumerable<IFSATransition<TValue>> Transitions
         {
@@ -44,8 +45,8 @@ namespace Eocron.Core.FinitieStateAutomaton
             get
             {
                 return
-                    Transitions.Select(x => x.From)
-                        .Concat(Transitions.Select(x => x.To))
+                    Transitions.Select(x => x.BeginState)
+                        .Concat(Transitions.Select(x => x.EndState))
                         .Distinct()
                         .OrderBy(x => x);
             }
@@ -68,10 +69,10 @@ namespace Eocron.Core.FinitieStateAutomaton
             foreach(var t in transitions)
             {
                 OrderedSet<FSATransition<TValue>> predics;
-                if (!_lookup.TryGetValue(t.From, out predics))
+                if (!_lookup.TryGetValue(t.BeginState, out predics))
                 {
                     predics = new OrderedSet<FSATransition<TValue>>();
-                    _lookup[t.From] = predics;
+                    _lookup[t.BeginState] = predics;
                 }
                 predics.Add(t);
 
@@ -106,14 +107,14 @@ namespace Eocron.Core.FinitieStateAutomaton
         {
             if (trans == null)
             {
-                throw new ArgumentNullException("trans");
+                throw new ArgumentNullException(nameof(trans));
             }
             #region Speedup
             OrderedSet<FSATransition<TValue>> predics;
-            if(!_lookup.TryGetValue(trans.From, out predics))
+            if(!_lookup.TryGetValue(trans.BeginState, out predics))
             {
                 predics = new OrderedSet<FSATransition<TValue>>();
-                _lookup[trans.From] = predics;
+                _lookup[trans.BeginState] = predics;
             }
 
             predics.Add(trans);
@@ -135,15 +136,15 @@ namespace Eocron.Core.FinitieStateAutomaton
             Q0.Add(state);
         }
 
-        private static readonly List<FSATransition<TValue>> EmptyList = new List<FSATransition<TValue>>();
-        public IEnumerable<FSATransition<TValue>> GetTransitionsFrom(int state)
+        public bool TryGetTransitionsFrom(int state, out IEnumerable<FSATransition<TValue>> transitions)
         {
+            transitions = null;
             OrderedSet<FSATransition<TValue>> trans;
-            if(_lookup.TryGetValue(state, out trans))
+            if (_lookup.TryGetValue(state, out trans))
             {
-                return trans;
+                transitions = trans;
             }
-            return EmptyList;
+            return transitions != null;
         }
 
         /// <summary>
@@ -160,12 +161,16 @@ namespace Eocron.Core.FinitieStateAutomaton
             // For each state in the set of states
             foreach (var state in states)
             {
-                foreach (var input in GetTransitionsFrom(state))
+                IEnumerable<FSATransition<TValue>> transitions;
+                if (TryGetTransitionsFrom(state, out transitions))
                 {
-                    // If the transition is on input inp, add it to the resulting set
-                    if (PredicateEdgeBase<TValue>.IsEqual(input.Condition, inp))
+                    foreach (var input in transitions)
                     {
-                        result.Add(input.To);
+                        // If the transition is on input inp, add it to the resulting set
+                        if (PredicateEdgeBase<TValue>.IsEqual(input.Condition, inp))
+                        {
+                            result.Add(input.EndState);
+                        }
                     }
                 }
             }

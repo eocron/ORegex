@@ -3,6 +3,7 @@ using Eocron.Core.Ast;
 
 namespace Eocron.Core.FinitieStateAutomaton
 {
+    // ReSharper disable once InconsistentNaming
     public interface IFSA<TValue>
     {
         string Name { get; }

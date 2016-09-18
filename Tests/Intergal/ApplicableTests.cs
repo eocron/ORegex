@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using Eocron;
@@ -15,7 +14,7 @@ namespace Tests.Intergal
         {
             var oregex = new ORegex<int>("{0}(?<pair>.{0})*", IsPrime);
 
-            var input = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+            var input = new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
             foreach (var match in oregex.Matches(input))
             {
                 Trace.WriteLine(string.Join(",", match.Values));
@@ -31,7 +30,7 @@ namespace Tests.Intergal
         {
             var oregex = new ORegex<int>("((?<pair>{0}){1})+", x => x != 0, x => x == 0);
 
-            var input = new int[] { 0, 0, 0, 1, 0, 2, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0 };
+            var input = new[] { 0, 0, 0, 1, 0, 2, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0 };
             foreach (var match in oregex.Matches(input))
             {
                 Trace.WriteLine(string.Join(",", match.Values));
@@ -57,7 +56,7 @@ namespace Tests.Intergal
         public void PersonSelectionTest()
         {
             //INPUT_TEXT: Пяточкова Тамара решила выгулять Джека и встретилась с Михаилом А.М.
-            var sentence = new Word[]
+            var sentence = new[]
             {
                 new Word("Пяточкова", SemanticType.FamilyName),
                 new Word("Тамара", SemanticType.Name),
@@ -90,7 +89,7 @@ namespace Tests.Intergal
             {
                 Console.WriteLine("Person found: {0}, length: {1}", person.Name, person.Words.Length);
             }
-            Assert.AreEqual(persons.Count(), 3);
+            Assert.AreEqual(persons.Length, 3);
             //OUTPUT:
             //Person found: Тамара, length: 2
             //Person found: Джека, length: 1
@@ -150,7 +149,7 @@ namespace Tests.Intergal
 
         private static bool IsInitial(string str)
         {
-            var inp = str.Trim(new[] { '.', ' ', '\t', '\n', '\r' });
+            var inp = str.Trim('.', ' ', '\t', '\n', '\r');
             return inp.Length == 1 && char.IsUpper(inp[0]);
         }
     }

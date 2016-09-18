@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime.Tree;
 using Eocron.Core.Ast;
 using Eocron.Core.FinitieStateAutomaton.Predicates;
 
@@ -9,6 +8,7 @@ namespace Eocron.Core.FinitieStateAutomaton
     /// <summary>
     /// Compiled FSA
     /// </summary>
+    // ReSharper disable once InconsistentNaming
     public sealed class CFSA<TValue> : IFSA<TValue>
     {
         private readonly FixedSizeStack<CaptureEdge> _captureStack = new FixedSizeStack<CaptureEdge>(ORegex<TValue>.MaxMatchSize);
@@ -19,7 +19,7 @@ namespace Eocron.Core.FinitieStateAutomaton
 
         public bool ExactEnd { get; set; }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public string[] CaptureNames { get; set; }
 
@@ -41,7 +41,7 @@ namespace Eocron.Core.FinitieStateAutomaton
             Name = fsa.Name;
             CaptureNames = fsa.CaptureNames;
             _transitionMatrix = new IFSATransition<TValue>[fsa.StateCount][];
-            foreach (var look in fsa.Transitions.ToLookup(x => x.From, x => x))
+            foreach (var look in fsa.Transitions.ToLookup(x => x.BeginState, x => x))
             {
                 _transitionMatrix[look.Key] = look.ToArray();
             }
@@ -88,7 +88,7 @@ namespace Eocron.Core.FinitieStateAutomaton
                         {
                             var isEps = PredicateEdgeBase<TValue>.IsEpsilon(trans.Condition);
                             hasSubCaptures |= trans.Condition.IsSystemPredicate && ((SystemPredicateEdge<TValue>)trans.Condition).IsCapture;
-                            stack.Push(CreateState(trans.To, state.CurrentIndex + (isEps ? 0 : 1)));
+                            stack.Push(CreateState(trans.EndState, state.CurrentIndex + (isEps ? 0 : 1)));
                             piStack.Push(0);
                             retrieved = true;
                             break;

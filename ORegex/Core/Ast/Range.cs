@@ -10,6 +10,11 @@ namespace Eocron.Core.Ast
         public readonly int Index;
         public readonly int Length;
 
+        public int RightIndex
+        {
+            get { return Index + Length; }
+        }
+
         public Range(IParseTree tree)
         {
             var context = (ParserRuleContext) tree;
@@ -27,6 +32,14 @@ namespace Eocron.Core.Ast
         {
             var range = (Range) obj;
             return range.Index == Index && range.Length == Length;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = Index.GetHashCode();
+            hash += 131;
+            hash ^= Length.GetHashCode();
+            return hash;
         }
 
         public override string ToString()

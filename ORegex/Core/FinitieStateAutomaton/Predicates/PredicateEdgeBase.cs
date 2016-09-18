@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Eocron.Core.FinitieStateAutomaton.Predicates
 {
@@ -28,6 +27,12 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
             return IsEqual((PredicateEdgeBase<TValue>) obj, this);
         }
 
+        public override int GetHashCode()
+        {
+            // ReSharper disable once BaseObjectGetHashCodeCallInGetHashCode
+            return base.GetHashCode();
+        }
+
         public abstract bool IsMatch(SequenceHandler<TValue> values, int index);
 
         public static bool IsEqual(PredicateEdgeBase<TValue> a, PredicateEdgeBase<TValue> b)
@@ -41,12 +46,15 @@ namespace Eocron.Core.FinitieStateAutomaton.Predicates
             {
                 var aa = (FuncPredicateEdge<TValue>)a;
                 var bb = (FuncPredicateEdge<TValue>)b;
-                return ReferenceEquals(aa._condition, bb._condition);
+                return ReferenceEquals(aa.Condition, bb.Condition);
             }
 
             if (a.IsComparePredicate && b.IsComparePredicate)
             {
-                return a.Name == b.Name;
+                var aa = (ComparePredicateEdge<TValue>) a;
+                var bb = (ComparePredicateEdge<TValue>) b;
+
+                return ReferenceEquals(aa.Comparer,bb.Comparer) && aa.Comparer.Equals(aa.Value, bb.Value);
             }
 
             if (a.IsSystemPredicate && b.IsSystemPredicate)

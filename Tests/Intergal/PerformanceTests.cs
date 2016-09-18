@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Tests.Core;
-using Stopwatch = NUnit.Framework.Compatibility.Stopwatch;
 
 namespace Tests.Intergal
 {
@@ -16,18 +14,20 @@ namespace Tests.Intergal
         public void BuildTest()
         {
             const string pattern = "({x}+{x}+){y}+{x}|{x}|{x}|{x}|{y}|{x}[^{x}][^{y}]?|(?<g1>{x}+?|(?<g2>{x}?)?)";
-            Console.WriteLine(string.Format("Input pattern: {0}", pattern));
+            Console.WriteLine("Input pattern: {0}", pattern);
             const int iterCount = 10;
             const int repeatCount = 10;
             for (int j = 0; j < iterCount; j++)
             {
-                var sw = Stopwatch.StartNew();
-                for (int i = 0; i < repeatCount; i++)
-                {
-                    var oregex = new DebugORegex(pattern);
-                }
-                sw.Stop();
-                Console.WriteLine(string.Format("Done {0} in {1}", repeatCount, sw.Elapsed));
+                var sw = Extensions.Measure(() =>
+                                            {
+                                                for (int i = 0; i < repeatCount; i++)
+                                                {
+                                                    // ReSharper disable once UnusedVariable
+                                                    var oregex = new DebugORegex(pattern);
+                                                }
+                                            });
+                Console.WriteLine("Done {0} in {1}", repeatCount, sw.Elapsed);
             }
         }
 
@@ -37,7 +37,7 @@ namespace Tests.Intergal
             for (int i = 50; i <= 500; i += 50)
             {
                 var str = string.Join("",Enumerable.Repeat("x",i));
-                PerformanceTest("{x}+{x}+{y}+", "x+x+y+", str, 1, false);
+                PerformanceTest("{x}+{x}+{y}+", "x+x+y+", str, 1);
                 Console.WriteLine("############################################");
             }
         }
@@ -84,7 +84,7 @@ namespace Tests.Intergal
                 RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.Compiled);
             if (input.Length <= 3000)
             {
-                Console.WriteLine(string.Format("Input string: {0}", inputText));
+                Console.WriteLine("Input string: {0}", inputText);
             }
 
             var regexCount = new TimeSpan();
@@ -97,14 +97,10 @@ namespace Tests.Intergal
 
             for (int j = 0; j < iterCount; j++)
             {
-                var sw1 = Stopwatch.StartNew();
-                var array1 = oregex.Matches(input);
-                sw1.Stop();
+                var sw1 = Extensions.Measure(() => oregex.Matches(input));
                 oregexCount += sw1.Elapsed;
 
-                var sw2 = Stopwatch.StartNew();
-                var array2 = regex.Matches(inputText).Cast<Match>().ToArray();
-                sw2.Stop();
+                var sw2 = Extensions.Measure(() => regex.Matches(inputText).Cast<Match>().Evaluate());
                 regexCount += sw2.Elapsed;
 
                 table.Rows.Add(j + 1, sw1.Elapsed, sw2.Elapsed,
@@ -131,7 +127,7 @@ namespace Tests.Intergal
             {
                 for (int x = 0; x < table.Columns.Count; x++)
                 {
-                    Console.Write(row[x].ToString() + "\t");
+                    Console.Write(row[x] + "\t");
                 }
                 Console.WriteLine();
             }

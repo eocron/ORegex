@@ -1,38 +1,38 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Eocron.Core.FinitieStateAutomaton.Predicates;
 
 namespace Eocron.Core.FinitieStateAutomaton
 {
-    [DebuggerDisplay("{From}-{Condition}->{To}")]
+    [DebuggerDisplay("{BeginState}-{Condition}->{EndState}")]
+    // ReSharper disable once InconsistentNaming
     public sealed class FSATransition<TValue> : IFSATransition<TValue>
     {
-        public int From { get; private set; }
+        public int BeginState { get; }
 
-        public int To { get; private set; }
+        public int EndState { get; }
 
-        public PredicateEdgeBase<TValue> Condition { get; private set; }
+        public PredicateEdgeBase<TValue> Condition { get; }
 
-        public FSATransition(int from, PredicateEdgeBase<TValue> info, int to)
+        public FSATransition(int beginState, PredicateEdgeBase<TValue> info, int endState)
         {
-            From = from;
+            BeginState = beginState;
             Condition = info;
-            To = to;
+            EndState = endState;
         }
 
         public override bool Equals(object obj)
         {
             var other = (FSATransition<TValue>) obj;
-            return other.Condition == Condition && other.From == From && other.To == To;
+            return other.Condition == Condition && other.BeginState == BeginState && other.EndState == EndState;
         }
 
         public override int GetHashCode()
         {
             const int prime = 123;
             int hash = prime;
-            hash += From.GetHashCode();
+            hash += BeginState.GetHashCode();
             hash *= prime;
-            hash += To.GetHashCode();
+            hash += EndState.GetHashCode();
             hash *= prime;
             hash += Condition.GetHashCode();
             return hash;

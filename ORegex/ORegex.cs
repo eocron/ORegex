@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Eocron.Core;
 using Eocron.Core.Ast;
 using Eocron.Core.FinitieStateAutomaton;
@@ -18,6 +18,7 @@ namespace Eocron
         /// Defines maximum fixed stack size. If match is too large - exception will be thrown.
         /// Default: 1024
         /// </summary>
+        // ReSharper disable once StaticMemberInGenericType
         public static int MaxMatchSize = 1024;
 
         private static readonly ORegexCompiler<TValue> Compiler = new ORegexCompiler<TValue>();
@@ -97,38 +98,9 @@ namespace Eocron
         /// <returns></returns>
         public OMatchCollection<TValue> Matches(TValue[] values, int startIndex = -1)
         {
-            CheckInput(values,startIndex);
-            var handler = new SequenceHandler<TValue>(values);
-            handler.Reverse = Options.HasFlag(ORegexOptions.ReverseSequence);
-            startIndex = GetStartIndex(handler, startIndex);
-
-            OMatchCollection<TValue> result = new OMatchCollection<TValue>();
-            var captureTable = new OCaptureTable<TValue>(_fa.CaptureNames);
-            for (int i = startIndex; i <= handler.Count; i++)
-            {
-                Range range;
-                if (_fa.TryRun(handler, i, captureTable, out range))
-                {
-                    bool beginMatched = range.Index == startIndex;
-                    bool endMatched = (range.Index + range.Length) == handler.Count;
-
-                    if (!_fa.ExactBegin && !_fa.ExactEnd ||
-                        !(beginMatched ^ _fa.ExactBegin) && !(endMatched ^ _fa.ExactEnd))
-                    {
-                        var match = new OMatch<TValue>(handler, captureTable, range);
-                        captureTable.Add(0, match);
-                        result.Add(match);
-                    }
-                    captureTable = new OCaptureTable<TValue>(_fa.CaptureNames);
-                    i += range.Length == 0 ? 0 : range.Length - 1;
-                }
-                if (_fa.ExactBegin)
-                {
-                    break;
-                }
-            }
-
-            return result;
+            Validate(values,startIndex);
+            var matches = GetAllMathes(values, startIndex);
+            return new OMatchCollection<TValue>(matches);
         }
 
         /// <summary>
@@ -139,9 +111,16 @@ namespace Eocron
         /// <returns></returns>
         public OMatch<TValue> Match(TValue[] values, int startIndex = -1)
         {
-            CheckInput(values, startIndex);
-            var handler = new SequenceHandler<TValue>(values);
-            handler.Reverse = Options.HasFlag(ORegexOptions.ReverseSequence);
+            Validate(values, startIndex);
+            return GetAllMathes(values, startIndex).FirstOrDefault();
+        }
+
+        private IEnumerable<OMatch<TValue>> GetAllMathes(TValue[] values, int startIndex = -1)
+        {
+            var handler = new SequenceHandler<TValue>(values)
+            {
+                Reverse = Options.HasFlag(ORegexOptions.ReverseSequence)
+            };
             startIndex = GetStartIndex(handler, startIndex);
 
             var captureTable = new OCaptureTable<TValue>(_fa.CaptureNames);
@@ -151,16 +130,16 @@ namespace Eocron
                 if (_fa.TryRun(handler, i, captureTable, out range))
                 {
                     bool beginMatched = range.Index == startIndex;
-                    bool endMatched = (range.Index + range.Length) == handler.Count;
+                    bool endMatched = range.RightIndex == handler.Count;
 
                     if (!_fa.ExactBegin && !_fa.ExactEnd ||
                         !(beginMatched ^ _fa.ExactBegin) && !(endMatched ^ _fa.ExactEnd))
                     {
                         var match = new OMatch<TValue>(handler, captureTable, range);
                         captureTable.Add(0, match);
-                        return match;
+                        yield return match;
                     }
-
+                    captureTable = new OCaptureTable<TValue>(_fa.CaptureNames);
                     i += range.Length == 0 ? 0 : range.Length - 1;
                 }
                 if (_fa.ExactBegin)
@@ -168,7 +147,6 @@ namespace Eocron
                     break;
                 }
             }
-            return null;
         }
 
         /// <summary>
@@ -179,9 +157,11 @@ namespace Eocron
         /// <returns></returns>
         public bool IsMatch(TValue[] values, int startIndex = -1)
         {
-            CheckInput(values, startIndex);
-            var handler = new SequenceHandler<TValue>(values);
-            handler.Reverse = Options.HasFlag(ORegexOptions.ReverseSequence);
+            Validate(values, startIndex);
+            var handler = new SequenceHandler<TValue>(values)
+                          {
+                              Reverse = Options.HasFlag(ORegexOptions.ReverseSequence)
+                          };
             startIndex = GetStartIndex(handler, startIndex);
 
             for (int i = startIndex; i <= handler.Count; i++)
@@ -190,7 +170,7 @@ namespace Eocron
                 if (_fa.TryRun(handler, i, null, out range))
                 {
                     bool beginMatched = range.Index == startIndex;
-                    bool endMatched = (range.Index + range.Length) == handler.Count;
+                    bool endMatched = range.RightIndex == handler.Count;
 
                     if (_fa.ExactBegin && _fa.ExactEnd)
                     {
@@ -224,7 +204,7 @@ namespace Eocron
         public TValue[] Replace(TValue[] values, Func<OMatch<TValue>, TValue[]> replaceProvider, int startIndex = -1)
         {
             replaceProvider.ThrowIfNull();
-            CheckInput(values, startIndex);
+            Validate(values, startIndex);
 
             var matches = Matches(values, startIndex);
 
@@ -251,16 +231,16 @@ namespace Eocron
             return null;
         }
 
-        private static void CheckInput(TValue[] values, int startIndex)
+        private static void Validate(TValue[] values, int startIndex)
         {
             if (startIndex < -1)
             {
-                throw new ArgumentOutOfRangeException("startIndex");
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
             }
 
             if (values == null)
             {
-                throw new ArgumentNullException("values");
+                throw new ArgumentNullException(nameof(values));
             }
         }
 

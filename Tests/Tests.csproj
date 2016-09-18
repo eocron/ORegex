@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Core\DebugORegex.cs" />
     <Compile Include="Core\DebugPredicateTable.cs" />
+    <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\SingleFileTest.cs" />
     <Compile Include="Intergal\PerformanceTests.cs" />
     <Compile Include="Intergal\ApplicableTests.cs" />
@@ -72,7 +73,7 @@
     <Compile Include="Unit\SequenceHandlerTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ORegex\ORegex.net40.csproj">
+    <ProjectReference Include="..\ORegex\ORegex.csproj">
       <Project>{8fdbea09-300d-4e58-91fd-214049c533b9}</Project>
       <Name>ORegex</Name>
     </ProjectReference>

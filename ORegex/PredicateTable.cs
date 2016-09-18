@@ -11,15 +11,17 @@ namespace Eocron
     /// <typeparam name="TValue"></typeparam>
     public class PredicateTable<TValue>
     {
-        protected readonly Dictionary<string, PredicateEdgeBase<TValue>> _table;
+        private readonly Dictionary<string, PredicateEdgeBase<TValue>> _table;
 
         public PredicateTable()
         {
-            _table = new Dictionary<string, PredicateEdgeBase<TValue>>();
-            _table.Add(".", FuncPredicateEdge<TValue>.AlwaysTrue);
+            _table = new Dictionary<string, PredicateEdgeBase<TValue>>
+                     {
+                         {".", FuncPredicateEdge<TValue>.AlwaysTrue}
+                     };
         }
 
-        public PredicateTable(PredicateTable<TValue> other) : base()
+        public PredicateTable(PredicateTable<TValue> other)
         {
             _table = new Dictionary<string, PredicateEdgeBase<TValue>>(other._table);
         }
@@ -36,7 +38,7 @@ namespace Eocron
 
             if (_table.ContainsKey(name))
             {
-                throw new ArgumentException("Such name already exist: " + name, "name");
+                throw new ArgumentException("Such name already exist: " + name, nameof(name));
             }
 
             _table.Add(name, new FuncPredicateEdge<TValue>(name, predicate));
@@ -65,7 +67,7 @@ namespace Eocron
             name.ThrowIfEmpty();
             if (_table.ContainsKey(name))
             {
-                throw new ArgumentException("Such name already exist: " + name, "name");
+                throw new ArgumentException("Such name already exist: " + name, nameof(name));
             }
             _table.Add(name, new ComparePredicateEdge<TValue>(name, value, comparer));
         }
