@@ -195,7 +195,3 @@ Also, you can find there test utility and see how things work inside engine.
 ## Performance
 - ORegex is 2-3 times slower than original .NET Regex, however it is ~2 times faster on simple patterns without many repetitions.
 - Greedy exhausting test (x+x+y+ pattern on a 'xxxxxxxxxxxxxxxxxxxx' string) is ~20 times faster than Regex engine. This result achieved due to double finite state automaton implementation (fast dfa lookup, slow nfa command flow on captures) so backtracking seriously cutted down.
-
-## Future
-- C/C++ macros definition support;
-- Overlap capture support;
