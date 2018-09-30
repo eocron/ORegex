@@ -116,14 +116,14 @@ namespace Tests.Intergal
             return additionalOptions;
         }
 
-        private static void Compare(Match expected, OMatch<char> actual)
+        private static void Compare(Match expected, IOMatch<char> actual)
         {
             Assert.AreEqual(expected.Index, actual.Index);
             Assert.AreEqual(expected.Length, actual.Length);
             CompareCaptures(expected, actual);
         }
 
-        private static void CompareCaptures(Match expected, OMatch<char> actual)
+        private static void CompareCaptures(Match expected, IOMatch<char> actual)
         {
             var groups = expected.Groups.Cast<Group>().Where(x => x.Success).ToArray();
             Assert.AreEqual(groups.Length, actual.Captures.Count);
@@ -146,7 +146,7 @@ namespace Tests.Intergal
                 expected.Index, expected.Length);
         }
 
-        private static string ActualString(OMatch<char> actual)
+        private static string ActualString(IOMatch<char> actual)
         {
             return string.Format("Value: {0},\tindex: {1}, length: {2}", new string(actual.Values.ToArray()),
                 actual.Index, actual.Length);

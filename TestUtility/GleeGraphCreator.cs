@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Drawing;
+using System.Linq;
 using Microsoft.Glee.Drawing;
 using Eocron.Core.FinitieStateAutomaton;
 
@@ -24,7 +25,7 @@ namespace TestUtility
 
                     if (fsa.IsFinal(t.EndState))
                     {
-                        edge.TargetNode.Attr.Fillcolor = Color.Gray;
+                        edge.TargetNode.Attr.Fillcolor = Microsoft.Glee.Drawing.Color.Gray;
                         edge.TargetNode.Attr.Shape = Shape.DoubleCircle;
                     }
                 }

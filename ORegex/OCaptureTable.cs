@@ -3,48 +3,39 @@ using System.Collections.Generic;
 
 namespace Eocron
 {
-    public sealed class OCaptureTable<TValue> : IEnumerable<KeyValuePair<string, List<OCapture<TValue>>>>
+    public sealed class OCaptureTable<TValue> : IOCaptureTable<TValue>
     {
-        private readonly Dictionary<string, List<OCapture<TValue>>> _nameToCaptureIndex;
-        private readonly List<OCapture<TValue>>[] _idToCaptureIndex;
+        private readonly Dictionary<string, IList<IOCapture<TValue>>> _nameToCaptureIndex;
+        private readonly IList<IOCapture<TValue>>[] _idToCaptureIndex;
         public OCaptureTable(string[] captureNames)
         {
-            _nameToCaptureIndex = new Dictionary<string, List<OCapture<TValue>>>(captureNames.Length);
-            _idToCaptureIndex = new List<OCapture<TValue>>[captureNames.Length];
+            _nameToCaptureIndex = new Dictionary<string, IList<IOCapture<TValue>>>(captureNames.Length);
+            _idToCaptureIndex = new IList<IOCapture<TValue>>[captureNames.Length];
             for(int i = 0; i < captureNames.Length;i++)
             {
                 var name = captureNames[i];
-                List<OCapture<TValue>> tmp;
+                IList<IOCapture<TValue>> tmp;
                 if (!_nameToCaptureIndex.TryGetValue(name, out tmp))
                 {
-                    tmp = new List<OCapture<TValue>>(1);
+                    tmp = new List<IOCapture<TValue>>(1);
                     _nameToCaptureIndex[name] = tmp;
                 }
                 _idToCaptureIndex[i] = tmp;
             }
         }
 
-        public int Count
-        {
-            get { return _nameToCaptureIndex.Count; }
-        }
+        public int Count => _nameToCaptureIndex.Count;
 
-        public IEnumerable<OCapture<TValue>> this[string name]
-        {
-            get { return _nameToCaptureIndex[name]; }
-        }
+        public IEnumerable<IOCapture<TValue>> this[string name] => _nameToCaptureIndex[name];
 
-        public IEnumerable<OCapture<TValue>> this[int id]
-        {
-            get { return _idToCaptureIndex[id]; }
-        }
+        public IEnumerable<IOCapture<TValue>> this[int id] => _idToCaptureIndex[id];
 
         internal void Add(int captureId, OCapture<TValue> capture)
         {
             _idToCaptureIndex[captureId].Add(capture);
         }
 
-        public IEnumerator<KeyValuePair<string, List<OCapture<TValue>>>> GetEnumerator()
+        public IEnumerator<KeyValuePair<string, IList<IOCapture<TValue>>>> GetEnumerator()
         {
             return _nameToCaptureIndex.GetEnumerator();
         }

@@ -1,27 +1,24 @@
-﻿using Eocron.Core.Ast;
+﻿using System.Collections.Generic;
+using Eocron.Core.Ast;
 
 namespace Eocron.Core
 {
     public struct SequenceHandler<TValue>
     {
-        private readonly TValue[] _collection;
+        private readonly IList<TValue> _collection;
 
         public bool Reverse;
 
-        public SequenceHandler(TValue[] collection)
+        public SequenceHandler(IList<TValue> collection)
         {
             _collection = collection;
             Reverse = false;
         }
 
-        public TValue[] Collection
-        {
-            get { return _collection; }
-        }
-        public int Count
-        {
-            get { return _collection.Length; }
-        }
+        public IList<TValue> Collection => _collection;
+
+        public int Count => _collection.Count;
+
         public TValue this[int i]
         {
             get
@@ -33,7 +30,7 @@ namespace Eocron.Core
 
         public int Invert(int i)
         {
-            return Reverse ? _collection.Length - i - 1 : i;
+            return Reverse ? _collection.Count - i - 1 : i;
         }
 
         /// <summary>

@@ -12,7 +12,7 @@ namespace Eocron
     /// Objected regex pattern instance.
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
-    public class ORegex<TValue>
+    public class ORegex<TValue> : IORegex<TValue>
     {
         /// <summary>
         /// Defines maximum fixed stack size. If match is too large - exception will be thrown.
@@ -20,23 +20,15 @@ namespace Eocron
         /// </summary>
         // ReSharper disable once StaticMemberInGenericType
         public static int MaxMatchSize = 1024;
+        public ORegexOptions Options { get; }
+        public string Pattern { get; }
 
         private static readonly ORegexCompiler<TValue> Compiler = new ORegexCompiler<TValue>();
-
         private readonly IFSA<TValue> _fa;
 
-        public readonly ORegexOptions Options;
+        public ORegex(string pattern, params TValue[] values) : this(pattern, ORegexOptions.None, null, values) { }
 
-        public readonly string Pattern;
-
-        public ORegex(string pattern, params TValue[] values) : this(pattern, ORegexOptions.None, null, values)
-        {
-        }
-
-        public ORegex(string pattern, ORegexOptions options, IEqualityComparer<TValue> comparer, params TValue[] values)
-            : this(pattern, options, CreateValuesPredicateTable(values, comparer))
-        {
-        }
+        public ORegex(string pattern, ORegexOptions options, IEqualityComparer<TValue> comparer, params TValue[] values) : this(pattern, options, CreateValuesPredicateTable(values, comparer)) { }
 
         public ORegex(string pattern, params Func<TValue,bool>[] predicates) : this(pattern, ORegexOptions.None, predicates){}
 
@@ -58,7 +50,91 @@ namespace Eocron
             Pattern = "#Internal pattern are not available by default.";
         }
 
-        private static PredicateTable<TValue> CreateValuesPredicateTable(TValue[] values,
+        public IOMatchCollection<TValue> Matches(IList<TValue> values, int startIndex = -1)
+        {
+            Validate(values,startIndex);
+            var matches = GetAllMathes(values, startIndex);
+            return new OMatchCollection<TValue>(matches);
+        }
+
+        public IOMatch<TValue> Match(IList<TValue> values, int startIndex = -1)
+        {
+            Validate(values, startIndex);
+            return GetAllMathes(values, startIndex).FirstOrDefault();
+        }
+
+
+        public bool IsMatch(IList<TValue> values, int startIndex = -1)
+        {
+            Validate(values, startIndex);
+            var handler = new SequenceHandler<TValue>(values)
+            {
+                Reverse = Options.HasFlag(ORegexOptions.ReverseSequence)
+            };
+            startIndex = GetStartIndex(handler, startIndex);
+
+            for (int i = startIndex; i <= handler.Count; i++)
+            {
+                Range range;
+                if (_fa.TryRun(handler, i, null, out range))
+                {
+                    bool beginMatched = range.Index == startIndex;
+                    bool endMatched = range.RightIndex == handler.Count;
+
+                    if (_fa.ExactBegin && _fa.ExactEnd)
+                    {
+                        return beginMatched && endMatched;
+                    }
+                    if (_fa.ExactBegin)
+                    {
+                        return beginMatched;
+                    }
+                    if (_fa.ExactEnd)
+                    {
+                        return endMatched;
+                    }
+                    return true;
+                }
+                if (_fa.ExactBegin)
+                {
+                    break;
+                }
+            }
+            return false;
+        }
+
+        public List<TValue> Replace(IList<TValue> values, Func<IOMatch<TValue>, IEnumerable<TValue>> replaceProvider, int startIndex = -1)
+        {
+            replaceProvider.ThrowIfNull();
+            Validate(values, startIndex);
+
+            var matches = Matches(values, startIndex);
+
+            if (matches.Count > 0)
+            {
+                List<TValue> result = new List<TValue>();
+                int i = 0;
+                foreach (var m in matches)
+                {
+                    var transform = replaceProvider(m);
+                    for (int j = i; j < m.Index; j++)
+                    {
+                        result.Add(values[j]);
+                    }
+                    result.AddRange(transform);
+                    i = m.Index + m.Length;
+                }
+                for (int j = i; j < values.Count; j++)
+                {
+                    result.Add(values[j]);
+                }
+                return result;
+            }
+            return null;
+        }
+
+        private static PredicateTable<TValue> CreateValuesPredicateTable(
+            TValue[] values,
             IEqualityComparer<TValue> comparer = null)
         {
             if (values == null || values.Length == 0)
@@ -76,6 +152,7 @@ namespace Eocron
             }
             return table;
         }
+
         private static PredicateTable<TValue> CreatePredicateTable(Func<TValue, bool>[] predicates)
         {
             if (predicates == null || predicates.Length == 0)
@@ -90,32 +167,7 @@ namespace Eocron
             return table;
         }
 
-        /// <summary>
-        /// Tries to match pattern starting from startIndex position.
-        /// </summary>
-        /// <param name="values"></param>
-        /// <param name="startIndex"></param>
-        /// <returns></returns>
-        public OMatchCollection<TValue> Matches(TValue[] values, int startIndex = -1)
-        {
-            Validate(values,startIndex);
-            var matches = GetAllMathes(values, startIndex);
-            return new OMatchCollection<TValue>(matches);
-        }
-
-        /// <summary>
-        /// Tries to match pattern starting from startIndex position.
-        /// </summary>
-        /// <param name="values"></param>
-        /// <param name="startIndex"></param>
-        /// <returns></returns>
-        public OMatch<TValue> Match(TValue[] values, int startIndex = -1)
-        {
-            Validate(values, startIndex);
-            return GetAllMathes(values, startIndex).FirstOrDefault();
-        }
-
-        private IEnumerable<OMatch<TValue>> GetAllMathes(TValue[] values, int startIndex = -1)
+        private IEnumerable<OMatch<TValue>> GetAllMathes(IList<TValue> values, int startIndex = -1)
         {
             var handler = new SequenceHandler<TValue>(values)
             {
@@ -149,89 +201,7 @@ namespace Eocron
             }
         }
 
-        /// <summary>
-        /// Tries to match pattern starting from startIndex position.
-        /// </summary>
-        /// <param name="values"></param>
-        /// <param name="startIndex"></param>
-        /// <returns></returns>
-        public bool IsMatch(TValue[] values, int startIndex = -1)
-        {
-            Validate(values, startIndex);
-            var handler = new SequenceHandler<TValue>(values)
-                          {
-                              Reverse = Options.HasFlag(ORegexOptions.ReverseSequence)
-                          };
-            startIndex = GetStartIndex(handler, startIndex);
-
-            for (int i = startIndex; i <= handler.Count; i++)
-            {
-                Range range;
-                if (_fa.TryRun(handler, i, null, out range))
-                {
-                    bool beginMatched = range.Index == startIndex;
-                    bool endMatched = range.RightIndex == handler.Count;
-
-                    if (_fa.ExactBegin && _fa.ExactEnd)
-                    {
-                        return beginMatched && endMatched;
-                    }
-                    if (_fa.ExactBegin)
-                    {
-                        return beginMatched;
-                    }
-                    if (_fa.ExactEnd)
-                    {
-                        return endMatched;
-                    }
-                    return true;
-                }
-                if (_fa.ExactBegin)
-                {
-                    break;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Replaces mathes in sequence by given replacProvider.
-        /// </summary>
-        /// <param name="values"></param>
-        /// <param name="replaceProvider">Provides subSequence replacement.</param>
-        /// <param name="startIndex"></param>
-        /// <returns></returns>
-        public TValue[] Replace(TValue[] values, Func<OMatch<TValue>, TValue[]> replaceProvider, int startIndex = -1)
-        {
-            replaceProvider.ThrowIfNull();
-            Validate(values, startIndex);
-
-            var matches = Matches(values, startIndex);
-
-            if (matches.Count > 0)
-            {
-                List<TValue> result = new List<TValue>();
-                int i = 0;
-                foreach (var m in matches)
-                {
-                    var transform = replaceProvider(m);
-                    for (int j = i; j < m.Index; j++)
-                    {
-                        result.Add(values[j]);
-                    }
-                    result.AddRange(transform);
-                    i = m.Index + m.Length;
-                }
-                for (int j = i; j < values.Length; j++)
-                {
-                    result.Add(values[j]);
-                }
-                return result.ToArray();
-            }
-            return null;
-        }
-
-        private static void Validate(TValue[] values, int startIndex)
+        private static void Validate(IList<TValue> values, int startIndex)
         {
             if (startIndex < -1)
             {

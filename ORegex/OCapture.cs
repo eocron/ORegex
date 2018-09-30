@@ -5,13 +5,12 @@ using Eocron.Core.Ast;
 
 namespace Eocron
 {
-    public class OCapture<TValue> : IEnumerable<TValue>
+    internal class OCapture<TValue> : IOCapture<TValue>
     {
-        private readonly TValue[] _collection;
+        private readonly IList<TValue> _collection;
 
-        public readonly int Index;
-
-        public readonly int Length;
+        public int Index { get; }
+        public int Length { get; }
 
         public IEnumerable<TValue> Values
         {

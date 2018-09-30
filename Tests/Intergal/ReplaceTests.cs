@@ -13,7 +13,7 @@ namespace Tests.Intergal
             var oregex = new DebugORegex("{a}+");
             var input = @"1aaa1aaa1aaa111111a1a1".ToCharArray();
 
-            var replace = new string(oregex.Replace(input, x => new[] {'b'}));
+            var replace = new string(oregex.Replace(input, x => new[] {'b'}).ToArray());
             Assert.AreEqual("1b1b1b111111b1b1",replace);
             Console.WriteLine(replace);
         }
@@ -24,7 +24,7 @@ namespace Tests.Intergal
             var oregex = new DebugORegex("{a}+");
             var input = @"1aaa1aaa1aaa111111a1a1".ToCharArray();
 
-            var replace = new string(oregex.Replace(input, x => new char[0]));
+            var replace = new string(oregex.Replace(input, x => new char[0]).ToArray());
             Assert.AreEqual("11111111111",replace);
             Console.WriteLine(replace);
         }
@@ -35,7 +35,7 @@ namespace Tests.Intergal
             var oregex = new DebugORegex("{a}+");
             var input = @"1aaa1aaa1aaa111111a1a1".ToCharArray();
 
-            var replace = new string(oregex.Replace(input, x => new []{'2','3','4'}));
+            var replace = new string(oregex.Replace(input, x => new []{'2','3','4'}).ToArray());
             Assert.AreEqual("12341234123411111123412341",replace);
             Console.WriteLine(replace);
         }
@@ -46,7 +46,7 @@ namespace Tests.Intergal
             var oregex = new DebugORegex("{a}+");
             var input = @"1aaa1aaa1aaa111111a1a1".ToCharArray();
 
-            var replace = new string(oregex.Replace(input, x => new[] { '2', '3', '4', '5' }));
+            var replace = new string(oregex.Replace(input, x => new[] { '2', '3', '4', '5' }).ToArray());
             Assert.AreEqual("1234512345123451111112345123451",replace);
             Console.WriteLine(replace);
         }
@@ -57,7 +57,7 @@ namespace Tests.Intergal
             var oregex = new DebugORegex("{a}*");
             var input = @"11".ToCharArray();
 
-            var replace = new string(oregex.Replace(input, x => new[] { '2', '3', '4', '5' }));
+            var replace = new string(oregex.Replace(input, x => new[] { '2', '3', '4', '5' }).ToArray());
             Assert.AreEqual("23451234512345",replace);
             Console.WriteLine(replace);
         }

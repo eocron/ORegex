@@ -3,12 +3,12 @@ using Eocron.Core.Ast;
 
 namespace Eocron
 {
-    public sealed class OMatch<TValue> : OCapture<TValue>
+    internal sealed class OMatch<TValue> : OCapture<TValue>, IOMatch<TValue>
     {
         /// <summary>
         /// All captured groups.
         /// </summary>
-        public readonly OCaptureTable<TValue> Captures;
+        public IOCaptureTable<TValue> Captures { get; }
 
         internal OMatch(SequenceHandler<TValue> handler, OCaptureTable<TValue> table, Range range): base(handler, range)
         {

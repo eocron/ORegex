@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Eocron
 {
-    public sealed class OMatchCollection<TValue> : IReadOnlyCollection<OMatch<TValue>>
+    internal sealed class OMatchCollection<TValue> : IOMatchCollection<TValue>
     {
         private readonly List<OMatch<TValue>> _list;
 
@@ -13,7 +13,7 @@ namespace Eocron
             _list = enumerable.ToList();
         }
 
-        public IEnumerator<OMatch<TValue>> GetEnumerator()
+        public IEnumerator<IOMatch<TValue>> GetEnumerator()
         {
             return _list.GetEnumerator();
         }
@@ -23,9 +23,6 @@ namespace Eocron
             return GetEnumerator();
         }
 
-        public int Count
-        {
-            get { return _list.Count; }
-        }
+        public int Count => _list.Count;
     }
 }

@@ -139,7 +139,7 @@ namespace Tests.Intergal
         {
             public readonly Word[] Words;
             public readonly string Name;
-            public Person(OMatch<Word> match)
+            public Person(IOMatch<Word> match)
             {
                 Words = match.Values.ToArray();
                 Name = match.Captures["name"].First().Values.First().Value;

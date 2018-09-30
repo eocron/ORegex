@@ -98,6 +98,11 @@
     <Compile Include="Core\FinitieStateAutomaton\Predicates\SystemPredicateEdge.cs" />
     <Compile Include="Core\FixedSizeStack.cs" />
     <Compile Include="Core\SequenceHandler.cs" />
+    <Compile Include="IOCapture.cs" />
+    <Compile Include="IOCaptureTable.cs" />
+    <Compile Include="IOMatch.cs" />
+    <Compile Include="IOMatchCollection.cs" />
+    <Compile Include="IORegex.cs" />
     <Compile Include="OCaptureTable.cs" />
     <Compile Include="Core\FinitieStateAutomaton\CFSA.cs" />
     <Compile Include="Core\FinitieStateAutomaton\Predicates\ComparePredicateEdge.cs" />
